@@ -1562,7 +1562,11 @@ def build_config(monsters: dict) -> OrderedDict:
         ('ai', OrderedDict([
             ('focus', 'maxDamage'), ('skipIfInSpikes', True), ('skipIfNoTargetReachable', True), ('engageRadius', None),
             ('avoidSpikes', True), ('moveBeforeCast', True), ('monstersCanTargetAllies', False),
-            ('mamaFocusSingleTarget', True), ('profiles', profiles),
+            ('mamaFocusSingleTarget', True),
+            ('sequenceMode', 'profile'), ('nonFocusWeight', 0.3), ('killBonus', 5000), ('spikePushWeight', 1.0),
+            ('healWeight', 1.0), ('summonTargetWeight', 0.3), ('unshakableValue', 1500), ('positionWeight', 100),
+            ('threatenedAllyDistance', 3),
+            ('profiles', profiles),
         ])),
         ('spikes', OrderedDict([
             ('entryDamage', first_effect(80492, 100)['diceNum']), ('monsterTurnStartDamageRaw', first_effect(81026, 100)['diceNum']),
@@ -1645,8 +1649,34 @@ def build_config(monsters: dict) -> OrderedDict:
                                           alternatives=[True])
     D['ai.mamaFocusSingleTarget'] = doc('boolean', 'la Mama concentre ses sorts sur un joueur (−20 000 / −21 000 observés)', 'Q2',
                                         alternatives=[False], source='Huz 18:30 ; Matspyder4', status='R')
+    D['ai.sequenceMode'] = doc('enum', 'profile : chaque position atteignable est évaluée en suivant l\'ordre de priorité et les règles '
+                               '`when` du profil (N20 §9) ; greedy : à chaque pas, l\'action de meilleure utilité parmi tous les sorts '
+                               '(ordre libre, sorts de préparation évalués en tête)', 'Q2', ['profile', 'greedy'], ['greedy'])
+    D['ai.nonFocusWeight'] = doc('number', 'poids des dégâts sur un joueur autre que la cible de focalisation (focus lowestHp / '
+                                 'nearest, et la Mama si mamaFocusSingleTarget) ; 1 = aucune focalisation', 'Q2', alternatives=[0, 1],
+                                 min=0, max=1)
+    D['ai.killBonus'] = doc('number', 'valeur (en PV équivalents) d\'un joueur tué par le monstre ; soustraite pour un allié tué',
+                            'Q2', alternatives=[0, 10000], min=0)
+    D['ai.spikePushWeight'] = doc('number', 'poids de ce que rapporte l\'envoi d\'un joueur dans les pics (dégâts d\'entrée, '
+                                  'état Vulnérable, rapprochement du bord) ; 0 = l\'IA ignore les pics (« il est un peu bête, sinon il '
+                                  'pouvait me mettre dans les pics », Koza 10:30), 1 = elle les compte comme des dégâts', 'Q2',
+                                  alternatives=[0, 2], source='N20 §9 (préférer les poussées vers les pics) ; Koza 10:30 (contre)', min=0)
+    D['ai.healWeight'] = doc('number', 'valeur d\'un PV rendu à un allié (Trooll de Magie, vol de vie) rapportée à un PV infligé',
+                             'Q2', alternatives=[0.5, 2], min=0)
+    D['ai.summonTargetWeight'] = doc('number', 'poids des dégâts sur une invocation des joueurs (Poutch) : « ne cible pas le Poutch '
+                                     'en priorité »', 'Q2', alternatives=[0, 1], source='D:mon.aiModel', min=0, max=1)
+    D['ai.unshakableValue'] = doc('number', 'valeur (PV équivalents) d\'un monstre rendu Inébranlable (Patroolleur, Troollement de '
+                                  'Tambour) quand des joueurs peuvent le pousser ; moitié loin des pics', 'Q2', alternatives=[0, 3000],
+                                  min=0)
+    D['ai.positionWeight'] = doc('number', 'coût (PV équivalents) de chaque case d\'écart à la distance préférée du profil en fin de '
+                                 'tour ; aussi valeur d\'une case gagnée vers les pics pour un joueur poussé (× spikePushWeight)', 'Q2',
+                                 alternatives=[0, 500], min=0)
+    D['ai.threatenedAllyDistance'] = doc('integer', 'un allié est « menacé » (règle threatenedAlly, valeur d\'Inébranlable) s\'il est à '
+                                         'au plus N cases (Manhattan) de la case de pics la plus proche', 'Q2', alternatives=[2, 4],
+                                         min=0)
     D['ai.profiles'] = doc('object', 'ordres de priorité des sorts par profil (N20 §9, étude §5.8) ; `when` = règle de déclenchement ; '
-                           'preferredDistance et healThresholdPct (soin si l\'allié le plus blessé est sous ce seuil) : valeurs indicatives',
+                           'preferredDistance et healThresholdPct (soin si l\'allié le plus blessé est sous ce seuil) : valeurs indicatives ; '
+                           'un profil peut surcharger focus, skipIfInSpikes, skipIfNoTargetReachable, engageRadius et avoidSpikes',
                            'Q2', source='D:mon.aiModel', whenValues=['enemyReachable', 'targetAtDistance2', 'enemyInRing1to2',
                                                                     'anyTarget', 'maxTargets', 'pushTowardSpikes', 'mostInjuredAlly',
                                                                     'threatenedAlly', 'playersInZoneAtLeast', 'nearLowestHpPlayer'])

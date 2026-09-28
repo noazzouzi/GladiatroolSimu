@@ -952,7 +952,16 @@ export interface AiProfileConfig {
   preferredDistance: [number, number];
   healThresholdPct?: number;
   spells: AiSpellRule[];
+  /** Surcharges facultatives des paramètres communs ``ai.*`` pour ce profil. */
+  focus?: AiFocus;
+  skipIfInSpikes?: boolean;
+  skipIfNoTargetReachable?: boolean;
+  engageRadius?: number | null;
+  avoidSpikes?: boolean;
 }
+
+/** Mode de construction des séquences d'actions de l'IA des monstres. */
+export type AiSequenceMode = 'profile' | 'greedy';
 
 /** Documentation d'un paramètre (bloc `_doc`, clé = chemin pointé). */
 export interface ParamDoc {
@@ -990,6 +999,24 @@ export interface SimConfig {
     moveBeforeCast: boolean;
     monstersCanTargetAllies: boolean;
     mamaFocusSingleTarget: boolean;
+    /** profile : ordre et règles du profil ; greedy : meilleure action à chaque pas (module ai). */
+    sequenceMode: AiSequenceMode;
+    /** Poids des dégâts sur un joueur autre que la cible de focalisation (0..1). */
+    nonFocusWeight: number;
+    /** Valeur d'un joueur tué (PV équivalents). */
+    killBonus: number;
+    /** Poids des gains liés aux pics (entrée d'un joueur, Vulnérable, rapprochement du bord). */
+    spikePushWeight: number;
+    /** Valeur d'un PV soigné sur un allié, rapportée à un PV infligé. */
+    healWeight: number;
+    /** Poids des dégâts sur une invocation des joueurs (Poutch). */
+    summonTargetWeight: number;
+    /** Valeur d'un monstre rendu Inébranlable quand il est menacé (PV équivalents). */
+    unshakableValue: number;
+    /** Coût d'une case d'écart à la distance préférée en fin de tour (PV équivalents). */
+    positionWeight: number;
+    /** Distance maximale (cases) aux pics d'un allié « menacé ». */
+    threatenedAllyDistance: number;
     profiles: Record<AiProfileName, AiProfileConfig>;
   };
   spikes: {

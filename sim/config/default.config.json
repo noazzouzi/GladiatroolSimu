@@ -14,6 +14,15 @@
   "moveBeforeCast": true,
   "monstersCanTargetAllies": false,
   "mamaFocusSingleTarget": true,
+  "sequenceMode": "profile",
+  "nonFocusWeight": 0.3,
+  "killBonus": 5000,
+  "spikePushWeight": 1.0,
+  "healWeight": 1.0,
+  "summonTargetWeight": 0.3,
+  "unshakableValue": 1500,
+  "positionWeight": 100,
+  "threatenedAllyDistance": 3,
   "profiles": {
    "troollibre": {
     "moveBeforeCast": true,
@@ -237,12 +246,88 @@
    "source": "Huz 18:30 ; Matspyder4",
    "why": "la Mama concentre ses sorts sur un joueur (−20 000 / −21 000 observés)"
   },
+  "ai.sequenceMode": {
+   "type": "enum",
+   "values": ["profile","greedy"],
+   "alternatives": ["greedy"],
+   "question": "Q2",
+   "status": "H",
+   "why": "profile : chaque position atteignable est évaluée en suivant l'ordre de priorité et les règles `when` du profil (N20 §9) ; greedy : à chaque pas, l'action de meilleure utilité parmi tous les sorts (ordre libre, sorts de préparation évalués en tête)"
+  },
+  "ai.nonFocusWeight": {
+   "type": "number",
+   "alternatives": [0,1],
+   "question": "Q2",
+   "status": "H",
+   "why": "poids des dégâts sur un joueur autre que la cible de focalisation (focus lowestHp / nearest, et la Mama si mamaFocusSingleTarget) ; 1 = aucune focalisation",
+   "min": 0,
+   "max": 1
+  },
+  "ai.killBonus": {
+   "type": "number",
+   "alternatives": [0,10000],
+   "question": "Q2",
+   "status": "H",
+   "why": "valeur (en PV équivalents) d'un joueur tué par le monstre ; soustraite pour un allié tué",
+   "min": 0
+  },
+  "ai.spikePushWeight": {
+   "type": "number",
+   "alternatives": [0,2],
+   "question": "Q2",
+   "status": "H",
+   "source": "N20 §9 (préférer les poussées vers les pics) ; Koza 10:30 (contre)",
+   "why": "poids de ce que rapporte l'envoi d'un joueur dans les pics (dégâts d'entrée, état Vulnérable, rapprochement du bord) ; 0 = l'IA ignore les pics (« il est un peu bête, sinon il pouvait me mettre dans les pics », Koza 10:30), 1 = elle les compte comme des dégâts",
+   "min": 0
+  },
+  "ai.healWeight": {
+   "type": "number",
+   "alternatives": [0.5,2],
+   "question": "Q2",
+   "status": "H",
+   "why": "valeur d'un PV rendu à un allié (Trooll de Magie, vol de vie) rapportée à un PV infligé",
+   "min": 0
+  },
+  "ai.summonTargetWeight": {
+   "type": "number",
+   "alternatives": [0,1],
+   "question": "Q2",
+   "status": "H",
+   "source": "D:mon.aiModel",
+   "why": "poids des dégâts sur une invocation des joueurs (Poutch) : « ne cible pas le Poutch en priorité »",
+   "min": 0,
+   "max": 1
+  },
+  "ai.unshakableValue": {
+   "type": "number",
+   "alternatives": [0,3000],
+   "question": "Q2",
+   "status": "H",
+   "why": "valeur (PV équivalents) d'un monstre rendu Inébranlable (Patroolleur, Troollement de Tambour) quand des joueurs peuvent le pousser ; moitié loin des pics",
+   "min": 0
+  },
+  "ai.positionWeight": {
+   "type": "number",
+   "alternatives": [0,500],
+   "question": "Q2",
+   "status": "H",
+   "why": "coût (PV équivalents) de chaque case d'écart à la distance préférée du profil en fin de tour ; aussi valeur d'une case gagnée vers les pics pour un joueur poussé (× spikePushWeight)",
+   "min": 0
+  },
+  "ai.threatenedAllyDistance": {
+   "type": "integer",
+   "alternatives": [2,4],
+   "question": "Q2",
+   "status": "H",
+   "why": "un allié est « menacé » (règle threatenedAlly, valeur d'Inébranlable) s'il est à au plus N cases (Manhattan) de la case de pics la plus proche",
+   "min": 0
+  },
   "ai.profiles": {
    "type": "object",
    "question": "Q2",
    "status": "H",
    "source": "D:mon.aiModel",
-   "why": "ordres de priorité des sorts par profil (N20 §9, étude §5.8) ; `when` = règle de déclenchement ; preferredDistance et healThresholdPct (soin si l'allié le plus blessé est sous ce seuil) : valeurs indicatives",
+   "why": "ordres de priorité des sorts par profil (N20 §9, étude §5.8) ; `when` = règle de déclenchement ; preferredDistance et healThresholdPct (soin si l'allié le plus blessé est sous ce seuil) : valeurs indicatives ; un profil peut surcharger focus, skipIfInSpikes, skipIfNoTargetReachable, engageRadius et avoidSpikes",
    "whenValues": [
     "enemyReachable",
     "targetAtDistance2",
