@@ -1,0 +1,9294 @@
+{
+ "_meta": {
+  "description": "Sémantique des effectId pour le simulateur du Gladiatrool (voir research/notes/70_formules_dofus.md).",
+  "parametres": "Convention Ankama : #1 = diceNum, #2 = diceSide, #3 = value. Bornes d'un jet : min = diceNum (ou value si diceNum = diceSide = 0), max = diceSide si != 0 sinon min.",
+  "durees": "duration : -1 = infini (ou tant que l'aura), 0 = instantané, n = n tours ; décompte au DÉBUT de chaque tour du LANCEUR du buff (BuffManager.incrementDuration, INCREMENT_MODE_SOURCE) ; >= 63 = infini. delay : nombre de tours du lanceur avant activation.",
+  "sources": [
+   "https://api.dofusdb.fr/effects/<id> (research/raw/dofusdb/effects.json)",
+   "client DOFUS 3 3.6.12.16, enum ActionIds (research/data/action_ids_dofus3.json, tools/mechanics/il2cpp_actionids.py)",
+   "client DOFUS 2.73.3 décompilé : tools.ActionIdHelper, damageCalculation.* (formules, voir notes/70)"
+  ],
+  "effets_non_documentes": [],
+  "genere_par": "tools/mechanics/build_effects_semantics.py"
+ },
+ "4": {
+  "nom_fr": "Téléporte sur la case ciblée",
+  "nom_en": "Teleports to the targeted cell",
+  "action_dofus3": "CharacterTeleportOnSameMap",
+  "categorie": "téléportation",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Le LANCEUR est téléporté sur la case ciblée si elle est libre et marchable ; si la zone n'est pas 'P', première case libre de la zone ; sinon rien. diceNum/diceSide non utilisés par le moteur (valeurs 6/63 = affichage ?).",
+  "confiance": "moyenne",
+  "occurrences": {
+   "gladiatrool_30370_30800": 11,
+   "total_extrait": 27
+  },
+  "masques_observes": {
+   "C": 16,
+   "a,A,*E#": 6,
+   "a,A": 3,
+   "A,a,x": 2
+  },
+  "declencheurs_observes": {
+   "I": 27
+  },
+  "zones_observees": {
+   "L1": 6,
+   "P1": 4,
+   "Q1": 2,
+   "Q2": 2,
+   "#1": 2,
+   "#2": 2
+  },
+  "durees_observees": {
+   "0": 27
+  },
+  "exemples": [
+   {
+    "spellId": 30389,
+    "sort": "Troollooportation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 6,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,a,x",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30389,
+    "sort": "Troollooportation",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 6,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,a,x",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30405,
+    "sort": "Aïronemane",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30571,
+    "sort": "Aïronemane",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "5": {
+  "nom_fr": "Repousse de #1 case{{~ps}}",
+  "nom_en": "Pushes back #1 cell{{~ps}}{{~zs}}",
+  "action_dofus3": "CharacterPush",
+  "categorie": "poussée",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "nombre de cases",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Repousse de diceNum cases (direction : depuis le lanceur si la cible est sur la case ciblée, sinon depuis la case ciblée ; diagonale => ceil(n/2) pas). Dommages de collision : int(reste * (floor(niv/2) + 32 + DoPou - RéPou) / (4*2^i)). Voir movement.push.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 30,
+   "total_extrait": 44
+  },
+  "masques_observes": {
+   "A": 20,
+   "a,A": 18,
+   "A,e#": 3,
+   "g,A": 2,
+   "a,A,e#": 1
+  },
+  "declencheurs_observes": {
+   "I": 43,
+   "D": 1
+  },
+  "zones_observees": {
+   "P1": 22,
+   "X1": 10,
+   "+1": 2,
+   "C2": 2,
+   "T2": 2,
+   "T3": 2
+  },
+  "durees_observees": {
+   "0": 44
+  },
+  "exemples": [
+   {
+    "spellId": 30380,
+    "sort": "Troollpoline",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,1"
+   },
+   {
+    "spellId": 30380,
+    "sort": "Troollpoline",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,1"
+   },
+   {
+    "spellId": 30383,
+    "sort": "Tir d'Artroollerie",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30383,
+    "sort": "Tir d'Artroollerie",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "6": {
+  "nom_fr": "Attire de #1 case{{~ps}}",
+  "nom_en": "Attracts by #1 cell{{~ps}}{{~zs}}",
+  "action_dofus3": "CharacterPull",
+  "categorie": "attirance",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "nombre de cases",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Attire de diceNum cases vers le lanceur (direction opposée à la poussée calculée depuis la position courante du lanceur). Aucun dommage de collision.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 12,
+   "total_extrait": 16
+  },
+  "masques_observes": {
+   "A": 6,
+   "a,A": 4,
+   "a": 4,
+   "a,P,F#,F#,F#,F#,F#,F#": 1,
+   "g": 1
+  },
+  "declencheurs_observes": {
+   "I": 16
+  },
+  "zones_observees": {
+   "P1": 8,
+   "*6": 1,
+   "X5": 1,
+   "+5": 1,
+   "F2": 1,
+   "X7": 1
+  },
+  "durees_observees": {
+   "0": 16
+  },
+  "exemples": [
+   {
+    "spellId": 30381,
+    "sort": "Aspiratrooll",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30381,
+    "sort": "Aspiratrooll",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30394,
+    "sort": "Catastrooll",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "*6,0"
+   },
+   {
+    "spellId": 30403,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 4,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X5,0"
+   }
+  ]
+ },
+ "8": {
+  "nom_fr": "Échange de positions",
+  "nom_en": "Switches positions",
+  "action_dofus3": "CharacterExchangePlaces",
+  "categorie": "échange",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Échange les positions du lanceur et de la cible (impossible si Enraciné/état effet 3, état « pas d'échange » effet 18 ou cible portée).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 5,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "a,A": 4,
+   "g": 1
+  },
+  "declencheurs_observes": {
+   "I": 5
+  },
+  "zones_observees": {
+   "P1": 5
+  },
+  "durees_observees": {
+   "0": 5
+  },
+  "exemples": [
+   {
+    "spellId": 30388,
+    "sort": "Troollement de Tambour",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "g",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30404,
+    "sort": "Voltige",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30404,
+    "sort": "Voltige",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30570,
+    "sort": "Voltige",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "89": {
+  "nom_fr": "Dommages Neutre : #1{{~1~2 à }}#2% <sprite name=\"PV\"> PV du lanceur",
+  "nom_en": "Neutral damage: #1{{~1~2 to }}#2% of the caster's <sprite name=\"PV\"> HP",
+  "action_dofus3": "CharacterLifePointsLostBasedOnCasterLife",
+  "categorie": "dommage",
+  "element": "neutre",
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 0
+  },
+  "parametres": {
+   "diceNum": "% des PV courants du lanceur",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Dégâts NEUTRES = int(diceNum * PV_courants_lanceur * 0.01). NON boostables (ni Force ni Puissance ni dommages finaux) ; résistances neutres et 1163 de la cible appliqués.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "A,j": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "C2": 1,
+   "C3": 1
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30399,
+    "sort": "Coup de Sang",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 30563,
+    "sort": "Coup de Sang",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "C3,0"
+   }
+  ]
+ },
+ "93": {
+  "nom_fr": "#1{{~1~2 à }}#2 vol Air",
+  "nom_en": "#1{{~1~2 to }}#2 Air steal",
+  "action_dofus3": "CharacterLifePointsStealFromAir",
+  "categorie": "vol de vie",
+  "element": "air",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 4
+  },
+  "parametres": "Comme les dégâts de l'élément, puis le lanceur est soigné de 50 % des PV réellement retirés (int), plafonné à ses PV manquants (0 si incurable).",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "A": 4
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "P1": 4
+  },
+  "durees_observees": {
+   "0": 4
+  },
+  "exemples": [
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 31,
+    "diceSide": 40,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 46,
+    "diceSide": 60,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 21925,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 28,
+    "diceSide": 32,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 21925,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 33,
+    "diceSide": 39,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "94": {
+  "nom_fr": "#1{{~1~2 à }}#2 vol Feu",
+  "nom_en": "#1{{~1~2 to }}#2 Fire steal",
+  "action_dofus3": "CharacterLifePointsStealFromFire",
+  "categorie": "vol de vie",
+  "element": "feu",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 2
+  },
+  "parametres": "Comme les dégâts de l'élément, puis le lanceur est soigné de 50 % des PV réellement retirés (int), plafonné à ses PV manquants (0 si incurable).",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "A": 4
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "X1": 4
+  },
+  "durees_observees": {
+   "0": 4
+  },
+  "exemples": [
+   {
+    "spellId": 6929,
+    "sort": "Troollfesse",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 15,
+    "diceSide": 20,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   },
+   {
+    "spellId": 6929,
+    "sort": "Troollfesse",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 22,
+    "diceSide": 30,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   },
+   {
+    "spellId": 21924,
+    "sort": "Troollfesse",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 32,
+    "diceSide": 38,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   },
+   {
+    "spellId": 21924,
+    "sort": "Troollfesse",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 39,
+    "diceSide": 45,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   }
+  ]
+ },
+ "95": {
+  "nom_fr": "#1{{~1~2 à }}#2 vol Neutre",
+  "nom_en": "#1{{~1~2 to }}#2 Neutral steal",
+  "action_dofus3": "CharacterLifePointsSteal",
+  "categorie": "vol de vie",
+  "element": "neutre",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 0
+  },
+  "parametres": "Comme les dégâts de l'élément, puis le lanceur est soigné de 50 % des PV réellement retirés (int), plafonné à ses PV manquants (0 si incurable).",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 8,
+   "total_extrait": 8
+  },
+  "masques_observes": {
+   "A,j": 4,
+   "a,A": 2,
+   "A": 2
+  },
+  "declencheurs_observes": {
+   "I": 8
+  },
+  "zones_observees": {
+   "P1": 6,
+   "C2": 1,
+   "C3": 1
+  },
+  "durees_observees": {
+   "0": 8
+  },
+  "exemples": [
+   {
+    "spellId": 30381,
+    "sort": "Aspiratrooll",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 65,
+    "diceSide": 75,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30381,
+    "sort": "Aspiratrooll",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 78,
+    "diceSide": 90,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30392,
+    "sort": "Uppertrooll",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 46,
+    "diceSide": 54,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30392,
+    "sort": "Uppertrooll",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 56,
+    "diceSide": 65,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "96": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Eau",
+  "nom_en": "#1{{~1~2 to }}#2 Water damage",
+  "action_dofus3": "CharacterLifePointsLostFromWater",
+  "categorie": "dommage",
+  "element": "eau",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 3
+  },
+  "parametres": "Dégâts élémentaires boostables : jet (diceNum..diceSide) -> +bonus de base (293) -> x(100 + carac élément + Puissance)/100 -> + Dommages + Dommages élément (+ Dommages critiques si effet critique) -> dégressivité de zone -> - rés. fixes - rés. critiques -> x(1 - rés.%) -> multiplicateurs (dommages finaux, mêlée/distance, sorts) -> x multiplicateurs 1163 de la cible -> bouclier -> PV, érosion.",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "A": 4,
+   "a": 1
+  },
+  "declencheurs_observes": {
+   "I": 5
+  },
+  "zones_observees": {
+   "P1": 4,
+   "C2": 1
+  },
+  "durees_observees": {
+   "0": 5
+  },
+  "exemples": [
+   {
+    "spellId": 3858,
+    "sort": "Marionnette",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 41,
+    "diceSide": 50,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 6928,
+    "sort": "Troollage",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 41,
+    "diceSide": 50,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 6928,
+    "sort": "Troollage",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 61,
+    "diceSide": 75,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 21927,
+    "sort": "Troollage",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 60,
+    "diceSide": 70,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "97": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Terre",
+  "nom_en": "#1{{~1~2 to }}#2 Earth damage",
+  "action_dofus3": "CharacterLifePointsLostFromEarth",
+  "categorie": "dommage",
+  "element": "terre",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 1
+  },
+  "parametres": "Dégâts élémentaires boostables : jet (diceNum..diceSide) -> +bonus de base (293) -> x(100 + carac élément + Puissance)/100 -> + Dommages + Dommages élément (+ Dommages critiques si effet critique) -> dégressivité de zone -> - rés. fixes - rés. critiques -> x(1 - rés.%) -> multiplicateurs (dommages finaux, mêlée/distance, sorts) -> x multiplicateurs 1163 de la cible -> bouclier -> PV, érosion.",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 8
+  },
+  "masques_observes": {
+   "A": 4,
+   "A,e#": 2,
+   "L,E#": 2
+  },
+  "declencheurs_observes": {
+   "I": 8
+  },
+  "zones_observees": {
+   "P1": 8
+  },
+  "durees_observees": {
+   "0": 8
+  },
+  "exemples": [
+   {
+    "spellId": 3442,
+    "sort": "Écrasement Troollesque",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 41,
+    "diceSide": 50,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 3442,
+    "sort": "Écrasement Troollesque",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 61,
+    "diceSide": 75,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 3854,
+    "sort": "Coup de pied",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 36,
+    "diceSide": 45,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 3854,
+    "sort": "Coup de pied",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 46,
+    "diceSide": 55,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "98": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Air",
+  "nom_en": "#1{{~1~2 to }}#2 Air damage",
+  "action_dofus3": "CharacterLifePointsLostFromAir",
+  "categorie": "dommage",
+  "element": "air",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 4
+  },
+  "parametres": "Dégâts élémentaires boostables : jet (diceNum..diceSide) -> +bonus de base (293) -> x(100 + carac élément + Puissance)/100 -> + Dommages + Dommages élément (+ Dommages critiques si effet critique) -> dégressivité de zone -> - rés. fixes - rés. critiques -> x(1 - rés.%) -> multiplicateurs (dommages finaux, mêlée/distance, sorts) -> x multiplicateurs 1163 de la cible -> bouclier -> PV, érosion.",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 6
+  },
+  "masques_observes": {
+   "A": 6
+  },
+  "declencheurs_observes": {
+   "I": 6
+  },
+  "zones_observees": {
+   "Q1": 4,
+   "P1": 2
+  },
+  "durees_observees": {
+   "0": 6
+  },
+  "exemples": [
+   {
+    "spellId": 3856,
+    "sort": "Manipulation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 36,
+    "diceSide": 45,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 3856,
+    "sort": "Manipulation",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 17,
+    "diceSide": 22,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "Q1,0"
+   },
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 25,
+    "diceSide": 33,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "Q1,0"
+   }
+  ]
+ },
+ "99": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Feu",
+  "nom_en": "#1{{~1~2 to }}#2 Fire damage",
+  "action_dofus3": "CharacterLifePointsLostFromFire",
+  "categorie": "dommage",
+  "element": "feu",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 2
+  },
+  "parametres": "Dégâts élémentaires boostables : jet (diceNum..diceSide) -> +bonus de base (293) -> x(100 + carac élément + Puissance)/100 -> + Dommages + Dommages élément (+ Dommages critiques si effet critique) -> dégressivité de zone -> - rés. fixes - rés. critiques -> x(1 - rés.%) -> multiplicateurs (dommages finaux, mêlée/distance, sorts) -> x multiplicateurs 1163 de la cible -> bouclier -> PV, érosion.",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "A": 4
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "X1": 2,
+   "+1": 2
+  },
+  "durees_observees": {
+   "0": 4
+  },
+  "exemples": [
+   {
+    "spellId": 3857,
+    "sort": "Entracte",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 26,
+    "diceSide": 30,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   },
+   {
+    "spellId": 3857,
+    "sort": "Entracte",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 26,
+    "diceSide": 30,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "+1,0"
+   },
+   {
+    "spellId": 3857,
+    "sort": "Entracte",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 36,
+    "diceSide": 40,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   },
+   {
+    "spellId": 3857,
+    "sort": "Entracte",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 36,
+    "diceSide": 40,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "+1,0"
+   }
+  ]
+ },
+ "100": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Neutre",
+  "nom_en": "#1{{~1~2 to }}#2 Neutral damage",
+  "action_dofus3": "CharacterLifePointsLost",
+  "categorie": "dommage",
+  "element": "neutre",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 0
+  },
+  "parametres": "Dégâts élémentaires boostables : jet (diceNum..diceSide) -> +bonus de base (293) -> x(100 + carac élément + Puissance)/100 -> + Dommages + Dommages élément (+ Dommages critiques si effet critique) -> dégressivité de zone -> - rés. fixes - rés. critiques -> x(1 - rés.%) -> multiplicateurs (dommages finaux, mêlée/distance, sorts) -> x multiplicateurs 1163 de la cible -> bouclier -> PV, érosion.",
+  "semantique": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 64,
+   "total_extrait": 81
+  },
+  "masques_observes": {
+   "A": 44,
+   "A,j": 11,
+   "a,A": 10,
+   "A,e#": 5,
+   "A,E#": 2,
+   "Atq,A": 2
+  },
+  "declencheurs_observes": {
+   "I": 81
+  },
+  "zones_observees": {
+   "P1": 45,
+   "C2": 9,
+   "C3": 8,
+   "X1": 6,
+   "V3": 2,
+   "R1": 2
+  },
+  "durees_observees": {
+   "0": 81
+  },
+  "exemples": [
+   {
+    "spellId": 30380,
+    "sort": "Troollpoline",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 116,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,1"
+   },
+   {
+    "spellId": 30380,
+    "sort": "Troollpoline",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 120,
+    "diceSide": 139,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,1"
+   },
+   {
+    "spellId": 30383,
+    "sort": "Tir d'Artroollerie",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 56,
+    "diceSide": 65,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30383,
+    "sort": "Tir d'Artroollerie",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 67,
+    "diceSide": 77,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "108": {
+  "nom_fr": "#1{{~1~2 à }}#2 soins Feu",
+  "nom_en": "#1{{~1~2 to }}#2 Fire heals",
+  "action_dofus3": "CharacterLifePointsWinFromFire",
+  "categorie": "soin",
+  "element": "feu",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 2
+  },
+  "parametres": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "semantique": "Soin élément Feu : jet -> x(100 + Intelligence)/100 (sans Puissance) -> + Soins -> x soins finaux (143)/100 -> plafonné aux PV manquants ; 0 si incurable. Dégressivité de zone appliquée.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 11
+  },
+  "masques_observes": {
+   "C": 10,
+   "A": 1
+  },
+  "declencheurs_observes": {
+   "DE|DN": 6,
+   "DA|DW": 2,
+   "DF": 2,
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 10,
+   "C2": 1
+  },
+  "durees_observees": {
+   "0": 11
+  },
+  "exemples": [
+   {
+    "spellId": 308,
+    "sort": "Absorption Troollesque",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "DE|DN",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 308,
+    "sort": "Absorption Troollesque",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 150,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "DE|DN",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 308,
+    "sort": "Absorption Troollesque",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "DA|DW",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 308,
+    "sort": "Absorption Troollesque",
+    "grade": 2,
+    "critique": true,
+    "diceNum": 150,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "DA|DW",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "111": {
+  "nom_fr": "#1{{~1~2 à }}#2 PA",
+  "nom_en": "#1{{~1~2 to }}#2 AP",
+  "action_dofus3": "CharacterBoostActionPoints",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 1,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum PA (buff, durée = duration tours du lanceur).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 10,
+   "total_extrait": 11
+  },
+  "masques_observes": {
+   "C": 8,
+   "a": 3
+  },
+  "declencheurs_observes": {
+   "I": 10,
+   "MPA": 1
+  },
+  "zones_observees": {
+   "P1": 8,
+   "a1": 2,
+   "C3": 1
+  },
+  "durees_observees": {
+   "-1": 6,
+   "2": 3,
+   "4": 1,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30410,
+    "sort": "Regain Vigoureux",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "C3,0"
+   },
+   {
+    "spellId": 30576,
+    "sort": "Regain Vigoureux",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30589,
+    "sort": "Acclamations de la foule",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30590,
+    "sort": "Acclamations de la foule",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "115": {
+  "nom_fr": "#1{{~1~2 à }}#2% Critique",
+  "nom_en": "#1{{~1~2 to }}#2% Critical",
+  "action_dofus3": "CharacterBoostCriticalHit",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 18,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum % Critique (stat 18), additionné au taux critique des sorts.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 4,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "a,e#,E#": 2,
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "P1": 4
+  },
+  "durees_observees": {
+   "3": 2,
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30411,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5899",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30578,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5899",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30589,
+    "sort": "Acclamations de la foule",
+    "grade": 6,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30634,
+    "sort": "Acclamation chanceuse",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "117": {
+  "nom_fr": "#1{{~1~2 à }}#2 Portée",
+  "nom_en": "#1{{~1~2 to }}#2 Range",
+  "action_dofus3": "CharacterBoostRange",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 19,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum PO (stat 19), s'ajoute à la portée des sorts « rangeCanBeBoosted ».",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 6,
+   "total_extrait": 6
+  },
+  "masques_observes": {
+   "C": 6
+  },
+  "declencheurs_observes": {
+   "I": 6
+  },
+  "zones_observees": {
+   "P1": 6
+  },
+  "durees_observees": {
+   "-1": 6
+  },
+  "exemples": [
+   {
+    "spellId": 30591,
+    "sort": "Acclamations de la foule",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30589,
+    "sort": "Acclamations de la foule",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30590,
+    "sort": "Acclamations de la foule",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30629,
+    "sort": "Acclamation optique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "125": {
+  "nom_fr": "#1{{~1~2 à }}#2 Vitalité",
+  "nom_en": "#1{{~1~2 to }}#2 Vitality",
+  "action_dofus3": "CharacterBoostVitality",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 11,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum Vitalité (PV max et PV courants).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 3,
+   "total_extrait": 3
+  },
+  "masques_observes": {
+   "C": 2,
+   "C,*E#": 1
+  },
+  "declencheurs_observes": {
+   "I": 3
+  },
+  "zones_observees": {
+   "P1": 3
+  },
+  "durees_observees": {
+   "-1": 3
+  },
+  "exemples": [
+   {
+    "spellId": 30591,
+    "sort": "Acclamations de la foule",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 5000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30600,
+    "sort": "Acclamation vitalesque",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30639,
+    "sort": "Gladiatrooller",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C,*E5900",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "128": {
+  "nom_fr": "#1{{~1~2 à }}#2 PM",
+  "nom_en": "#1{{~1~2 to }}#2 MP",
+  "action_dofus3": "CharacterBoostMovementPoints",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 23,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum PM.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 9,
+   "total_extrait": 17
+  },
+  "masques_observes": {
+   "C": 14,
+   "a": 3
+  },
+  "declencheurs_observes": {
+   "I": 10,
+   "DE|DN": 2,
+   "DA|DW": 2,
+   "DF": 2,
+   "APA": 1
+  },
+  "zones_observees": {
+   "P1": 14,
+   "a1": 2,
+   "C3": 1
+  },
+  "durees_observees": {
+   "2": 9,
+   "-1": 6,
+   "4": 1,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30410,
+    "sort": "Regain Vigoureux",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "C3,0"
+   },
+   {
+    "spellId": 30576,
+    "sort": "Regain Vigoureux",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30589,
+    "sort": "Acclamations de la foule",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30590,
+    "sort": "Acclamations de la foule",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "132": {
+  "nom_fr": "Enlève les envoûtements",
+  "nom_en": "Dispels magic effects",
+  "action_dofus3": "CharacterRemoveAllEffects",
+  "categorie": "désenvoûtement",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Retire les envoûtements (buffs désenvoûtables) de la cible.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "a,A": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30415,
+    "sort": "Délivrance",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30585,
+    "sort": "Délivrance",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "138": {
+  "nom_fr": "#1{{~1~2 à }}#2 Puissance",
+  "nom_en": "#1{{~1~2 to }}#2 Power",
+  "action_dofus3": "CharacterBoostDamagesPercent",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 25,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum Puissance (stat 25) : s'ajoute à la caractéristique dans le multiplicateur des dégâts (pas des soins).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 4,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "h,P": 3,
+   "C": 1,
+   "C,*E#": 1
+  },
+  "declencheurs_observes": {
+   "I": 5
+  },
+  "zones_observees": {
+   "A1": 3,
+   "P1": 2
+  },
+  "durees_observees": {
+   "-1": 4,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30422,
+    "sort": "Rugissement",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "h,P",
+    "triggers": "I",
+    "zone": "A1,0"
+   },
+   {
+    "spellId": 30422,
+    "sort": "Rugissement",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 60,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "h,P",
+    "triggers": "I",
+    "zone": "A1,0"
+   },
+   {
+    "spellId": 30422,
+    "sort": "Rugissement",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 90,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "h,P",
+    "triggers": "I",
+    "zone": "A1,0"
+   },
+   {
+    "spellId": 30639,
+    "sort": "Gladiatrooller",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C,*E5899",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "140": {
+  "nom_fr": "Tour annulé",
+  "nom_en": "Turn cancelled",
+  "action_dofus3": "CharacterPassNextTurn",
+  "categorie": "tour",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 100,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "La cible passe son prochain tour (CharacterPassNextTurn).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 3,
+   "total_extrait": 3
+  },
+  "masques_observes": {
+   "C": 3
+  },
+  "declencheurs_observes": {
+   "I": 3
+  },
+  "zones_observees": {
+   "P1": 3
+  },
+  "durees_observees": {
+   "-1": 2,
+   "6": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30692,
+    "sort": "Ligne d'arrivée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30699,
+    "sort": "Ligne d'arrivée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30750,
+    "sort": "Rassemblement Troollesque",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 6,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "141": {
+  "nom_fr": "Tue la cible",
+  "nom_en": "Kills the target",
+  "action_dofus3": "CharacterKill",
+  "categorie": "mort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Tue la cible.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 14,
+   "total_extrait": 26
+  },
+  "masques_observes": {
+   "a,A,*E#,F#": 5,
+   "C": 4,
+   "g,F#": 4,
+   "J,E#": 2,
+   "a,A": 2,
+   "A,F#": 2
+  },
+  "declencheurs_observes": {
+   "I": 22,
+   "TE": 2,
+   "TB": 1,
+   "EOFF2130": 1
+  },
+  "zones_observees": {
+   "P1": 14,
+   "a1": 7,
+   "A1": 4,
+   "C2": 1
+  },
+  "durees_observees": {
+   "0": 26
+  },
+  "exemples": [
+   {
+    "spellId": 30373,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "g,f7979,f7975,f7992",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30420,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C,E6027",
+    "triggers": "TB",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30421,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "g,F7985",
+    "triggers": "I",
+    "zone": "A1,0"
+   },
+   {
+    "spellId": 30421,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "g,F7986",
+    "triggers": "I",
+    "zone": "A1,0"
+   }
+  ]
+ },
+ "147": {
+  "nom_fr": "Ressuscite un allié avec #3% de sa vie",
+  "nom_en": "Revives an ally with #3% HP",
+  "action_dofus3": "CharacterResurectAllyInFight",
+  "categorie": "résurrection",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "% des PV max rendus"
+  },
+  "semantique": "Ressuscite un allié mort avec value % de ses PV.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "c": 1,
+   "a": 1
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 1,
+   "a1": 1
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30623,
+    "sort": "Ultime Espoir",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 50,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "c",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30674,
+    "sort": "Ultime Espoir",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 50,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "149": {
+  "nom_fr": "Change l'apparence",
+  "nom_en": "Changes appearance",
+  "action_dofus3": "CharacterChangeLook",
+  "categorie": "apparence",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 38,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de look"
+  },
+  "semantique": "Change l'apparence (cosmétique).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 8,
+   "total_extrait": 9
+  },
+  "masques_observes": {
+   "C,*F#": 8,
+   "L": 1
+  },
+  "declencheurs_observes": {
+   "I": 9
+  },
+  "zones_observees": {
+   "P1": 9
+  },
+  "durees_observees": {
+   "-1": 8,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30671,
+    "sort": "Combo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2713,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C,*F3114",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30671,
+    "sort": "Combo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2715,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C,*F3113",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30671,
+    "sort": "Combo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2670,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C,*F3112",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30671,
+    "sort": "Combo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2711,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C,*F5161",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "150": {
+  "nom_fr": "Rend la cible invisible",
+  "nom_en": "Makes the target invisible",
+  "action_dofus3": "CharacterMakeInvisible",
+  "categorie": "état",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 24,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Rend la cible invisible (masques, LdV, tacle affectés).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 1,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 1
+  },
+  "durees_observees": {
+   "-1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30735,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "153": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 Vitalité",
+  "nom_en": "-#1{{~1~2 to -}}#2 Vitality",
+  "action_dofus3": "CharacterDeboostVitality",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 11,
+   "operator": "-",
+   "bonusType": -1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum Vitalité.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 1,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "C,*E#": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 1
+  },
+  "durees_observees": {
+   "-1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30639,
+    "sort": "Gladiatrooller",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C,*E5901",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "162": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 Esquive PA",
+  "nom_en": "-#1{{~1~2 to -}}#2 AP Parry",
+  "action_dofus3": "CharacterDeboostActionPointsLostDodge",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 27,
+   "operator": "-",
+   "bonusType": -1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum Esquive PA (stat 27).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "A": 4
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "P1": 4
+  },
+  "durees_observees": {
+   "2": 4
+  },
+  "exemples": [
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 21925,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 21925,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "163": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 Esquive PM",
+  "nom_en": "-#1{{~1~2 to -}}#2 MP Parry",
+  "action_dofus3": "CharacterDeboostMovementPointsLostDodge",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 28,
+   "operator": "-",
+   "bonusType": -1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum Esquive PM (stat 28).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "A": 4
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "P1": 4
+  },
+  "durees_observees": {
+   "2": 4
+  },
+  "exemples": [
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 6932,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 21925,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 21925,
+    "sort": "Troollz",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "168": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 PA",
+  "nom_en": "-#1{{~1~2 to }}#2 AP",
+  "action_dofus3": "CharacterDeboostActionPoints",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 1,
+   "operator": "-",
+   "bonusType": -1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum PA non esquivable (CharacterDeboostActionPoints).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "L": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 1
+  },
+  "durees_observees": {
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 3859,
+    "sort": "Marionnette",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "L",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "169": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 PM",
+  "nom_en": "-#1{{~1~2 to }}#2 MP",
+  "action_dofus3": "CharacterDeboostMovementPoints",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 23,
+   "operator": "-",
+   "bonusType": -1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum PM non esquivable (CharacterDeboostMovementPoints).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 4,
+   "total_extrait": 7
+  },
+  "masques_observes": {
+   "A": 4,
+   "C": 2,
+   "L": 1
+  },
+  "declencheurs_observes": {
+   "I": 7
+  },
+  "zones_observees": {
+   "P1": 3,
+   "X1": 2,
+   "X2": 2
+  },
+  "durees_observees": {
+   "1": 5,
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30412,
+    "sort": "Vents Contraires",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   },
+   {
+    "spellId": 30412,
+    "sort": "Vents Contraires",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X1,0"
+   },
+   {
+    "spellId": 30579,
+    "sort": "Vents Contraires",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X2,0"
+   },
+   {
+    "spellId": 30579,
+    "sort": "Vents Contraires",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X2,0"
+   }
+  ]
+ },
+ "181": {
+  "nom_fr": "Invoque : #1",
+  "nom_en": "Summons #1",
+  "action_dofus3": "SummonCreature",
+  "categorie": "invocation",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du monstre",
+   "diceSide": "grade",
+   "value": "0"
+  },
+  "semantique": "Invoque le monstre diceNum (grade diceSide) sur la case ciblée (si libre), avec emplacement d'invocation.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 92,
+   "total_extrait": 93
+  },
+  "masques_observes": {
+   "a,A": 93
+  },
+  "declencheurs_observes": {
+   "I": 93
+  },
+  "zones_observees": {
+   ";1": 90,
+   "P1": 3
+  },
+  "durees_observees": {
+   "0": 91,
+   "1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30374,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 7979,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30374,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 7979,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30374,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 7979,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30374,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 7979,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   }
+  ]
+ },
+ "293": {
+  "nom_fr": "#1 : +#3 dégâts de base",
+  "nom_en": "#1: +#3 base damage",
+  "action_dofus3": "BoostSpellBaseDmg",
+  "categorie": "modificateur de sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 3,
+   "characteristic": 0,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sort modifié",
+   "diceSide": "0",
+   "value": "bonus de dégâts de base"
+  },
+  "semantique": "Ajoute value au JET de base des effets de dégâts du sort diceNum (avant le multiplicateur de caractéristique).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 15,
+   "total_extrait": 15
+  },
+  "masques_observes": {
+   "C": 13,
+   "a,A": 2
+  },
+  "declencheurs_observes": {
+   "I": 13,
+   "TB": 2
+  },
+  "zones_observees": {
+   "P1": 15
+  },
+  "durees_observees": {
+   "1": 8,
+   "0": 4,
+   "-1": 3
+  },
+  "exemples": [
+   {
+    "spellId": 30396,
+    "sort": "Grondement Grandissant",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30396,
+    "diceSide": 0,
+    "value": 20,
+    "duration": 1,
+    "delay": 2,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30396,
+    "sort": "Grondement Grandissant",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 30396,
+    "diceSide": 0,
+    "value": 20,
+    "duration": 1,
+    "delay": 2,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30398,
+    "sort": "Détonation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30398,
+    "diceSide": 0,
+    "value": 10,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30398,
+    "sort": "Détonation",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 30398,
+    "diceSide": 0,
+    "value": 10,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "296": {
+  "nom_fr": "#1 : +#3 PA",
+  "nom_en": "#1: +#3 AP",
+  "action_dofus3": "DeboostSpellApCost",
+  "categorie": "modificateur de sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 3,
+   "characteristic": 0,
+   "operator": "-",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sort modifié",
+   "diceSide": "0",
+   "value": "PA"
+  },
+  "semantique": "Modifie le coût en PA du sort diceNum (DeboostSpellApCost).",
+  "confiance": "moyenne",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "h,P": 4
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "a1": 4
+  },
+  "durees_observees": {
+   "-1": 4
+  },
+  "exemples": [
+   {
+    "spellId": 20509,
+    "sort": "Allumage",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 13444,
+    "diceSide": 0,
+    "value": 1,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "h,P",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 20509,
+    "sort": "Allumage",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 13435,
+    "diceSide": 0,
+    "value": 1,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "h,P",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 20509,
+    "sort": "Allumage",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 13436,
+    "diceSide": 0,
+    "value": 1,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "h,P",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 20509,
+    "sort": "Allumage",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 13491,
+    "diceSide": 0,
+    "value": 1,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "h,P",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "335": {
+  "nom_fr": "Change l'apparence",
+  "nom_en": "Change appearance",
+  "action_dofus3": "CharacterAddAppearance",
+  "categorie": "apparence",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id d'apparence"
+  },
+  "semantique": "Ajoute une apparence (cosmétique, archétype).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 12,
+   "total_extrait": 12
+  },
+  "masques_observes": {
+   "C": 12
+  },
+  "declencheurs_observes": {
+   "I": 12
+  },
+  "zones_observees": {
+   "P1": 12
+  },
+  "durees_observees": {
+   "-1": 12
+  },
+  "exemples": [
+   {
+    "spellId": 30644,
+    "sort": "Dompteur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2740,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30644,
+    "sort": "Dompteur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2741,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30644,
+    "sort": "Dompteur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2742,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30644,
+    "sort": "Dompteur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 2743,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "401": {
+  "nom_fr": "Pose un glyphe de début de tour",
+  "nom_en": "Places a start-of-turn glyph",
+  "action_dofus3": "FightAddGlyphCastingSpell",
+  "categorie": "glyphe",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sort associé à la marque (effets déclenchés)",
+   "diceSide": "grade de ce sort",
+   "value": "couleur RGB de la marque (décimal)"
+  },
+  "semantique": "Pose un glyphe « de début de tour » sur la zone : le sort (diceNum, grade diceSide) est lancé sur toute entité qui COMMENCE son tour dans le glyphe (Gladiatrool : 30390 niv.3 = 1000 dégâts neutres, x2 si Vulnérable).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 1,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "a,A": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   ";1": 1
+  },
+  "durees_observees": {
+   "-1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30390,
+    "sort": "Glyphe de combat",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30390,
+    "diceSide": 3,
+    "value": 16711680,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   }
+  ]
+ },
+ "402": {
+  "nom_fr": "Pose un glyphe de fin de tour",
+  "nom_en": "Places an end-of-turn glyph",
+  "action_dofus3": "FightAddGlyphCastingSpellEndturn",
+  "categorie": "glyphe",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sort associé à la marque (effets déclenchés)",
+   "diceSide": "grade de ce sort",
+   "value": "couleur RGB de la marque (décimal)"
+  },
+  "semantique": "Pose un glyphe « de fin de tour » : le sort est lancé sur toute entité qui TERMINE son tour dedans.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "c": 1,
+   "a,A": 1
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30436,
+    "sort": "1,2,3, Soleil !",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30437,
+    "diceSide": 1,
+    "value": 16711875,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "c",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30454,
+    "sort": "Tout le monde veut prendre sa place",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30455,
+    "diceSide": 1,
+    "value": 16711875,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "406": {
+  "nom_fr": "Enlève les effets du sort #2",
+  "nom_en": "Removes the effects of the #2 spell",
+  "action_dofus3": "CharacterDispellSpell",
+  "categorie": "désenvoûtement",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id du sort"
+  },
+  "semantique": "Retire de la cible les effets du sort value (FightDispellSpell). (Le moteur client applique aussi au lanceur dans certains cas.)",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 94,
+   "total_extrait": 111
+  },
+  "masques_observes": {
+   "a,A": 67,
+   "C": 15,
+   "a,P,F#,F#,F#,F#": 13,
+   "A": 7,
+   "a": 3,
+   "a,P,F#,F#,F#,F#,F#,F#": 2
+  },
+  "declencheurs_observes": {
+   "I": 105,
+   "TE": 4,
+   "CAP": 1,
+   "TR30620": 1
+  },
+  "zones_observees": {
+   "a1": 81,
+   "P1": 29,
+   "C2": 1
+  },
+  "durees_observees": {
+   "0": 111
+  },
+  "exemples": [
+   {
+    "spellId": 30398,
+    "sort": "Détonation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 30398,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30398,
+    "sort": "Détonation",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 30398,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30429,
+    "sort": "Empalé",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 30429,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30433,
+    "sort": "Empalé",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 30428,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "414": {
+  "nom_fr": "#1{{~1~2 à }}#2 Dommage{{~ps}}{{~zs}} Poussée",
+  "nom_en": "#1{{~1~2 to }}#2 Pushback Damage{{~p}}{{~z}}",
+  "action_dofus3": "CharacterBoostPushDamage",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 84,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum Dommages de poussée (stat 84).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 5,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "C": 3,
+   "a,e#,E#": 2
+  },
+  "declencheurs_observes": {
+   "I": 5
+  },
+  "zones_observees": {
+   "P1": 5
+  },
+  "durees_observees": {
+   "3": 3,
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30411,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 500,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5900",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30578,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5900",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30604,
+    "sort": "Dégagez !",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30590,
+    "sort": "Acclamations de la foule",
+    "grade": 5,
+    "critique": false,
+    "diceNum": 200,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "417": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 Résistance{{~ps}}{{~zs}} Poussée",
+  "nom_en": "-#1{{~1~2 to -}}#2 Pushback Resistance{{~p}}{{~z}}",
+  "action_dofus3": "CharacterDeboostPushDamageReduction",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 85,
+   "operator": "-",
+   "bonusType": -1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum Résistance poussée (stat 85).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "a": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "C2": 1
+  },
+  "durees_observees": {
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 3858,
+    "sort": "Marionnette",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "C2,0"
+   }
+  ]
+ },
+ "418": {
+  "nom_fr": "#1{{~1~2 à }}#2 Dommage{{~ps}}{{~zs}} Critiques",
+  "nom_en": "#1{{~1~2 to }}#2 Critical Damage{{~p}}{{~z}}",
+  "action_dofus3": "CharacterBoostCriticalDamagesBonus",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 86,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum Dommages critiques (stat 86), ajoutés aux effets critiques.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30589,
+    "sort": "Acclamations de la foule",
+    "grade": 5,
+    "critique": false,
+    "diceNum": 500,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30633,
+    "sort": "Acclamation critique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 500,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "666": {
+  "nom_fr": "Pas d'effet supplémentaire",
+  "nom_en": "No additional effects",
+  "action_dofus3": "Noop",
+  "categorie": "aucun",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Aucun effet (Noop) — marqueur.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 39,
+   "total_extrait": 63
+  },
+  "masques_observes": {
+   "a,A": 49,
+   "C": 14
+  },
+  "declencheurs_observes": {
+   "I": 63
+  },
+  "zones_observees": {
+   "P1": 63
+  },
+  "durees_observees": {
+   "0": 63
+  },
+  "exemples": [
+   {
+    "spellId": 30470,
+    "sort": "Améliore un sort",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30626,
+    "sort": "Spell Manager",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30626,
+    "sort": "Spell Manager",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30626,
+    "sort": "Spell Manager",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "765": {
+  "nom_fr": "Intercepte les dommages",
+  "nom_en": "Intercepts damage",
+  "action_dofus3": "CharacterSacrify",
+  "categorie": "sacrifice",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Intercepte les dommages (CharacterSacrify) : les dégâts subis par la cible sont redirigés vers le lanceur.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 1,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "g": 1
+  },
+  "declencheurs_observes": {
+   "D": 1
+  },
+  "zones_observees": {
+   "C2": 1
+  },
+  "durees_observees": {
+   "0": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30616,
+    "sort": "Immortalité du Courageux",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "g",
+    "triggers": "D",
+    "zone": "C2,0"
+   }
+  ]
+ },
+ "776": {
+  "nom_fr": "#1{{~1~2 à }}#2% Érosion",
+  "nom_en": "#1{{~1~2 to }}#2% Erosion",
+  "action_dofus3": "CharacterBoostPermanentDamagePercent",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 75,
+   "operator": "-",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum % d'érosion (stat 75) : fraction des dégâts subis retirée des PV max (plafond 50 % dans la formule).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 10,
+   "total_extrait": 10
+  },
+  "masques_observes": {
+   "A,j": 4,
+   "A": 4,
+   "a,A": 2
+  },
+  "declencheurs_observes": {
+   "I": 10
+  },
+  "zones_observees": {
+   "P1": 4,
+   "C2": 3,
+   "C3": 3
+  },
+  "durees_observees": {
+   "1": 6,
+   "2": 2,
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30381,
+    "sort": "Aspiratrooll",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30381,
+    "sort": "Aspiratrooll",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30397,
+    "sort": "Prélèvement",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30397,
+    "sort": "Prélèvement",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "C2,0"
+   }
+  ]
+ },
+ "792": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "TargetExecuteSpell",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "TargetExecuteSpell : la CIBLE de l'effet lance le sous-sort sur sa propre case (pour un buff déclenché : le porteur).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 371,
+   "total_extrait": 441
+  },
+  "masques_observes": {
+   "C": 173,
+   "a": 47,
+   "a,A,F#": 44,
+   "C,*E#,*E#,*E#": 28,
+   "C,E#,f#,f#": 17,
+   "Sce": 16
+  },
+  "declencheurs_observes": {
+   "I": 358,
+   "TB": 22,
+   "TE": 14,
+   "X": 14,
+   "EON5902": 3,
+   "D|XD": 2
+  },
+  "zones_observees": {
+   "P1": 291,
+   "a1": 134,
+   "C2": 8,
+   "A1": 3,
+   "C63": 2,
+   "l0": 2
+  },
+  "durees_observees": {
+   "0": 433,
+   "1": 5,
+   "-1": 2,
+   "2": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30373,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30375,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30373,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30375,
+    "diceSide": 2,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30373,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30375,
+    "diceSide": 3,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30373,
+    "sort": "Lancer de dagues",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30375,
+    "diceSide": 4,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "950": {
+  "nom_fr": "État #3",
+  "nom_en": "#3 state",
+  "action_dofus3": "FightSetState",
+  "categorie": "état",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 71,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id d'état (/spell-states/<value>)"
+  },
+  "semantique": "Ajoute l'état value à la cible pour duration tours (-1 = combat entier / tant que l'aura).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 307,
+   "total_extrait": 393
+  },
+  "masques_observes": {
+   "C,E#": 105,
+   "C": 54,
+   "a,A,*E#": 54,
+   "Sce": 31,
+   "l,P,*E#": 19,
+   "C,E#,f#,f#": 17
+  },
+  "declencheurs_observes": {
+   "I": 387,
+   "TB": 5,
+   "D": 1
+  },
+  "zones_observees": {
+   "P1": 309,
+   "a1": 79,
+   "X1": 2,
+   "A1": 1,
+   "C3": 1,
+   "X63": 1
+  },
+  "durees_observees": {
+   "-1": 239,
+   "1": 120,
+   "2": 30,
+   "4": 2,
+   "0": 1,
+   "6": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30378,
+    "sort": "Dague Classique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5887,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a,A,*E5887",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30378,
+    "sort": "Dague Classique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5888,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a,A,*E5888",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30378,
+    "sort": "Dague Classique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5889,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a,A,*E5889",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30378,
+    "sort": "Dague Classique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5890,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a,A,*E5890",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "951": {
+  "nom_fr": "Enlève l'état #3",
+  "nom_en": "Removes the #3 state",
+  "action_dofus3": "FightUnsetState",
+  "categorie": "état",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 71,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id d'état (/spell-states/<value>)"
+  },
+  "semantique": "Retire l'état value.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 314,
+   "total_extrait": 361
+  },
+  "masques_observes": {
+   "C": 129,
+   "C,E#": 108,
+   "a": 32,
+   "C,E#,f#,f#": 17,
+   "A": 14,
+   "a,A": 13
+  },
+  "declencheurs_observes": {
+   "I": 349,
+   "TE": 10,
+   "CAP": 2
+  },
+  "zones_observees": {
+   "P1": 303,
+   "a1": 55,
+   "C2": 2,
+   "A1": 1
+  },
+  "durees_observees": {
+   "0": 257,
+   "-1": 99,
+   "1": 4,
+   "2": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5887,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5888,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5889,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 5890,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "952": {
+  "nom_fr": "Désactive l'état #3",
+  "nom_en": "Deactivates the #3 state",
+  "action_dofus3": "FightDisableState",
+  "categorie": "état",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 71,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id d'état (/spell-states/<value>)"
+  },
+  "semantique": "Désactive l'état value (FightDisableState).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 3
+  },
+  "masques_observes": {
+   "a,A": 1,
+   "a,A,F#": 1,
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "I": 3
+  },
+  "zones_observees": {
+   "P1": 2,
+   "X1": 1
+  },
+  "durees_observees": {
+   "1": 2,
+   "2": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30669,
+    "sort": "Dénouement",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 56,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "a,A,F3482",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30723,
+    "sort": "Rassemblement Troollesque",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 56,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1008": {
+  "nom_fr": "Invoque : #1",
+  "nom_en": "Summons #1",
+  "action_dofus3": "SummonBomb",
+  "categorie": "invocation",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id de bombe",
+   "diceSide": "grade",
+   "value": "0"
+  },
+  "semantique": "Invoque une bombe.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 24
+  },
+  "masques_observes": {
+   "a,A": 12,
+   "a,A,*E#,*E#": 12
+  },
+  "declencheurs_observes": {
+   "I": 24
+  },
+  "zones_observees": {
+   "P1": 24
+  },
+  "durees_observees": {
+   "0": 24
+  },
+  "exemples": [
+   {
+    "spellId": 13435,
+    "sort": "Tornabombe",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3113,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 13435,
+    "sort": "Tornabombe",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 3113,
+    "diceSide": 2,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 13435,
+    "sort": "Tornabombe",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 3113,
+    "diceSide": 3,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 13436,
+    "sort": "Bombe à Eau",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3114,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1009": {
+  "nom_fr": "Déclenche une bombe",
+  "nom_en": "Triggers a bomb",
+  "action_dofus3": "CharacterActivateBomb",
+  "categorie": "bombe",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Fait exploser les bombes (et celles reliées).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "a,P,F#,F#,F#,F#": 4
+  },
+  "declencheurs_observes": {
+   "X": 2,
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2,
+   "C2": 2
+  },
+  "durees_observees": {
+   "0": 4
+  },
+  "exemples": [
+   {
+    "spellId": 13441,
+    "sort": "Poudre",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,P,F3112,F3113,F3114,F5161",
+    "triggers": "X",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 13441,
+    "sort": "Poudre",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,P,F3112,F3113,F3114,F5161",
+    "triggers": "X",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 13506,
+    "sort": "Mégamikaze",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,P,F3112,F3113,F3114,F5161",
+    "triggers": "I",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 13499,
+    "sort": "Mégaboom",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,P,F3112,F3113,F3114,F5161",
+    "triggers": "I",
+    "zone": "C2,0"
+   }
+  ]
+ },
+ "1011": {
+  "nom_fr": "Invoque : #1",
+  "nom_en": "Summons: #1",
+  "action_dofus3": "SummonSlave",
+  "categorie": "invocation",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du monstre",
+   "diceSide": "grade",
+   "value": "0"
+  },
+  "semantique": "Invoque un esclave (contrôlable).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "a,A,*E#": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 1
+  },
+  "durees_observees": {
+   "0": 1
+  },
+  "exemples": [
+   {
+    "spellId": 13493,
+    "sort": "Mimésis",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 5163,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,*E6706",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1017": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "TargetExecuteSpellOnSource",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "TargetExecuteSpellOnSource : la cible lance le sous-sort sur le lanceur (ou sur le déclencheur si effet déclenché).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 18,
+   "total_extrait": 21
+  },
+  "masques_observes": {
+   "a,A,F#": 12,
+   "h,P,E#": 2,
+   "h,P": 1,
+   "H,e#": 1,
+   "A": 1,
+   "A,e#,e#": 1
+  },
+  "declencheurs_observes": {
+   "I": 19,
+   "X": 1,
+   "D": 1
+  },
+  "zones_observees": {
+   "P1": 7,
+   "a1": 5,
+   "R1": 4,
+   "A1": 3,
+   "R2": 2
+  },
+  "durees_observees": {
+   "0": 21
+  },
+  "exemples": [
+   {
+    "spellId": 30377,
+    "sort": "Dague Classique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30378,
+    "diceSide": 1,
+    "value": 999,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,F7979",
+    "triggers": "I",
+    "zone": "R1,10"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 30378,
+    "diceSide": 1,
+    "value": 999,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,F7979",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30448,
+    "sort": "Attirance",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30447,
+    "diceSide": 1,
+    "value": 63,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "H,e5918",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30494,
+    "sort": "Ébranlable",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30495,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "X",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "1018": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "SourceExecuteSpellOnTarget",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "SourceExecuteSpellOnTarget : le lanceur (ou déclencheur) lance le sous-sort sur la cible.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "A": 1,
+   "A,e#": 1
+  },
+  "declencheurs_observes": {
+   "XPD": 1,
+   "D": 1
+  },
+  "zones_observees": {
+   "a1": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30498,
+    "sort": "Attention, sol glissant",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30499,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "XPD",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30617,
+    "sort": "Malédiction Mouvante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30676,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,e5971",
+    "triggers": "D",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "1019": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "SourceExecuteSpellOnSource",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "SourceExecuteSpellOnSource : le lanceur (ou déclencheur) lance le sous-sort sur lui-même.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 4,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "A": 3,
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "X": 4
+  },
+  "zones_observees": {
+   "a1": 4
+  },
+  "durees_observees": {
+   "0": 4
+  },
+  "exemples": [
+   {
+    "spellId": 30460,
+    "sort": "KillCountable",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30457,
+    "diceSide": 1,
+    "value": 63,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "X",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30513,
+    "sort": "Pas le temps de dire \"Aïe\"",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30514,
+    "diceSide": 1,
+    "value": 63,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "X",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30550,
+    "sort": "Meurtres en série",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30549,
+    "diceSide": 1,
+    "value": 63,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "X",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30552,
+    "sort": "Quintuplé",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30551,
+    "diceSide": 1,
+    "value": 63,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "X",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "1027": {
+  "nom_fr": "#1{{~1~2 à }}#2% Dommages Combo",
+  "nom_en": "#1{{~1~2 to }}#2% Combo damage",
+  "action_dofus3": "BombComboBonus",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "semantique": "% de dommages de combo des bombes (stat 94).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 15
+  },
+  "masques_observes": {
+   "C": 15
+  },
+  "declencheurs_observes": {
+   "I": 15
+  },
+  "zones_observees": {
+   "P1": 15
+  },
+  "durees_observees": {
+   "-1": 15
+  },
+  "exemples": [
+   {
+    "spellId": 20500,
+    "sort": "Combo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20500,
+    "sort": "Combo",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 40,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20500,
+    "sort": "Combo",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 60,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20500,
+    "sort": "Combo",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 80,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1031": {
+  "nom_fr": "Termine le tour",
+  "nom_en": "Ends turn",
+  "action_dofus3": "CharacterPassCurrentTurn",
+  "categorie": "tour",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Termine immédiatement le tour de la cible.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30692,
+    "sort": "Ligne d'arrivée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30699,
+    "sort": "Ligne d'arrivée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1039": {
+  "nom_fr": "Bouclier : #1{{~1~2 à }}#2% des PV max",
+  "nom_en": "#1{{~1~2 to }}#2% of HP to shield",
+  "action_dofus3": "CharacterBoostShieldBasedOnCasterLife",
+  "categorie": "bouclier",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Bouclier = int(PV_max_du_LANCEUR * diceNum * 0.01) ; absorbe les dégâts avant les PV.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 1
+  },
+  "durees_observees": {
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1040": {
+  "nom_fr": "#1{{~1~2 à }}#2 Bouclier",
+  "nom_en": "#1{{~1~2 to }}#2 Shield",
+  "action_dofus3": "CharacterBoostShield",
+  "categorie": "bouclier",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Bouclier fixe de diceNum points (pas de dégressivité de zone pour les boucliers).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 3,
+   "total_extrait": 3
+  },
+  "masques_observes": {
+   "a": 3
+  },
+  "declencheurs_observes": {
+   "I": 3
+  },
+  "zones_observees": {
+   "P1": 2,
+   "a1": 1
+  },
+  "durees_observees": {
+   "1": 3
+  },
+  "exemples": [
+   {
+    "spellId": 30414,
+    "sort": "Protection Prolongée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30584,
+    "sort": "Protection Prolongée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30622,
+    "sort": "Muraille collective",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 15000,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "1042": {
+  "nom_fr": "Avance de #1 case{{~ps}}",
+  "nom_en": "Advances by #1 cell{{~ps}}{{~zs}}",
+  "action_dofus3": "CharacterGetPulled",
+  "categorie": "attirance",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "nombre de cases",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "CharacterGetPulled : c'est le LANCEUR qui avance de diceNum cases vers la cible (rôles inversés d'une attirance).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 3,
+   "total_extrait": 3
+  },
+  "masques_observes": {
+   "a,A": 3
+  },
+  "declencheurs_observes": {
+   "I": 3
+  },
+  "zones_observees": {
+   "P1": 3
+  },
+  "durees_observees": {
+   "0": 3
+  },
+  "exemples": [
+   {
+    "spellId": 30407,
+    "sort": "Va-t-en-guerre",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30573,
+    "sort": "Va-t-en-guerre",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 4,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30616,
+    "sort": "Immortalité du Courageux",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 63,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1048": {
+  "nom_fr": "-#1{{~1~2 à -}}#2% PV",
+  "nom_en": "-#1{{~1~2 to -}}#2% HP",
+  "action_dofus3": "CharacterLifePointsMalusPercent",
+  "categorie": "dommage (faux)",
+  "element": null,
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "-",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "% des PV courants de la cible",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Retire int(diceNum * PV_courants_cible * 0.01) PV (CharacterLifePointsMalusPercent). Pas de dégressivité, ignore le bouclier, ne déclenche pas les 1163 ? (faux dommage).",
+  "confiance": "moyenne",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30399,
+    "sort": "Coup de Sang",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30563,
+    "sort": "Coup de Sang",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1060": {
+  "nom_fr": "Taille : #1{{~1~2 à }}#2",
+  "nom_en": "Size: #1{{~1~2 to }}#2",
+  "action_dofus3": "CharacterAddScaleFlat",
+  "categorie": "apparence",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 99,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Taille de l'apparence (cosmétique).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 16
+  },
+  "masques_observes": {
+   "C": 16
+  },
+  "declencheurs_observes": {
+   "I": 16
+  },
+  "zones_observees": {
+   "P1": 16
+  },
+  "durees_observees": {
+   "-1": 16
+  },
+  "exemples": [
+   {
+    "spellId": 13496,
+    "sort": "Absorption Explosive",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20500,
+    "sort": "Combo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 5,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20500,
+    "sort": "Combo",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20500,
+    "sort": "Combo",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1063": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Terre (fixe)",
+  "nom_en": "#1{{~1~2 to }}#2 Earth damage (fixed)",
+  "action_dofus3": "CharacterLifePointsLostNoBoostFromEarth",
+  "categorie": "dommage",
+  "element": "terre",
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 1
+  },
+  "parametres": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "semantique": "Dégâts Terre FIXES : non boostables (ni carac, ni Puissance, ni Dommages, ni dommages finaux), résistances et 1163 appliqués.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "a,A,f#": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,f7979",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30728,
+    "sort": "Dague Classique",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,f7979",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1064": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Air (fixe)",
+  "nom_en": "#1{{~1~2 to }}#2 Air damage (fixed)",
+  "action_dofus3": "CharacterLifePointsLostNoBoostFromAir",
+  "categorie": "dommage",
+  "element": "air",
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 4
+  },
+  "parametres": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "semantique": "Dégâts Air FIXES (non boostables).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 1,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "A,f#": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "l0": 1
+  },
+  "durees_observees": {
+   "0": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30705,
+    "sort": "Dague Perforante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,f7979",
+    "triggers": "I",
+    "zone": "l0,11"
+   }
+  ]
+ },
+ "1065": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Eau (fixe)",
+  "nom_en": "#1{{~1~2 to }}#2 Water damage (fixed)",
+  "action_dofus3": "CharacterLifePointsLostNoBoostFromWater",
+  "categorie": "dommage",
+  "element": "eau",
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 3
+  },
+  "parametres": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "semantique": "Dégâts Eau FIXES (non boostables).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "a,A,f#": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30703,
+    "sort": "Dagues Jumelles",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,f7979",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30730,
+    "sort": "Dagues Jumelles",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,f7979",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1066": {
+  "nom_fr": "#1{{~1~2 à }}#2 dommages Feu (fixe)",
+  "nom_en": "#1{{~1~2 to }}#2 Fire damage (fixed)",
+  "action_dofus3": "CharacterLifePointsLostNoBoostFromFire",
+  "categorie": "dommage",
+  "element": "feu",
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 2
+  },
+  "parametres": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "semantique": "Dégâts Feu FIXES (non boostables).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "a,A,f#": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "C2": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30707,
+    "sort": "Dague Instable",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,f7979",
+    "triggers": "I",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 30731,
+    "sort": "Dague Instable",
+    "grade": 10,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,f7979",
+    "triggers": "I",
+    "zone": "C2,0"
+   }
+  ]
+ },
+ "1076": {
+  "nom_fr": "#1{{~1~2 à }}#2% Résistance",
+  "nom_en": "#1{{~1~2 to }}#2% Resistance",
+  "action_dofus3": "CharacterBoostResistPercent",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 1,
+   "characteristic": 101,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum % de résistance tous éléments (stat 101), plafond 50 % pour un joueur.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 4,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "C": 4
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "P1": 4
+  },
+  "durees_observees": {
+   "1": 2,
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30406,
+    "sort": "Pugnace",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 25,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30572,
+    "sort": "Pugnace",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30590,
+    "sort": "Acclamations de la foule",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30597,
+    "sort": "Acclamation robuste",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1078": {
+  "nom_fr": "#1{{~1~2 à }}#2% Vitalité",
+  "nom_en": "#1{{~1~2 to }}#2% Vitality",
+  "action_dofus3": "CharacterBoostVitalityPercentStatic",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 11,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum % de Vitalité (statique).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 6
+  },
+  "masques_observes": {
+   "a,P,F#,*E#": 4,
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 6
+  },
+  "zones_observees": {
+   "P1": 6
+  },
+  "durees_observees": {
+   "-1": 6
+  },
+  "exemples": [
+   {
+    "spellId": 13496,
+    "sort": "Absorption Explosive",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 13497,
+    "sort": "Absorption Explosive",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20577,
+    "sort": "La Ruse du Roublard",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 40,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,P,F3113,*E3688",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 20577,
+    "sort": "La Ruse du Roublard",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 40,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,P,F3112,*E3687",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1079": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 PA",
+  "nom_en": "-#1{{~1~2 to -}}#2 AP",
+  "action_dofus3": "CharacterDeboostActionPointsDodgeable",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 1,
+   "operator": "-",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum PA ESQUIVABLES (esquive PA de la cible vs retrait PA du lanceur).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 6
+  },
+  "masques_observes": {
+   "A": 2,
+   "A,e#": 2,
+   "L,E#": 2
+  },
+  "declencheurs_observes": {
+   "I": 6
+  },
+  "zones_observees": {
+   "P1": 6
+  },
+  "durees_observees": {
+   "1": 6
+  },
+  "exemples": [
+   {
+    "spellId": 3442,
+    "sort": "Écrasement Troollesque",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 3442,
+    "sort": "Écrasement Troollesque",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 5994,
+    "sort": "Écrasement Troollesque Rikiki",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A,e300",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 5994,
+    "sort": "Écrasement Troollesque Rikiki",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "L,E300",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1080": {
+  "nom_fr": "-#1{{~1~2 à -}}#2 PM",
+  "nom_en": "-#1{{~1~2 to -}}#2 MP",
+  "action_dofus3": "CharacterDeboostMovementPointsDodgeable",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 23,
+   "operator": "-",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum PM ESQUIVABLES.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 8
+  },
+  "masques_observes": {
+   "A": 4,
+   "A,e#": 2,
+   "A,E#": 2
+  },
+  "declencheurs_observes": {
+   "I": 8
+  },
+  "zones_observees": {
+   "P1": 8
+  },
+  "durees_observees": {
+   "1": 8
+  },
+  "exemples": [
+   {
+    "spellId": 3461,
+    "sort": "Troollahonte",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 3461,
+    "sort": "Troollahonte",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 2,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 5995,
+    "sort": "Coup Troollesque Rikiki",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A,e300",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 5995,
+    "sort": "Coup Troollesque Rikiki",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A,E300",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1091": {
+  "nom_fr": "Pose un glyphe-aura",
+  "nom_en": "Places a glyph-aura",
+  "action_dofus3": "FightAddGlyphAura",
+  "categorie": "glyphe",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sort associé à la marque (effets déclenchés)",
+   "diceSide": "grade de ce sort",
+   "value": "couleur RGB de la marque (décimal)"
+  },
+  "semantique": "Pose un glyphe-AURA : les effets du sort (diceNum, grade diceSide) s'appliquent à toute entité qui ENTRE/SE TROUVE dans la zone et sont retirés quand elle en sort (Gladiatrool : 30390 niv.2 = 2000 dégâts neutres + état Vulnérable + « Dommages subis x200 % » tant qu'elle est dans les pics).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 10,
+   "total_extrait": 10
+  },
+  "masques_observes": {
+   "a,A": 10
+  },
+  "declencheurs_observes": {
+   "I": 10
+  },
+  "zones_observees": {
+   ";1": 9,
+   "C3": 1
+  },
+  "durees_observees": {
+   "-1": 10
+  },
+  "exemples": [
+   {
+    "spellId": 30390,
+    "sort": "Glyphe de combat",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30390,
+    "diceSide": 2,
+    "value": 16711680,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30519,
+    "sort": "Mockup Glyphe de combat",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30390,
+    "diceSide": 3,
+    "value": 123456,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "C3,0"
+   },
+   {
+    "spellId": 30692,
+    "sort": "Ligne d'arrivée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30692,
+    "diceSide": 4,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30692,
+    "sort": "Ligne d'arrivée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30692,
+    "diceSide": 4,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   }
+  ]
+ },
+ "1092": {
+  "nom_fr": "Dommages Neutre : #1{{~1~2 à }}#2% <sprite name=\"erosion\"> PV érodés de la cible",
+  "nom_en": "Neutral damage: #1{{~1~2 to }}#2% of the target's <sprite name=\"erosion\"> eroded HP",
+  "action_dofus3": "CharacterLifePointsLostBasedOnTargetMissingMaxLife",
+  "categorie": "dommage",
+  "element": "neutre",
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 0
+  },
+  "parametres": {
+   "diceNum": "% des PV érodés de la cible",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Dégâts neutres = diceNum % des PV érodés de la CIBLE (non boostables ; rés. neutres et 1163 appliqués). Le client 2.73 prévisualise avec la stat 75 (% d'érosion), probable bogue d'aperçu.",
+  "confiance": "moyenne",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "A,j": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "F2": 1,
+   "F3": 1
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30401,
+    "sort": "Ombre Fracassante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "F2,0"
+   },
+   {
+    "spellId": 30565,
+    "sort": "Ombre Fracassante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "F3,0"
+   }
+  ]
+ },
+ "1097": {
+  "nom_fr": "Crée des illusions",
+  "nom_en": "Creates illusions",
+  "action_dofus3": "CharacterAddIllusionMirror",
+  "categorie": "invocation",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Crée diceNum illusions (Crâ/Sram) autour du lanceur.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 1
+  },
+  "durees_observees": {
+   "0": 1
+  },
+  "exemples": [
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 3,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1099": {
+  "nom_fr": "Téléporte à la position de début de tour",
+  "nom_en": "Teleports the target to the cell where they started their turn",
+  "action_dofus3": "FightRollbackTurnBeginPosition",
+  "categorie": "téléportation",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Ramène la cible à sa position de début de tour.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 16
+  },
+  "masques_observes": {
+   "C": 16
+  },
+  "declencheurs_observes": {
+   "I": 16
+  },
+  "zones_observees": {
+   "Q1": 2,
+   "Q2": 2,
+   "#1": 2,
+   "#2": 2,
+   "O3": 2,
+   "W2": 2
+  },
+  "durees_observees": {
+   "0": 16
+  },
+  "exemples": [
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "Q1,0"
+   },
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "Q2,2"
+   },
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "#1,0"
+   },
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "#2,2"
+   }
+  ]
+ },
+ "1100": {
+  "nom_fr": "Téléporte à la position précédente",
+  "nom_en": "Teleports to previous position",
+  "action_dofus3": "FightRollbackPreviousPosition",
+  "categorie": "téléportation",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 7,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Ramène la cible à sa position précédente (avant le dernier déplacement).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 0,
+   "total_extrait": 16
+  },
+  "masques_observes": {
+   "C": 16
+  },
+  "declencheurs_observes": {
+   "I": 16
+  },
+  "zones_observees": {
+   "Q1": 2,
+   "Q2": 2,
+   "#1": 2,
+   "#2": 2,
+   "O3": 2,
+   "W2": 2
+  },
+  "durees_observees": {
+   "0": 16
+  },
+  "exemples": [
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "Q1,0"
+   },
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "Q2,2"
+   },
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "#1,0"
+   },
+   {
+    "spellId": 6930,
+    "sort": "Troollolo",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "#2,2"
+   }
+  ]
+ },
+ "1103": {
+  "nom_fr": "Repousse de #1 case{{~ps}} (sans dommages)",
+  "nom_en": "Pushes back #1 cell{{~ps}}{{~zs}} (without damage)",
+  "action_dofus3": "FightPushNoDamage",
+  "categorie": "poussée",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "nombre de cases (63 = jusqu'au bord)",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Poussée SANS dommages de collision (FightPushNoDamage). Gladiatrool : Rassemblement Troollesque pousse de 63 cases = jusqu'à l'obstacle/bord.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 1,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "A": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "X63": 1
+  },
+  "durees_observees": {
+   "0": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30432,
+    "sort": "Rassemblement Troollesque",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 63,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "X63,1"
+   }
+  ]
+ },
+ "1109": {
+  "nom_fr": "Soin : #1{{~1~2 à }}#2% des PV max",
+  "nom_en": "Heal: #1{{~1~2 to }}#2% of max HP",
+  "action_dofus3": "FightLifePointsWinPercent",
+  "categorie": "soin",
+  "element": null,
+  "boostable": false,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 0
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Soin = diceNum % des PV max de la CIBLE (non boosté ; soins finaux non appliqués).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "C": 2,
+   "a": 1,
+   "g": 1
+  },
+  "declencheurs_observes": {
+   "I": 3,
+   "TR30620": 1
+  },
+  "zones_observees": {
+   "P1": 4
+  },
+  "durees_observees": {
+   "0": 4
+  },
+  "exemples": [
+   {
+    "spellId": 30620,
+    "sort": "Immortalité du Bienfaiteur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "TR30620",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30623,
+    "sort": "Ultime Espoir",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "g",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1118": {
+  "nom_fr": "Dommages Neutre : #1{{~1~2 à }}#2% <sprite name=\"erosion\"> PV érodés du lanceur",
+  "nom_en": "Neutral damage: #1{{~1~2 to }}#2% of the caster's <sprite name=\"erosion\"> eroded HP",
+  "action_dofus3": "CharacterLifePointsLostBasedOnCasterMissingMaxLife",
+  "categorie": "dommage",
+  "element": null,
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 0
+  },
+  "parametres": {
+   "diceNum": "% des PV érodés du lanceur",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Dégâts = int(diceNum * PV_érodés_lanceur / 100) ; élément « aucun » (-1) dans le client : seule la rés. % tous éléments (101) s'applique ; non boostables.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "A,j": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "G1": 1,
+   "G2": 1
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30400,
+    "sort": "Jaillissement",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 40,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "G1,0"
+   },
+   {
+    "spellId": 30564,
+    "sort": "Jaillissement",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 40,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "G2,0"
+   }
+  ]
+ },
+ "1123": {
+  "nom_fr": "Dommages : #1{{~1~2 à }}#2% des dommages initiaux subis",
+  "nom_en": "Damage: #1{{~1~2 to }}#2% of initial damage suffered",
+  "action_dofus3": "FightSplashRawTakenDamage",
+  "categorie": "dommage (renvoi)",
+  "element": null,
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "% des dommages initiaux",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Inflige diceNum % des dommages BRUTS (avant résistances) du dernier coup reçu par le lanceur, dans l'élément de ce coup (splash). Non boostable.",
+  "confiance": "moyenne",
+  "occurrences": {
+   "gladiatrool_30370_30800": 3,
+   "total_extrait": 3
+  },
+  "masques_observes": {
+   "A": 2,
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "I": 2,
+   "D": 1
+  },
+  "zones_observees": {
+   "C2": 1,
+   "C3": 1,
+   "P1": 1
+  },
+  "durees_observees": {
+   "0": 3
+  },
+  "exemples": [
+   {
+    "spellId": 30421,
+    "sort": "Soutien Stratégique",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,1"
+   },
+   {
+    "spellId": 30568,
+    "sort": "Soutien Stratégique",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C3,1"
+   },
+   {
+    "spellId": 30619,
+    "sort": "Un pour un",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "D",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1160": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "CasterExecuteSpell",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "CasterExecuteSpell : le lanceur lance le sous-sort sur la case de la cible (une fois par cible touchée).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 50,
+   "total_extrait": 69
+  },
+  "masques_observes": {
+   "a,A": 33,
+   "C": 10,
+   "a,P,F#": 5,
+   "C,F#": 4,
+   "A,j": 4,
+   "a,O,E#": 2
+  },
+  "declencheurs_observes": {
+   "I": 62,
+   "TE": 3,
+   "TB": 3,
+   "X": 1
+  },
+  "zones_observees": {
+   "P1": 54,
+   "a1": 4,
+   "R1": 2,
+   "T2": 2,
+   "R2": 2,
+   "T3": 2
+  },
+  "durees_observees": {
+   "0": 68,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30398,
+    "sort": "Détonation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30417,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "R1,1"
+   },
+   {
+    "spellId": 30398,
+    "sort": "Détonation",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 30417,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,j",
+    "triggers": "I",
+    "zone": "R1,1"
+   },
+   {
+    "spellId": 30402,
+    "sort": "Videur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30689,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "T2,0"
+   },
+   {
+    "spellId": 30402,
+    "sort": "Videur",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 30689,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "T2,0"
+   }
+  ]
+ },
+ "1163": {
+  "nom_fr": "Dommages subis x#1%",
+  "nom_en": "x#1% damage sustained",
+  "action_dofus3": "CharacterMultiplyReceivedDamage",
+  "categorie": "multiplicateur",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "pourcentage (200 = x2, 50 = x0,5)",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Multiplie les dommages SUBIS par la cible : m = int(m * diceNum * 0.01) pour chaque buff 1163 dont le déclencheur correspond (D = tout dommage hors poussée ; PD/PMD/PPD = dommages de poussée ; DN/DE/... = élément ; DBA = dommages d'un allié…). Appliqué après résistances et multiplicateurs de dommages infligés. Vulnérable du Gladiatrool = x200 % (donc x2, et non +200 %).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 9,
+   "total_extrait": 10
+  },
+  "masques_observes": {
+   "C": 8,
+   "Def,A": 1,
+   "A": 1
+  },
+  "declencheurs_observes": {
+   "D": 5,
+   "DBA": 4,
+   "DR": 1
+  },
+  "zones_observees": {
+   "P1": 10
+  },
+  "durees_observees": {
+   "0": 7,
+   "-1": 2,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30390,
+    "sort": "Glyphe de combat",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 200,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "Def,A",
+    "triggers": "D",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30403,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "DBA",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30421,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "DBA",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30519,
+    "sort": "Mockup Glyphe de combat",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 200,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "D",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1165": {
+  "nom_fr": "Pose un glyphe",
+  "nom_en": "Places a glyph",
+  "action_dofus3": "FightAddGlyphCastingSpellImmediate",
+  "categorie": "glyphe",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sort associé à la marque (effets déclenchés)",
+   "diceSide": "grade de ce sort",
+   "value": "couleur RGB de la marque (décimal)"
+  },
+  "semantique": "Pose un glyphe « immédiat » (FightAddGlyphCastingSpellImmediate) : sort lancé à la pose puis selon les règles du glyphe.",
+  "confiance": "moyenne",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 11
+  },
+  "masques_observes": {
+   "a,A": 10,
+   "Atq,A": 1
+  },
+  "declencheurs_observes": {
+   "I": 11
+  },
+  "zones_observees": {
+   ";1": 9,
+   "C3": 1,
+   "P1": 1
+  },
+  "durees_observees": {
+   "-1": 10,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30519,
+    "sort": "Mockup Glyphe de combat",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30390,
+    "diceSide": 2,
+    "value": 16711680,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "C3,0"
+   },
+   {
+    "spellId": 30566,
+    "sort": "Glyphe Événementiel",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30657,
+    "diceSide": 1,
+    "value": 16760320,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "Atq,A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1171": {
+  "nom_fr": "#1% Dommages finaux",
+  "nom_en": "#1% final damage",
+  "action_dofus3": "CharacterBoostDealtDamagePercentMultiplier",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 107,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum % dommages finaux (stat 107, multiplicateur 100 + x).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 7,
+   "total_extrait": 10
+  },
+  "masques_observes": {
+   "C": 7,
+   "a,e#,E#": 2,
+   "c": 1
+  },
+  "declencheurs_observes": {
+   "I": 10
+  },
+  "zones_observees": {
+   "P1": 10
+  },
+  "durees_observees": {
+   "-1": 6,
+   "3": 2,
+   "2": 1,
+   "0": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30382,
+    "sort": "Patroolleur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30394,
+    "sort": "Catastrooll",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "c",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30411,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5899",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30578,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 40,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5899",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "1172": {
+  "nom_fr": "-#1% Dommages finaux",
+  "nom_en": "-#1% final damage",
+  "action_dofus3": "CharacterDeboostDealtDamagePercentMultiplier",
+  "categorie": "debuff",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 107,
+   "operator": "-",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "-diceNum % dommages finaux.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 6,
+   "total_extrait": 9
+  },
+  "masques_observes": {
+   "A": 6,
+   "C": 2,
+   "A,e#": 1
+  },
+  "declencheurs_observes": {
+   "I": 9
+  },
+  "zones_observees": {
+   "X1": 2,
+   "P1": 2,
+   "C2": 2,
+   "C3": 2,
+   "a1": 1
+  },
+  "durees_observees": {
+   "1": 6,
+   "-1": 2,
+   "2": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30413,
+    "sort": "Vague de Dégradation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 30413,
+    "sort": "Vague de Dégradation",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 30580,
+    "sort": "Vague de Dégradation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C3,0"
+   },
+   {
+    "spellId": 30580,
+    "sort": "Vague de Dégradation",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 30,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C3,0"
+   }
+  ]
+ },
+ "1223": {
+  "nom_fr": "Dommages : #1{{~1~2 à }}#2% des dommages finaux subis",
+  "nom_en": "Damage: #1{{~1~2 to }}#2% of final damage suffered",
+  "action_dofus3": "FightSplashFinalTakenDamage",
+  "categorie": "dommage (renvoi)",
+  "element": null,
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "% des dommages finaux",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Inflige diceNum % des dommages FINAUX du dernier coup subi par le lanceur (splash), dans son élément ; non boostable, sans dégressivité.",
+  "confiance": "moyenne",
+  "occurrences": {
+   "gladiatrool_30370_30800": 5,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "A,a": 2,
+   "A": 2,
+   "a": 1
+  },
+  "declencheurs_observes": {
+   "I": 4,
+   "D": 1
+  },
+  "zones_observees": {
+   "C2": 3,
+   "C3": 1,
+   "P1": 1
+  },
+  "durees_observees": {
+   "0": 5
+  },
+  "exemples": [
+   {
+    "spellId": 30403,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,a",
+    "triggers": "I",
+    "zone": "C2,1"
+   },
+   {
+    "spellId": 30569,
+    "sort": "Soutien Stratégique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,a",
+    "triggers": "I",
+    "zone": "C3,1"
+   },
+   {
+    "spellId": 30613,
+    "sort": "Malédiction Collatérale",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 50,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "D",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 30625,
+    "sort": "Un pour un",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "2017": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "TargetExecuteSpellOnSourceGlobalLimitation",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "Comme 1017 (la cible lance sur le lanceur) avec limite globale value exécutions par lancer.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "g,e#,e#": 1,
+   "H": 1
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "a1": 1,
+   "C63": 1
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30452,
+    "sort": "Tout le monde veut prendre sa place",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30453,
+    "diceSide": 1,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "g,e5916,e5971",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30668,
+    "sort": "Manipulé par un autre",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30668,
+    "diceSide": 3,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "H",
+    "triggers": "I",
+    "zone": "C63,1"
+   }
+  ]
+ },
+ "2018": {
+  "nom_fr": "Dissipe les glyphes",
+  "nom_en": "Dissipates glyphs",
+  "action_dofus3": "DispelGlyphsOfTarget",
+  "categorie": "glyphe",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id de sort (0 = tous)",
+   "diceSide": "-",
+   "value": "0"
+  },
+  "semantique": "Dissipe les glyphes posés par la cible (ceux du sort diceNum si != 0).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 5,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "a,A": 2,
+   "C": 1,
+   "a": 1,
+   "Sce": 1
+  },
+  "declencheurs_observes": {
+   "I": 4,
+   "TE": 1
+  },
+  "zones_observees": {
+   "a1": 4,
+   "P1": 1
+  },
+  "durees_observees": {
+   "0": 4,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30436,
+    "sort": "1,2,3, Soleil !",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30436,
+    "diceSide": 1,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30444,
+    "sort": "1,2,3, Soleil !",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30436,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30450,
+    "sort": "Tout le monde veut prendre sa place",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30454,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "TE",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30456,
+    "sort": "Tout le monde veut prendre sa place",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30454,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "2020": {
+  "nom_fr": "Soin : #1{{~1~2 à }}#2% des dommages subis",
+  "nom_en": "Heals #1{{~1~2 to }}#2% of damage suffered",
+  "action_dofus3": "FightSplashHeal",
+  "categorie": "soin",
+  "element": null,
+  "boostable": false,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Soigne diceNum % des dommages subis (splash heal).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "A,e#": 1,
+   "A": 1
+  },
+  "declencheurs_observes": {
+   "D": 1,
+   "I": 1
+  },
+  "zones_observees": {
+   "C2": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30621,
+    "sort": "Malédiction Régénérante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,e5971",
+    "triggers": "D",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 30675,
+    "sort": "Malédiction Régénérante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 100,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "C2,0"
+   }
+  ]
+ },
+ "2027": {
+  "nom_fr": "Prend le contrôle de l'entité",
+  "nom_en": "Takes control of the entity",
+  "action_dofus3": "ControlEntity",
+  "categorie": "contrôle",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "0"
+  },
+  "semantique": "Prend le contrôle de l'entité ciblée.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 1,
+   "total_extrait": 1
+  },
+  "masques_observes": {
+   "A,F#": 1
+  },
+  "declencheurs_observes": {
+   "I": 1
+  },
+  "zones_observees": {
+   "P1": 1
+  },
+  "durees_observees": {
+   "2": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30668,
+    "sort": "Manipulé par un autre",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "A,F3483",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "2160": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "CasterExecuteSpellGlobalLimitation",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "Comme 1160 (le lanceur lance sur la cible) avec limite globale value exécutions par lancer.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 375,
+   "total_extrait": 375
+  },
+  "masques_observes": {
+   "A,E#": 373,
+   "A,E#,e#": 1,
+   "g,e#,e#": 1
+  },
+  "declencheurs_observes": {
+   "I": 375
+  },
+  "zones_observees": {
+   "a1": 375
+  },
+  "durees_observees": {
+   "0": 374,
+   "1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30379,
+    "diceSide": 10,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,E5887",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30379,
+    "diceSide": 10,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,E5888",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30379,
+    "diceSide": 10,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,E5887",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30379,
+    "diceSide": 10,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,E5888",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "2792": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "TargetExecuteSpellGlobalLimitation",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "Comme 792 (la cible lance sur elle-même) avec limite globale value.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 22,
+   "total_extrait": 22
+  },
+  "masques_observes": {
+   "Atq,A,V#,*e#": 8,
+   "Atq,A,*e#": 4,
+   "a": 3,
+   "H,*e#": 2,
+   "A,*E#": 1,
+   "A,e#,e#": 1
+  },
+  "declencheurs_observes": {
+   "I": 22
+  },
+  "zones_observees": {
+   "a1": 22
+  },
+  "durees_observees": {
+   "0": 22
+  },
+  "exemples": [
+   {
+    "spellId": 30431,
+    "sort": "Empalé",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30433,
+    "diceSide": 1,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,*E5994",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30440,
+    "sort": "Solitude",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30545,
+    "diceSide": 1,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "H,*e5913",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30448,
+    "sort": "Attirance",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30544,
+    "diceSide": 1,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "H,*e5914",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30451,
+    "sort": "Tout le monde veut prendre sa place",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30452,
+    "diceSide": 1,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A,e5919,e5971",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "2794": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "TargetExecuteSpellOnCell",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "TargetExecuteSpellOnCell : la cible lance le sous-sort sur la CASE CIBLÉE par le sort parent.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 55,
+   "total_extrait": 56
+  },
+  "masques_observes": {
+   "C,*e#,*E#": 54,
+   "C": 1,
+   "A": 1
+  },
+  "declencheurs_observes": {
+   "I": 56
+  },
+  "zones_observees": {
+   ";1": 54,
+   "P1": 1,
+   "a1": 1
+  },
+  "durees_observees": {
+   "0": 56
+  },
+  "exemples": [
+   {
+    "spellId": 30694,
+    "sort": "Trooler",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 30694,
+    "diceSide": 3,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "A",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 11,
+    "critique": false,
+    "diceNum": 30379,
+    "diceSide": 12,
+    "value": 999,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C,*e5995,*E5887",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 11,
+    "critique": false,
+    "diceNum": 30379,
+    "diceSide": 12,
+    "value": 999,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C,*e5995,*E5888",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30379,
+    "sort": "Dague Classique",
+    "grade": 11,
+    "critique": false,
+    "diceNum": 30379,
+    "diceSide": 12,
+    "value": 999,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C,*e5995,*E5889",
+    "triggers": "I",
+    "zone": ";1,0"
+   }
+  ]
+ },
+ "2803": {
+  "nom_fr": "#1{{~1~2 à }}#2% Résistance mêlée",
+  "nom_en": "#1{{~1~2 to }}#2% Melee Resistance",
+  "action_dofus3": "CharacterDeboostReceivedDamagePercentMultiplierMelee",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 124,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Résistance mêlée +diceNum % : diminue le multiplicateur de dommages mêlée reçus (stat 124 = 100 - x).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30590,
+    "sort": "Acclamations de la foule",
+    "grade": 6,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30637,
+    "sort": "Acclamation résistante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 10,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "2807": {
+  "nom_fr": "#1{{~1~2 à }}#2% Résistance distance",
+  "nom_en": "#1{{~1~2 to }}#2% Ranged Resistance",
+  "action_dofus3": "CharacterDeboostReceivedDamagePercentMultiplierDistance",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 121,
+   "operator": "+",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Résistance distance +diceNum % : diminue la stat 121 (dommages distance reçus).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30591,
+    "sort": "Acclamations de la foule",
+    "grade": 6,
+    "critique": false,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30631,
+    "sort": "Acclamation résistante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 15,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "2872": {
+  "nom_fr": "Seuil : #1 PV",
+  "nom_en": "Threshold: #1 HP",
+  "action_dofus3": "CharacterBoostThreshold",
+  "categorie": "seuil",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "Seuil de PV : la cible ne peut pas descendre sous diceNum PV tant que l'effet dure (immortalité).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 5,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "C": 4,
+   "a": 1
+  },
+  "declencheurs_observes": {
+   "I": 5
+  },
+  "zones_observees": {
+   "P1": 5
+  },
+  "durees_observees": {
+   "1": 2,
+   "-1": 2,
+   "2": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30614,
+    "sort": "Immortalité du Berserker",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30616,
+    "sort": "Immortalité du Courageux",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 2,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30620,
+    "sort": "Immortalité du Bienfaiteur",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30627,
+    "sort": "Immortalité du Berserker",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 1,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "2960": {
+  "nom_fr": "#1",
+  "nom_en": "#1",
+  "action_dofus3": "CasterExecuteSpellOnCell",
+  "categorie": "lancer-sort",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "id du sous-sort (/spells/<diceNum>)",
+   "diceSide": "grade du sous-sort",
+   "value": "nb max d'exécutions par lancer si « GlobalLimitation » (2017/2160/2792/2793/2795), sinon non utilisé par le moteur client"
+  },
+  "semantique": "CasterExecuteSpellOnCell : le lanceur lance le sous-sort sur la case ciblée (sans cible requise).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 7,
+   "total_extrait": 7
+  },
+  "masques_observes": {
+   "a,A,*E#": 4,
+   "a,A": 3
+  },
+  "declencheurs_observes": {
+   "I": 7
+  },
+  "zones_observees": {
+   ";1": 7
+  },
+  "durees_observees": {
+   "0": 7
+  },
+  "exemples": [
+   {
+    "spellId": 30609,
+    "sort": "Rassemblement Troollesque",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 30609,
+    "diceSide": 4,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30692,
+    "sort": "Ligne d'arrivée",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 30692,
+    "diceSide": 6,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30692,
+    "sort": "Ligne d'arrivée",
+    "grade": 5,
+    "critique": false,
+    "diceNum": 30692,
+    "diceSide": 6,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,*E6017",
+    "triggers": "I",
+    "zone": ";1,0"
+   },
+   {
+    "spellId": 30692,
+    "sort": "Ligne d'arrivée",
+    "grade": 5,
+    "critique": false,
+    "diceNum": 30692,
+    "diceSide": 6,
+    "value": 1,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,A,*E6018",
+    "triggers": "I",
+    "zone": ";1,0"
+   }
+  ]
+ },
+ "2971": {
+  "nom_fr": "#1% Soins finaux",
+  "nom_en": "Increases final healing applied by #1%",
+  "action_dofus3": "CharacterBoostDealtHealPercentMultiplier",
+  "categorie": "boost",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 49,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "valeur (#1)",
+   "diceSide": "0 (ou max si fourchette)",
+   "value": "inutilisé"
+  },
+  "semantique": "+diceNum % soins finaux (stat 143).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 4,
+   "total_extrait": 4
+  },
+  "masques_observes": {
+   "a,e#,E#": 2,
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 4
+  },
+  "zones_observees": {
+   "P1": 4
+  },
+  "durees_observees": {
+   "3": 2,
+   "-1": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30411,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5901",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30578,
+    "sort": "Amplification",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 40,
+    "diceSide": 0,
+    "value": 0,
+    "duration": 3,
+    "delay": 0,
+    "targetMask": "a,e5968,E5901",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30591,
+    "sort": "Acclamations de la foule",
+    "grade": 5,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30630,
+    "sort": "Acclamation soignante",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 20,
+    "diceSide": 0,
+    "value": 0,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "3001": {
+  "nom_fr": "#1{{~1~2 à }}#2 soins Neutre",
+  "nom_en": "#1{{~1~2 to }}#2 Neutral heals",
+  "action_dofus3": "CharacterLifePointsWinFromNeutral",
+  "categorie": "soin",
+  "element": "neutre",
+  "boostable": true,
+  "dofusdb": {
+   "category": 2,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 0
+  },
+  "parametres": {
+   "diceNum": "valeur min (#1)",
+   "diceSide": "valeur max (#2) ; 0 => fixe = diceNum",
+   "value": "inutilisé (#3)"
+  },
+  "semantique": "Soin élément NEUTRE : boosté par la FORCE (carac de l'élément neutre), sans Puissance ; + Soins ; x soins finaux ; plafonné aux PV manquants. Gladiatrool : 44-48 x61 = 2684-2928.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 9,
+   "total_extrait": 9
+  },
+  "masques_observes": {
+   "a": 9
+  },
+  "declencheurs_observes": {
+   "I": 7,
+   "TB": 2
+  },
+  "zones_observees": {
+   "P1": 4,
+   "C2": 2,
+   "C3": 2,
+   "a1": 1
+  },
+  "durees_observees": {
+   "0": 9
+  },
+  "exemples": [
+   {
+    "spellId": 30387,
+    "sort": "Trooll de Magie",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 56,
+    "diceSide": 65,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30387,
+    "sort": "Trooll de Magie",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 67,
+    "diceSide": 77,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30409,
+    "sort": "Pulsation d'Énergie",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 44,
+    "diceSide": 48,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "C2,0"
+   },
+   {
+    "spellId": 30409,
+    "sort": "Pulsation d'Énergie",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 53,
+    "diceSide": 58,
+    "value": 0,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "C2,0"
+   }
+  ]
+ },
+ "3008": {
+  "nom_fr": "Propose un choix",
+  "nom_en": "Offer a choice",
+  "action_dofus3": "CharacterTriggerChoice",
+  "categorie": "choix",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 7,
+   "characteristic": 0,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de la liste de choix"
+  },
+  "semantique": "Propose un choix au joueur (archétype, amélioration...).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 3,
+   "total_extrait": 3
+  },
+  "masques_observes": {
+   "Atq,A": 1,
+   "a,C": 1,
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "I": 3
+  },
+  "zones_observees": {
+   "a1": 2,
+   "P1": 1
+  },
+  "durees_observees": {
+   "0": 3
+  },
+  "exemples": [
+   {
+    "spellId": 30608,
+    "sort": "Choix d'Archétype",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 16,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "Atq,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30657,
+    "sort": "Event Glyph Manager",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 10,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a,C",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30658,
+    "sort": "Choix d'Amélioration",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 17,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "3400": {
+  "nom_fr": "",
+  "nom_en": "",
+  "action_dofus3": "CharacterDisplayCombatNotification",
+  "categorie": "interface",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de notification"
+  },
+  "semantique": "Affiche une notification de combat (objectif) — sans effet de jeu.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 21,
+   "total_extrait": 21
+  },
+  "masques_observes": {
+   "a": 20,
+   "C": 1
+  },
+  "declencheurs_observes": {
+   "I": 21
+  },
+  "zones_observees": {
+   "a1": 20,
+   "P1": 1
+  },
+  "durees_observees": {
+   "-1": 21
+  },
+  "exemples": [
+   {
+    "spellId": 30428,
+    "sort": "Empalé",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 41,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30434,
+    "sort": "1,2,3, Soleil !",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 42,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30439,
+    "sort": "Solitude",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 46,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30449,
+    "sort": "Attirance",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 45,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "3401": {
+  "nom_fr": "",
+  "nom_en": "",
+  "action_dofus3": "CharacterRemoveCombatNotification",
+  "categorie": "interface",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 1,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de notification"
+  },
+  "semantique": "Retire une notification de combat.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 21,
+   "total_extrait": 21
+  },
+  "masques_observes": {
+   "a": 21
+  },
+  "declencheurs_observes": {
+   "I": 21
+  },
+  "zones_observees": {
+   "a1": 21
+  },
+  "durees_observees": {
+   "0": 21
+  },
+  "exemples": [
+   {
+    "spellId": 30433,
+    "sort": "Empalé",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 41,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30444,
+    "sort": "1,2,3, Soleil !",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 42,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30456,
+    "sort": "Tout le monde veut prendre sa place",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 44,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30466,
+    "sort": "Sauvez-le !",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 58,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "a",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "3404": {
+  "nom_fr": "Propose un choix global",
+  "nom_en": "Offer an overall choice",
+  "action_dofus3": "CharacterTriggerGlobalChoice",
+  "categorie": "choix",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de la liste de choix"
+  },
+  "semantique": "Propose un choix global (toute l'équipe).",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 5,
+   "total_extrait": 5
+  },
+  "masques_observes": {
+   "Atq,A": 5
+  },
+  "declencheurs_observes": {
+   "I": 5
+  },
+  "zones_observees": {
+   "a1": 5
+  },
+  "durees_observees": {
+   "0": 5
+  },
+  "exemples": [
+   {
+    "spellId": 30443,
+    "sort": "Objectif",
+    "grade": 2,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 11,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "Atq,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30443,
+    "sort": "Objectif",
+    "grade": 3,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 12,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "Atq,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30443,
+    "sort": "Objectif",
+    "grade": 4,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 13,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "Atq,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   },
+   {
+    "spellId": 30443,
+    "sort": "Objectif",
+    "grade": 5,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 14,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "Atq,A",
+    "triggers": "I",
+    "zone": "a1,0"
+   }
+  ]
+ },
+ "3405": {
+  "nom_fr": "",
+  "nom_en": "",
+  "action_dofus3": "CharacterLearnTemporarySpell",
+  "categorie": "sort temporaire",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de spell-level"
+  },
+  "semantique": "Apprend un sort temporaire (spell-level value) au porteur pour le combat.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 41,
+   "total_extrait": 43
+  },
+  "masques_observes": {
+   "C": 25,
+   "C,E#,e#,e#": 5,
+   "C,e#,E#,e#": 5,
+   "C,e#,e#,E#": 5,
+   "a,E#": 3
+  },
+  "declencheurs_observes": {
+   "I": 43
+  },
+  "zones_observees": {
+   "P1": 43
+  },
+  "durees_observees": {
+   "0": 43
+  },
+  "exemples": [
+   {
+    "spellId": 30469,
+    "sort": "Amélioration : Impact",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80748,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30471,
+    "sort": "Amélioration : Grondement Grandissant",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80751,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30472,
+    "sort": "Amélioration : Prélèvement",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80754,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30473,
+    "sort": "Amélioration : Détonation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80756,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "3406": {
+  "nom_fr": "Désapprend le sort temporaire #2",
+  "nom_en": "Unlearn temporary spell #2",
+  "action_dofus3": "CharacterForgetTemporarySpell",
+  "categorie": "sort temporaire",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "+",
+   "bonusType": 0,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de spell-level"
+  },
+  "semantique": "Désapprend le sort temporaire value.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 44,
+   "total_extrait": 44
+  },
+  "masques_observes": {
+   "C": 44
+  },
+  "declencheurs_observes": {
+   "I": 44
+  },
+  "zones_observees": {
+   "P1": 44
+  },
+  "durees_observees": {
+   "0": 44
+  },
+  "exemples": [
+   {
+    "spellId": 30469,
+    "sort": "Amélioration : Impact",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80500,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30471,
+    "sort": "Amélioration : Grondement Grandissant",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80501,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30472,
+    "sort": "Amélioration : Prélèvement",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80502,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30473,
+    "sort": "Amélioration : Détonation",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 80503,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "3407": {
+  "nom_fr": "Durée du prochain tour : #1 seconde{{~ps}}",
+  "nom_en": "Duration of next turn: #1 second{{~ps}}",
+  "action_dofus3": "CharacterFixTurnTime",
+  "categorie": "tour",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "",
+   "bonusType": 0,
+   "elementId": 5
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "secondes"
+  },
+  "semantique": "Fixe la durée des prochains tours à value secondes.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "1": 1,
+   "-1": 1
+  },
+  "exemples": [
+   {
+    "spellId": 30615,
+    "sort": "Pense Vite",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 10,
+    "duration": 1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30639,
+    "sort": "Gladiatrooller",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 60,
+    "duration": -1,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "3792": {
+  "nom_fr": "",
+  "nom_en": "",
+  "action_dofus3": "ExecuteSpellScriptUsage",
+  "categorie": "visuel",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de script visuel"
+  },
+  "semantique": "ExecuteSpellScriptUsage : animation/visuel uniquement.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 2,
+   "total_extrait": 2
+  },
+  "masques_observes": {
+   "C": 2
+  },
+  "declencheurs_observes": {
+   "I": 2
+  },
+  "zones_observees": {
+   "P1": 2
+  },
+  "durees_observees": {
+   "0": 2
+  },
+  "exemples": [
+   {
+    "spellId": 30405,
+    "sort": "Aïronemane",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 21008,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30571,
+    "sort": "Aïronemane",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 21009,
+    "duration": 0,
+    "delay": 0,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ },
+ "3793": {
+  "nom_fr": "",
+  "nom_en": "",
+  "action_dofus3": "ExecuteSpellScriptUsageOnTarget",
+  "categorie": "visuel",
+  "element": null,
+  "boostable": null,
+  "dofusdb": {
+   "category": 0,
+   "characteristic": 0,
+   "operator": "/",
+   "bonusType": 0,
+   "elementId": -1
+  },
+  "parametres": {
+   "diceNum": "0",
+   "diceSide": "0",
+   "value": "id de script visuel"
+  },
+  "semantique": "ExecuteSpellScriptUsageOnTarget : animation/visuel uniquement.",
+  "confiance": "haute",
+  "occurrences": {
+   "gladiatrool_30370_30800": 6,
+   "total_extrait": 6
+  },
+  "masques_observes": {
+   "C": 5,
+   "a,A,U": 1
+  },
+  "declencheurs_observes": {
+   "TB": 3,
+   "I": 3
+  },
+  "zones_observees": {
+   "P1": 5,
+   "a1": 1
+  },
+  "durees_observees": {
+   "0": 6
+  },
+  "exemples": [
+   {
+    "spellId": 30396,
+    "sort": "Grondement Grandissant",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 29045,
+    "duration": 0,
+    "delay": 2,
+    "targetMask": "C",
+    "triggers": "TB",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30396,
+    "sort": "Grondement Grandissant",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 29045,
+    "duration": 0,
+    "delay": 2,
+    "targetMask": "C",
+    "triggers": "TB",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30560,
+    "sort": "Grondement Grandissant",
+    "grade": 1,
+    "critique": false,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 29046,
+    "duration": 0,
+    "delay": 2,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   },
+   {
+    "spellId": 30560,
+    "sort": "Grondement Grandissant",
+    "grade": 1,
+    "critique": true,
+    "diceNum": 0,
+    "diceSide": 0,
+    "value": 29046,
+    "duration": 0,
+    "delay": 2,
+    "targetMask": "C",
+    "triggers": "I",
+    "zone": "P1,0"
+   }
+  ]
+ }
+}

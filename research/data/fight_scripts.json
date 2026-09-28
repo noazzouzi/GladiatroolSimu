@@ -1,0 +1,3577 @@
+{
+ "_meta": {
+  "title": "Mécaniques scriptées du combat du Gladiatrool (reverse-engineering des données du client DOFUS 3)",
+  "generatedBy": "tools/fight_scripts/build_fight_scripts.py",
+  "notes": "research/notes/30_mecaniques_scriptees.md",
+  "primarySource": "https://api.dofusdb.fr (spells, spell-levels, spell-states, monsters) — extraction research/raw/dofusdb/",
+  "secondarySources": [
+   "https://www.dofuspourlesnoobs.com/gladiatrool.html (maj 21/05/2026)",
+   "research/notes/40_carte_positions.md, 50_sources_web.md, 60_videos.md, 70_formules_dofus.md",
+   "client DOFUS 2.73 décompilé (HaxeBuff, SpellManager) pour la sémantique des jetons"
+  ],
+  "statusLegend": {
+   "FAIT vérifié": "lu dans les données du jeu (ou le code client)",
+   "FAIT rapporté": "guide, forum, vidéo",
+   "HYPOTHÈSE": "déduction à confirmer"
+  },
+  "conventions": {
+   "cells": "ids DOFUS 0..559, carte de combat 139988488",
+   "damageFormula": "int(jet × (100 + Force + Puissance)/100) puis dommages finaux, résistances, 1163 (tools/mechanics/damage.py)",
+   "duration": "-1 = tout le combat ; n = n tours du LANCEUR du buff",
+   "masks": "Atq = joueurs, Def = monstres, Sce = scénario (HYPOTHÈSES, cf. entities)"
+  }
+ },
+ "entities": {
+  "Sce": {
+   "meaning": "entité de scénario invisible, NEUTRE (ni joueurs ni monstres) : lanceur des sorts racines (30390, 30443, 30566, 30710, 30577…) et porteur des états de pilotage (5906-5911 Objectif N Fini, 5905 Objectif Échoué, 5943 Target Found, 5965 combatCanFinish, 6022/6028-6031/6034 objectifs actifs)",
+   "evidence": [
+    "30710 (lancé par Sce) vise la Mama avec `A,Def,F7984` et les Artroolleurs avec `Def,A,F7982` : les monstres sont ennemis de Sce",
+    "30442 (lancé par Sce) vise les joueurs avec `Atq,A` : les joueurs sont AUSSI ennemis de Sce ⇒ Sce n'appartient à aucun des deux camps",
+    "2018 de 30657 dissipe les cadeaux posés par Sce"
+   ],
+   "status": "HYPOTHÈSE",
+   "confidence": "moyenne"
+  },
+  "Atq_Def": {
+   "meaning": "`Atq` = camp attaquant = joueurs ; `Def` = camp défenseur = monstres (masques DOFUS 3 absents du client 2.73)",
+   "evidence": [
+    "30390 niv.2 : 5902 « ennemiHasTriggeredCombatGlyph » → Def ; 5903 « allyHasTriggeredCombatGlyph » → Atq",
+    "Sauvez-le / Tout va bien / 1,2,3 Soleil ciblent `Atq,A` ; Stop aux projectiles cible `Def,A,F7982`",
+    "la maquette 30519 donne le x200 au seul camp `A` (ennemis du poseur)"
+   ],
+   "status": "HYPOTHÈSE forte",
+   "confidence": "haute"
+  },
+  "players": {
+   "body": "monstre 7980 « Gladiatroolleur » (niv. 200, 30 000 PV, 8 PA, 4 PM, Force 6000, sort 30416 Frappe Repoussoir)",
+   "passive30639": {
+    "effects": [
+     "état 5970 Gladiatrooler (ne tacle pas, ne peut pas être taclé)",
+     "+3000 Puissance si *E5899 Dompteur",
+     "+5000 Vitalité si *E5900 Acrobate",
+     "−5000 Vitalité si *E5901 Magicien",
+     "3407 : tours de 60 s",
+     "792 → 30700 (vulnérabilité de sortie des pics)",
+     "X → niv.2 (effet visuel)"
+    ],
+    "conditionalBonusesApplied": false,
+    "why": "lancé au début du combat AVANT le choix d'archétype ⇒ les critères *E5899/5900/5901 échouent ; relevés vidéo à ×61 exact (notes 1x_archetype_*)",
+    "status": "FAIT vérifié (données) + FAIT rapporté (non-application)",
+    "source": "https://api.dofusdb.fr/spells/30639 ; spell-level 80897 (https://api.dofusdb.fr/spell-levels/80897)"
+   },
+   "turnTime": "60 s (10 s au tour qui suit Pense Vite)"
+  },
+  "troolls": {
+   "startingSpell": "30694 Trooler : X → effet visuel ; 30700 (vulnérabilité de sortie) ; 30754 (contrôle Empalé à la mort)",
+   "source": "https://api.dofusdb.fr/spells/30694"
+  }
+ },
+ "spikeGlyph": {
+  "spellId": 30390,
+  "name": "Glyphe de combat",
+  "spellType": "3834 MANAGERS",
+  "source": "https://api.dofusdb.fr/spells/30390",
+  "castBy": {
+   "value": "entité de scénario « Sce » (neutre), au lancement du combat",
+   "status": "HYPOTHÈSE",
+   "confidence": "moyenne",
+   "evidence": [
+    "aucun sort des données ne lance 30390 (sort racine, lancé par le serveur)",
+    "2000 dégâts exacts observés ⇒ poseur sans Force ni Puissance",
+    "le glyphe cadeau (30566) est dissipé via 2018 sur la cible `Sce` (30657 niv.3) ⇒ Sce pose des glyphes"
+   ]
+  },
+  "duration": {
+   "value": -1,
+   "meaning": "tout le combat",
+   "status": "FAIT vérifié",
+   "source": "https://api.dofusdb.fr/spells/30390 ; spell-level 80489 (https://api.dofusdb.fr/spell-levels/80489) effet order=0"
+  },
+  "cells": {
+   "playable": [
+    131,
+    132,
+    133,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    171,
+    172,
+    177,
+    178,
+    184,
+    185,
+    191,
+    192,
+    198,
+    199,
+    206,
+    207,
+    211,
+    212,
+    220,
+    221,
+    225,
+    226,
+    235,
+    236,
+    239,
+    249,
+    253,
+    264,
+    266,
+    267,
+    277,
+    278,
+    281,
+    292,
+    294,
+    295,
+    305,
+    306,
+    309,
+    320,
+    322,
+    323,
+    333,
+    334,
+    337,
+    348,
+    351,
+    361,
+    365,
+    366,
+    375,
+    376,
+    379,
+    380,
+    388,
+    389,
+    394,
+    395,
+    402,
+    403,
+    408,
+    409,
+    415,
+    416,
+    423,
+    424,
+    429,
+    430,
+    437,
+    438,
+    439,
+    440,
+    441,
+    442,
+    443,
+    452,
+    453,
+    454,
+    455,
+    456,
+    457,
+    467,
+    468,
+    469
+   ],
+   "count": 96,
+   "rawSpellList": [
+    225,
+    211,
+    198,
+    184,
+    171,
+    157,
+    144,
+    239,
+    253,
+    266,
+    226,
+    212,
+    199,
+    185,
+    172,
+    158,
+    145,
+    131,
+    294,
+    322,
+    337,
+    351,
+    365,
+    379,
+    394,
+    408,
+    423,
+    437,
+    452,
+    351,
+    366,
+    380,
+    395,
+    409,
+    424,
+    438,
+    453,
+    467,
+    454,
+    468,
+    455,
+    469,
+    456,
+    442,
+    457,
+    443,
+    429,
+    415,
+    430,
+    402,
+    416,
+    388,
+    403,
+    389,
+    375,
+    361,
+    376,
+    362,
+    348,
+    334,
+    321,
+    306,
+    293,
+    278,
+    264,
+    250,
+    236,
+    249,
+    221,
+    235,
+    220,
+    207,
+    206,
+    192,
+    178,
+    191,
+    177,
+    163,
+    149,
+    162,
+    148,
+    133,
+    147,
+    132,
+    146,
+    281,
+    309,
+    267,
+    323,
+    439,
+    455,
+    320,
+    292,
+    159,
+    161,
+    333,
+    305,
+    277,
+    441,
+    440,
+    295,
+    160
+   ],
+   "rawCount": 102,
+   "rawDistinctCount": 100,
+   "duplicatesInRawList": [
+    351,
+    455
+   ],
+   "listedButNotWalkable": [
+    250,
+    293,
+    321,
+    362
+   ],
+   "shape": ";  (zoneDescr.shape=59 : liste explicite de cellIds, param1=1)",
+   "geometry": "anneau de 2 cases d'épaisseur (edgeDepth 1 et 2) + 4 cases d'angle 160, 295, 305, 440 (edgeDepth 3) ; 145 cases sûres ; carte de combat 139988488",
+   "status": "FAIT vérifié",
+   "confidence": "haute",
+   "sources": [
+    "https://api.dofusdb.fr/spells/30390 ; spell-level 80489 (https://api.dofusdb.fr/spell-levels/80489) effet order=0",
+    "research/data/map_139988488.json (specialCells.glyphFightWalkableCells)",
+    "research/data/map_annotations.json (spikeGlyphCells, recalage vidéo AUC 0,957-0,981)"
+   ]
+  },
+  "marks": [
+   {
+    "effectId": 1091,
+    "type": "glyphe-AURA (FightAddGlyphAura)",
+    "color": "#FF0000",
+    "castsSpell": {
+     "spellId": 30390,
+     "grade": 2,
+     "spellLevelId": 80492
+    },
+    "trigger": "à l'ENTRÉE dans la zone (marche, poussée, attirance, téléportation, échange) ; effets retirés à la SORTIE",
+    "targetMask": "a,A",
+    "status": "FAIT vérifié (données) ; sémantique aura = code client",
+    "source": "https://api.dofusdb.fr/spells/30390 ; spell-level 80489 (https://api.dofusdb.fr/spell-levels/80489) effet order=1"
+   },
+   {
+    "effectId": 401,
+    "type": "glyphe de DÉBUT DE TOUR (FightAddGlyphCastingSpell)",
+    "color": "#FF0000",
+    "castsSpell": {
+     "spellId": 30390,
+     "grade": 3,
+     "spellLevelId": 81026
+    },
+    "trigger": "au début du tour de toute entité dont la case est dans la zone",
+    "targetMask": "a,A",
+    "status": "FAIT vérifié",
+    "source": "https://api.dofusdb.fr/spells/30390 ; spell-level 80489 (https://api.dofusdb.fr/spell-levels/80489) effet order=0"
+   }
+  ],
+  "onEnter": {
+   "spellLevel": 80492,
+   "effectsInOrder": [
+    {
+     "order": 0,
+     "effect": "950 État 5902 « ennemiHasTriggeredCombatGlyph »",
+     "target": "Def,A (monstres)",
+     "duration": -1
+    },
+    {
+     "order": 1,
+     "effect": "950 État 5903 « allyHasTriggeredCombatGlyph »",
+     "target": "Atq,A (joueurs)",
+     "duration": -1
+    },
+    {
+     "order": 2,
+     "effect": "950 État 5994 « Vulnérable »",
+     "target": "Def,A",
+     "duration": -1
+    },
+    {
+     "order": 3,
+     "effect": "950 État 5994 « Vulnérable »",
+     "target": "Atq,A",
+     "duration": -1
+    },
+    {
+     "order": 4,
+     "effect": "100 2000 dommages Neutre",
+     "target": "Atq,A",
+     "duration": 0
+    },
+    {
+     "order": 5,
+     "effect": "100 2000 dommages Neutre",
+     "target": "Def,A",
+     "duration": 0
+    },
+    {
+     "order": 6,
+     "effect": "1163 Dommages subis x200 %",
+     "target": "Def,A",
+     "trigger": "D",
+     "duration": -1,
+     "triggerDuration": 63
+    }
+   ],
+   "damage": {
+    "value": 2000,
+    "element": "neutre",
+    "fixedRoll": true,
+    "appliesTo": "joueurs ET monstres (Mama comprise)",
+    "boostedBy": "caractéristiques du POSEUR (supposé 0) ; réduit par les résistances neutres de la victime et les boucliers ; NON doublé par le x200 qu'il vient de poser (ordre des effets)",
+    "status": "FAIT vérifié",
+    "source": "https://api.dofusdb.fr/spells/30390 ; spell-level 80492 (https://api.dofusdb.fr/spell-levels/80492) effet order=5"
+   },
+   "damageTakenMultiplier": {
+    "effectId": 1163,
+    "percent": 200,
+    "factor": 2.0,
+    "meaning": "×2 = +100 % de dégâts subis",
+    "trigger": "D = tout dommage SAUF dommages de poussée (collision)",
+    "appliesTo": "Def (monstres) UNIQUEMENT",
+    "duration": "tant que l'entité reste dans l'aura (retiré à la sortie)",
+    "status": "FAIT vérifié (valeur, déclencheur) ; « Def = monstres » = HYPOTHÈSE forte",
+    "confidence": "haute (valeur) / moyenne-haute (portée)",
+    "source": "https://api.dofusdb.fr/spells/30390 ; spell-level 80492 (https://api.dofusdb.fr/spell-levels/80492) effet order=6"
+   },
+   "statesGiven": [
+    {
+     "id": 5902,
+     "name": "ennemiHasTriggeredCombatGlyph",
+     "flags": [
+      "isSilent"
+     ],
+     "stateEffectsIds": [
+      16
+     ]
+    },
+    {
+     "id": 5903,
+     "name": "allyHasTriggeredCombatGlyph",
+     "flags": [
+      "isSilent"
+     ],
+     "stateEffectsIds": [
+      16
+     ]
+    },
+    {
+     "id": 5994,
+     "name": "Vulnérable",
+     "flags": [
+      "displayTurnRemaining"
+     ],
+     "stateEffectsIds": []
+    }
+   ]
+  },
+  "onTurnStartInside": {
+   "spellLevel": 81026,
+   "damageRaw": 1000,
+   "element": "neutre",
+   "effectiveMonster": 2000,
+   "effectivePlayerByData": 1000,
+   "effectivePlayerByDPLN": 2000,
+   "explanation": "1000 bruts (30390 niv.3, masques Atq et Def) ; les monstres dans l'aura ont le 1163 x200 ⇒ 2000 ; un joueur n'a pas de x200 dans l'aura (données).",
+   "consequence": "un Trooll resté dans les pics avec ≤ 2000 PV meurt au début de SON tour (observé : cardxc 11:00/14:30, Khytrayer 13:04)",
+   "status": "FAIT vérifié (1000 bruts) ; 2000 monstre = FAIT vérifié + FAIT rapporté",
+   "source": "https://api.dofusdb.fr/spells/30390 ; spell-level 81026 (https://api.dofusdb.fr/spell-levels/81026)"
+  },
+  "onExit": {
+   "mechanism": "passif 30700 (niv.1, spell-level 81022) : 792 → 30701 sur soi, déclencheur EOFF5902|EOFF5903 (perte de l'état « a déclenché le glyphe » = sortie de l'aura)",
+   "effects": [
+    "950 État 5994 « Vulnérable » durée 1",
+    "1163 Dommages subis x200 % déclencheur D, durée 1 (triggerDuration 1)"
+   ],
+   "duration": "1 tour du PORTEUR (lanceur = porteur) : jusqu'au début de son prochain tour",
+   "whoHasPassive30700": [
+    "joueurs : via 30639 « Gladiatrooller » (sort de départ du monstre 7980)",
+    "Troollibre 7981, Artroolleur 7982, Nitrooll 7983 : via 30694 « Trooler » (sort de départ)",
+    "PAS la Mama Troollette 7984 (sort de départ 30430, qui ne lance pas 30700)"
+   ],
+   "appliesToPlayers": true,
+   "status": "FAIT vérifié",
+   "confidence": "haute",
+   "sources": [
+    "https://api.dofusdb.fr/spells/30700 ; spell-level 81022 (https://api.dofusdb.fr/spell-levels/81022)",
+    "https://api.dofusdb.fr/spells/30701 ; spell-level 81025 (https://api.dofusdb.fr/spell-levels/81025)",
+    "https://api.dofusdb.fr/spells/30639 ; spell-level 80897 (https://api.dofusdb.fr/spell-levels/80897) effet order=6",
+    "https://api.dofusdb.fr/spells/30694 ; spell-level 81002 (https://api.dofusdb.fr/spell-levels/81002) effet order=1"
+   ],
+   "tacticalConsequence": "un monstre SORTI des pics (poussée, attirance de Mama, échange) reste ×2 jusqu'à son prochain tour : on peut le finir hors des pics."
+  },
+  "vulnerableState": {
+   "id": 5994,
+   "name": "Vulnérable",
+   "stateRecord": {
+    "id": 5994,
+    "name": "Vulnérable",
+    "flags": [
+     "displayTurnRemaining"
+    ],
+    "stateEffectsIds": []
+   },
+   "exactEffect": "L'état 5994 N'A AUCUN effet propre (effectsIds = []) : c'est un marqueur visuel/compteur (icône, « tours restants »). Le multiplicateur est l'effet 1163 « Dommages subis x200 % » posé À CÔTÉ : ×2, soit +100 %.",
+   "dplnClaim": "« Les entités dans l'état vulnérable subissent 200 % de dégâts supplémentaires » (= ×3)",
+   "verdict": "×2 (+100 %) — DPLN lit « x200 % » comme « +200 % ». Confirmé par : texte en jeu « daño sufrido por 200 % » (Khytrayer 04:15), « twice as much » (Isthos 01:53), 1000 → 2000 au début du tour.",
+   "usedBy": [
+    "Empalé (30431 : récompense si la victime a *E5994)",
+    "état affiché aux deux camps"
+   ],
+   "status": "FAIT vérifié",
+   "confidence": "haute",
+   "source": "https://api.dofusdb.fr/spell-states/5994 ; https://api.dofusdb.fr/spells/30390 ; spell-level 80492 (https://api.dofusdb.fr/spell-levels/80492) effet order=6"
+  },
+  "triggersSummary": [
+   {
+    "event": "entrer dans les pics (toute cause de déplacement)",
+    "effect": "2000 neutre + Vulnérable (+ x200 si monstre, tant qu'il y reste)",
+    "status": "FAIT vérifié"
+   },
+   {
+    "event": "commencer son tour dans les pics",
+    "effect": "1000 neutre (×2 = 2000 pour un monstre)",
+    "status": "FAIT vérifié"
+   },
+   {
+    "event": "sortir des pics",
+    "effect": "Vulnérable + x200 pendant 1 tour (joueurs et Troolls, pas la Mama)",
+    "status": "FAIT vérifié"
+   },
+   {
+    "event": "se déplacer d'une case de pics à une autre",
+    "effect": "aucun nouvel effet (même marque aura, on ne la quitte pas)",
+    "status": "HYPOTHÈSE",
+    "confidence": "moyenne (Huz 08:30 « ça a croqué plusieurs fois » = probablement entrée + début de tour)"
+   },
+   {
+    "event": "dommages de poussée (collision contre le bord)",
+    "effect": "non doublés (déclencheur D exclut la poussée) ; le glyphe n'arrête pas la poussée",
+    "status": "FAIT vérifié (code client)"
+   }
+  ],
+  "relatedSpells": {
+   "30427": {
+    "name": "Simili Pics",
+    "role": "BASCULE d'états : donne (si absents) ou retire (si présents) 5898 « Simili Pics », 5902 et 5903 pour 1 tour. Simule « être dans les pics » (et déclenche EON/EOFF → 30701). Aucun sort ne le lance ; PO 0-63.",
+    "usedInFight": "non observé ; outil de test/scénario",
+    "status": "FAIT vérifié (effets) / HYPOTHÈSE (usage)",
+    "source": "https://api.dofusdb.fr/spells/30427 ; spell-level 80584 (https://api.dofusdb.fr/spell-levels/80584)"
+   },
+   "30519": {
+    "name": "Mockup Glyphe de combat [Mockup]",
+    "role": "MAQUETTE de test : glyphe 1165 (30390 niv.2) + aura 1091 verte #01E240 (30390 niv.3) en cercle C3 ; niv.2 = 1 dommage ; niv.3 = 5902/5903 + 1163 x200 sur `A` seulement. Confirme l'intention « x200 pour le camp adverse du poseur ». Non utilisé en combat.",
+    "status": "FAIT vérifié / HYPOTHÈSE (usage)",
+    "source": "https://api.dofusdb.fr/spells/30519"
+   },
+   "30700": {
+    "name": "Glyphe de combat [Passif]",
+    "role": "passif déclencheur de la vulnérabilité de sortie",
+    "source": "https://api.dofusdb.fr/spells/30700 ; spell-level 81022 (https://api.dofusdb.fr/spell-levels/81022)"
+   },
+   "30701": {
+    "name": "Glyphe de combat [Passif // Déclenché EOFF]",
+    "role": "Vulnérable + x200 1 tour",
+    "source": "https://api.dofusdb.fr/spells/30701 ; spell-level 81025 (https://api.dofusdb.fr/spell-levels/81025)"
+   }
+  },
+  "expectedDamage": {
+   "entree_monstre": {
+    "value": 2000,
+    "calc": "2000 (x200 posé APRÈS les dégâts dans la liste d'effets : effets 4-5 avant effet 6)",
+    "status": "FAIT vérifié (données) + FAIT rapporté (DPLN « 2 000 »)",
+    "confidence": "haute"
+   },
+   "entree_joueur": {
+    "value": 2000,
+    "calc": "2000 × (1 − rés% neutre)",
+    "status": "FAIT vérifié",
+    "confidence": "haute"
+   },
+   "entree_joueur_avec_bonus_10pct_res": {
+    "value": 1800,
+    "calc": "Acclamation robuste (Acrobate, 1076 +10 %) : 2000 × 0,9",
+    "status": "FAIT vérifié (formule)",
+    "confidence": "haute"
+   },
+   "debut_de_tour_monstre": {
+    "value": 2000,
+    "calc": "1000 (30390 niv.3) × 2 (1163 x200 de l'aura, Def)",
+    "status": "FAIT vérifié + FAIT rapporté (DPLN/vidéos « 2 000 »)",
+    "confidence": "haute"
+   },
+   "debut_de_tour_joueur_selon_donnees": {
+    "value": 1000,
+    "calc": "1000 : l'aura ne donne PAS de 1163 au masque Atq ; le 1163 de sortie (30701) a expiré au début du propre tour du joueur",
+    "status": "FAIT vérifié (données) ; lecture Atq=joueurs = HYPOTHÈSE",
+    "confidence": "moyenne"
+   },
+   "debut_de_tour_joueur_selon_DPLN": {
+    "value": 2000,
+    "calc": "DPLN : « Si une entité commence son tour dans le glyphe, il subit également 2 000 » (non distingué joueur/monstre)",
+    "status": "FAIT rapporté",
+    "confidence": "basse (pour un joueur)"
+   },
+   "reentree_monstre_vulnerable_de_sortie": {
+    "value": 4000,
+    "calc": "sorti des pics (30701 x200 actif jusqu'à son prochain tour) puis ré-entré : 2000 × 2",
+    "status": "HYPOTHÈSE (cumul des 1163 = code client)",
+    "confidence": "moyenne"
+   },
+   "coup_sur_monstre_reentre_x4": {
+    "value": [
+     3904,
+     4880
+    ],
+    "calc": "Frappe Repoussoir 16-20 ×61 ×2 (aura) ×2 (30701) : les deux 1163 x200 se multiplient",
+    "status": "HYPOTHÈSE",
+    "confidence": "basse-moyenne (à vérifier en jeu)"
+   },
+   "frappe_repoussoir_hors_pics": {
+    "value": [
+     976,
+     1220
+    ],
+    "calc": "jet 16-20 × (100+6000)/100",
+    "status": "FAIT vérifié ; DPLN « 1 200 »",
+    "confidence": "haute"
+   },
+   "frappe_repoussoir_sur_vulnerable": {
+    "value": [
+     1952,
+     2440
+    ],
+    "calc": "×2",
+    "status": "FAIT vérifié",
+    "confidence": "haute"
+   }
+  },
+  "discrepancies": [
+   {
+    "topic": "Vulnérable",
+    "data": "1163 x200 % = ×2",
+    "DPLN": "« +200 % » (×3)",
+    "verdict": "données + vidéos : ×2"
+   },
+   {
+    "topic": "Début de tour dans les pics",
+    "data": "1000 bruts (×2 monstre = 2000 ; joueur = 1000)",
+    "DPLN": "2000 pour toute entité",
+    "verdict": "monstre : concordant ; joueur : écart non tranché (HYPOTHÈSE données)"
+   },
+   {
+    "topic": "x200 dans les pics pour les joueurs",
+    "data": "uniquement masque Def (monstres) ; joueurs ×2 seulement 1 tour APRÈS la sortie",
+    "DPLN": "tout le monde",
+    "verdict": "écart ; paramètre du simulateur `playersDoubledInsideSpikes` (défaut false)"
+   }
+  ]
+ },
+ "eventGlyph": {
+  "spellId": 30566,
+  "name": "Glyphe Événementiel",
+  "source": "https://api.dofusdb.fr/spells/30566 ; spell-level 80764 (https://api.dofusdb.fr/spell-levels/80764)",
+  "mark": {
+   "effectId": 1165,
+   "type": "glyphe « immédiat » (FightAddGlyphCastingSpellImmediate), 1 case (zone P1)",
+   "color": "#FFBE00 (orange, paquet cadeau)",
+   "castsSpell": {
+    "spellId": 30657,
+    "grade": 1
+   },
+   "targetMask": "Atq,A : seuls les JOUEURS le déclenchent (un monstre qui marche dessus ne le prend pas)",
+   "duration": "1 tour du poseur (Sce, qui ne joue pas ⇒ persiste jusqu'au ramassage : plusieurs cadeaux coexistent)",
+   "status": "FAIT vérifié (effet) ; persistance = FAIT rapporté + HYPOTHÈSE"
+  },
+  "onTrigger": {
+   "chain": "30657 niv.1 : 792 → niv.2 sur `Atq,A` (TOUS les joueurs) → niv.3 sur soi : animation 30687, 3008 « Propose un choix » id 10, 2018 dissipe les glyphes 30566 posés par `Sce`",
+   "effect": "CHAQUE joueur reçoit sa propre fenêtre de choix n°10 (2 cartes : 2 sorts uniques, 2 améliorations de ses sorts, ou 1+1 selon DPLN) ; le cadeau disparaît",
+   "triggeredBy": "marcher dessus OU y être poussé/attiré/téléporté (FAIT rapporté : sspritenL, forum 07/01/2025)",
+   "pause": "≈ 30 s par choix (DPLN)",
+   "status": "FAIT vérifié (chaîne) + FAIT rapporté",
+   "sources": [
+    "https://api.dofusdb.fr/spells/30657",
+    "https://www.dofuspourlesnoobs.com/gladiatrool.html (maj 21/05/2026)"
+   ]
+  },
+  "placement": {
+   "byData": "aucune cellule dans les données : case choisie par le serveur",
+   "observedCells": [
+    272,
+    273,
+    299,
+    301,
+    327,
+    328,
+    329
+   ],
+   "observedCounts": {
+    "301": 12,
+    "327": 12,
+    "272": 9,
+    "299": 9,
+    "329": 9,
+    "328": 8,
+    "273": 4
+   },
+   "neverObserved": [
+    271,
+    300
+   ],
+   "timing": "Au debut des tours globaux T2 a T9, juste apres la fenetre de bonus : un rayon de lumiere tombe sur la case, puis le cadeau apparait. Nouveau cadeau vu a 63 debuts de tour sur 88 (11 combats), jamais a T1. Plusieurs cadeaux peuvent coexister.",
+   "status": "FAIT rapporté (observation vidéo, agent carte)",
+   "source": "research/data/map_annotations.json (eventGlyph*)"
+  },
+  "knownSideEffect": {
+   "text": "Un personnage poussé sur un cadeau par la Mama (Rassemblement) annule son animation et ses dégâts ; elle passe son tour (la fenêtre de choix interrompt la séquence).",
+   "status": "FAIT rapporté",
+   "confidence": "moyenne",
+   "sources": [
+    "cardxc 19:30",
+    "sspritenL (forum dofus.com 07/01/2025)"
+   ]
+  }
+ },
+ "choices": {
+  "_note": "Les listes d'options (id → cartes proposées, probabilités, critères) sont côté SERVEUR : seul l'id de liste est dans les données (effet 3008 = choix individuel, 3404 = choix global/vote).",
+  "10": {
+   "effect": 3008,
+   "scope": "individuel (chaque joueur)",
+   "castBy": "30657 niv.3 (cadeau)",
+   "content": "sorts uniques (19 : 6 par archétype + Pense Vite) et/ou améliorations de sorts possédés (7 par archétype) ; 2 cartes",
+   "status": "FAIT vérifié (id) + FAIT rapporté (contenu DPLN)",
+   "source": "https://api.dofusdb.fr/spells/30657 ; spell-level 80986 (https://api.dofusdb.fr/spell-levels/80986) effet order=1"
+  },
+  "11-15": {
+   "effect": 3404,
+   "scope": "GLOBAL (vote, majorité ; égalité → tirage au sort, GD live 49:00)",
+   "castBy": "30443 « Objectif » niv.2..6, déclenchés par EON « Objectif N Fini » (N = 1..5) sur `Sce`",
+   "content": "objectifs du palier N+1 (4 objectifs par palier ; 2 proposés observés : Khytrayer 02:47, cardxc 04:00)",
+   "status": "FAIT vérifié (déclencheurs) + FAIT rapporté (nombre d'options)",
+   "source": "https://api.dofusdb.fr/spells/30443"
+  },
+  "16": {
+   "effect": 3008,
+   "scope": "individuel",
+   "castBy": "30608 « Choix d'Archétype » (sur `Atq,A`), au lancement du combat",
+   "content": "3 cartes : Dompteur (passif 30644, état 5899), Acrobate (30648, état 5900), Magicien (30649, état 5901) ; apparence 335 ; sort de départ appris par le serveur (Impact 80500 / Videur 80507 / Pulsation d'Énergie 80514)",
+   "status": "FAIT vérifié (passifs/états) + HYPOTHÈSE (apprentissage du sort de départ)",
+   "source": "https://api.dofusdb.fr/spells/30608 ; spell-level 80834 (https://api.dofusdb.fr/spell-levels/80834)"
+  },
+  "17": {
+   "effect": 3008,
+   "scope": "individuel",
+   "castBy": "30658 « Choix d'Amélioration » niv.1 → niv.2 sur chaque `Atq,A`",
+   "content": "fenêtre « Choisis une amélioration permanente ! » = Acclamations de la foule : 3 cartes tirées parmi les 6 de l'archétype",
+   "when": "début des tours globaux T2 à T9 (observé, agent carte) ; pas au T1 ni au T10",
+   "status": "FAIT vérifié (id, sort) + HYPOTHÈSE forte (lien 17 = bonus) + FAIT rapporté (timing)",
+   "source": "https://api.dofusdb.fr/spells/30658"
+  }
+ },
+ "objectives": {
+  "manager": {
+   "spellId": 30443,
+   "name": "Objectif",
+   "castBy": "serveur / Sce au lancement du combat (sort racine)",
+   "logic": [
+    "niv.1 : 792 → 30428 « Empalé » sur `Atq,A` (objectif 1 imposé) + 5 déclencheurs EON « Objectif N Fini » (5906..5910) sur Sce",
+    "EON 5906 → niv.2 : vote 3404 id 11 (objectifs du palier 2)",
+    "EON 5907 → niv.3 : vote id 12 (palier 3)",
+    "EON 5908 → niv.4 : vote id 13 (palier 4)",
+    "EON 5909 → niv.5 : vote id 14 (palier 5)",
+    "EON 5910 → niv.6 : vote id 15 (palier 6)",
+    "« Objectif 6 Fini » (5911) ne déclenche rien ⇒ 6 objectifs au maximum par combat"
+   ],
+   "maxObjectives": 6,
+   "oneActiveAtATime": true,
+   "status": "FAIT vérifié",
+   "confidence": "haute",
+   "source": "https://api.dofusdb.fr/spells/30443"
+  },
+  "endOfGlobalTurnCheck": {
+   "spellId": 30710,
+   "name": "Objectif Check",
+   "castBy": "serveur / Sce à la fin de chaque tour global (sort racine, type MANAGERS)",
+   "effectsInOrder": [
+    "30442 Soleil (si Sce a 6022)",
+    "30522 Stop aux projectiles (si 6028)",
+    "30465 Sauvez-le : contrôle (si 6029)",
+    "30464 Sauvez-le : désignation (si 6029)",
+    "30527 Tout va bien (si 6030)",
+    "30552 Quintuplé : remise à zéro (si 6031)",
+    "30440 Solitude (lancé par la Mama si Sce a 6034)"
+   ],
+   "status": "FAIT vérifié (contenu) ; moment « fin de tour global » = HYPOTHÈSE forte (textes des objectifs)",
+   "source": "https://api.dofusdb.fr/spells/30710 ; spell-level 81060 (https://api.dofusdb.fr/spell-levels/81060)"
+  },
+  "tiers": {
+   "1": [
+    {
+     "name": "Empalé",
+     "orientation": "Objectif 1 (imposé)",
+     "general": 30428
+    }
+   ],
+   "2": [
+    {
+     "name": "1,2,3, Soleil !",
+     "orientation": "Général",
+     "general": 30434
+    },
+    {
+     "name": "Meurtres en série",
+     "orientation": "Gladiateur (Dompteur)",
+     "general": 30463
+    },
+    {
+     "name": "Attention, sol glissant",
+     "orientation": "Baroudeur (Acrobate)",
+     "general": 30497
+    },
+    {
+     "name": "Productivité",
+     "orientation": "Guérisseur (Magicien)",
+     "general": 30542
+    }
+   ],
+   "3": [
+    {
+     "name": "Sauvez-le !",
+     "orientation": "Guérisseur (Magicien)",
+     "general": 30462
+    },
+    {
+     "name": "Ébranlable",
+     "orientation": "Général",
+     "general": 30496
+    },
+    {
+     "name": "Stop aux projectiles",
+     "orientation": "Gladiateur (Dompteur)",
+     "general": 30520
+    },
+    {
+     "name": "Toi, par ici, et toi, par là",
+     "orientation": "Baroudeur (Acrobate)",
+     "general": 30528
+    }
+   ],
+   "4": [
+    {
+     "name": "Tout le monde veut prendre sa place",
+     "orientation": "Général",
+     "general": 30450
+    },
+    {
+     "name": "Faire le mur",
+     "orientation": "Baroudeur (Acrobate)",
+     "general": 30500
+    },
+    {
+     "name": "Pas le temps de dire \"Aïe\"",
+     "orientation": "Gladiateur (Dompteur)",
+     "general": 30512
+    },
+    {
+     "name": "Distance d'insécurité",
+     "orientation": "Guérisseur (Magicien)",
+     "general": 30531
+    }
+   ],
+   "5": [
+    {
+     "name": "Attirance",
+     "orientation": "Général",
+     "general": 30449
+    },
+    {
+     "name": "Trous dans les Troolls",
+     "orientation": "Baroudeur (Acrobate)",
+     "general": 30505
+    },
+    {
+     "name": "D'une pierre trois coups",
+     "orientation": "Gladiateur (Dompteur)",
+     "general": 30511
+    },
+    {
+     "name": "Tout va bien",
+     "orientation": "Guérisseur (Magicien)",
+     "general": 30524
+    }
+   ],
+   "6": [
+    {
+     "name": "Solitude",
+     "orientation": "Général",
+     "general": 30439
+    },
+    {
+     "name": "Quintuplé",
+     "orientation": "Gladiateur (Dompteur)",
+     "general": 30510
+    },
+    {
+     "name": "Au coin !",
+     "orientation": "Baroudeur (Acrobate)",
+     "general": 30515
+    },
+    {
+     "name": "Même pas mal",
+     "orientation": "Guérisseur (Magicien)",
+     "general": 30535
+    }
+   ]
+  },
+  "tierRule": "Chaque palier (2..6) contient exactement 4 objectifs : 1 « Général », 1 orienté Baroudeur/Acrobate, 1 Gladiateur/Dompteur, 1 Guérisseur/Magicien. Le vote propose un sous-ensemble (2 observés). Le palier fixe le sort débloqué (Spell Manager niv. = palier) ⇒ l'ordre d'obtention des sorts est toujours le même, quel que soit l'objectif choisi (cohérent avec DPLN).",
+  "observedConsistency": {
+   "cardxc (vmh1fJkhdCE)": "propositions après Empalé : « 1,2,3 Soleil » + « Productivité » (palier 2) ; puis Ébranlable (3), Pas le temps de dire Aïe (4), Tout va bien (5) : ordre des paliers respecté",
+   "Huz (kGlKYY7_qew 03:30)": "après Empalé : Meurtres en série + Attention, sol glissant (palier 2)",
+   "sspritenL (forum)": "objectif actif fin T2 → Voltige / Prélèvement / Amplification = sorts du palier 2",
+   "Zephiron (IKqnwLIYffk 17:00)": "après Tout va bien (palier 5) « plus d'objectif proposé » : en contradiction avec 30443 niv.6 (vote id 15) ⇒ HYPOTHÈSE : critères d'apparition du palier 6 (Solitude, Même pas mal : liés à la Mama) non remplis avant T8, ou erreur d'observation",
+   "status": "FAIT rapporté",
+   "confidence": "moyenne-haute"
+  },
+  "list": [
+   {
+    "name": "Empalé",
+    "tier": 1,
+    "orientation": "Objectif 1 (imposé)",
+    "ids": {
+     "general": 30428,
+     "subSpells": [
+      30429,
+      30431,
+      30754
+     ],
+     "reward": 30433,
+     "notification": 41,
+     "objectiveDoneState": 5906
+    },
+    "conditionText": "(pas de description ; DPLN : « Tuer au moins un Trooll qui est rentré dans les pics et dans l'état Vulnérable »)",
+    "conditionFormal": "un combattant ennemi meurt alors qu'il possède l'état 5994 Vulnérable (30431 : 2792 → récompense si *E5994 sur le mourant). Le tueur est indifférent (sort, poussée, dégâts des pics au début de son tour…).",
+    "evaluation": "à la MORT d'un ennemi (déclencheur X posé par 30429 au début du tour de chaque allié, et par 30754 via le passif « Trooler » de chaque Trooll)",
+    "scope": "événement (n'importe quand)",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.1 (chaque joueur apprend le sort n°2 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5906 « Objectif 1 Fini » sur Sce ⇒ 30443 niv.2 : vote 3404 id 11",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Vulnérable = dans les pics OU sorti des pics depuis moins d'un tour (30701). Toujours le premier objectif (30443 niv.1).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30428 ; spell-level 80585 (https://api.dofusdb.fr/spell-levels/80585)",
+     "https://api.dofusdb.fr/spells/30433 ; spell-level 80592 (https://api.dofusdb.fr/spell-levels/80592)",
+     "https://api.dofusdb.fr/spells/30429",
+     "https://api.dofusdb.fr/spells/30431",
+     "https://api.dofusdb.fr/spells/30754"
+    ]
+   },
+   {
+    "name": "1,2,3, Soleil !",
+    "tier": 2,
+    "orientation": "Général",
+    "ids": {
+     "general": 30434,
+     "subSpells": [
+      30436,
+      30437,
+      30438,
+      30442
+     ],
+     "reward": 30444,
+     "notification": 42,
+     "objectiveDoneState": 5907
+    },
+    "conditionText": "<b></b>\nPendant un tour global, chaque combattant allié doit finir son tour sur la cellule où il a commencé son tour.\n\n<b>",
+    "conditionFormal": "chaque joueur vivant porte l'état 5904 « Objectif Validé » au contrôle : obtenu par un glyphe de FIN de tour (402, #FF00C3) posé sur sa case au DÉBUT de son tour (30436 niv.1), dissipé en fin de tour (niv.2). Sinon 5905 « Objectif Échoué » sur Sce.",
+    "evaluation": "fin du tour global (30710 → 30442 → 30438 pour chaque joueur)",
+    "scope": "tour global complet",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.2 (chaque joueur apprend le sort n°3 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5907 « Objectif 2 Fini » sur Sce ⇒ 30443 niv.3 : vote 3404 id 12",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Si l'objectif est choisi en cours de tour global, les joueurs ayant déjà joué n'ont pas de glyphe ⇒ échec au premier contrôle ; il faut un tour global entier (DJC-IPAC, forum).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30434 ; spell-level 80595 (https://api.dofusdb.fr/spell-levels/80595)",
+     "https://api.dofusdb.fr/spells/30444 ; spell-level 80606 (https://api.dofusdb.fr/spell-levels/80606)",
+     "https://api.dofusdb.fr/spells/30436",
+     "https://api.dofusdb.fr/spells/30437",
+     "https://api.dofusdb.fr/spells/30438",
+     "https://api.dofusdb.fr/spells/30442"
+    ]
+   },
+   {
+    "name": "Meurtres en série",
+    "tier": 2,
+    "orientation": "Gladiateur (Dompteur)",
+    "ids": {
+     "general": 30463,
+     "subSpells": [
+      30549,
+      30550
+     ],
+     "reward": 30546,
+     "notification": 52,
+     "objectiveDoneState": 5907
+    },
+    "conditionText": "<b></b>\nUn combattant allié doit achever deux combattants ennemis pendant son tour.\n\n<b>",
+    "conditionFormal": "le TUEUR (1019 SourceExecuteSpellOnSource) incrémente son compteur (5944) ; 2e mort du même tueur dans son tour ⇒ récompense. Compteur remis à zéro en fin de tour de chaque allié.",
+    "evaluation": "à la mort d'un ennemi pendant le tour d'un allié",
+    "scope": "tour d'un allié",
+    "counter": "5944 « 1 trooll tué » sur le tueur",
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.2 (chaque joueur apprend le sort n°3 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5907 « Objectif 2 Fini » sur Sce ⇒ 30443 niv.3 : vote 3404 id 12",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Seules les morts dont le joueur est l'AUTEUR comptent : un Trooll tué par les 2000 d'entrée dans les pics est tué par le poseur du glyphe (Sce) ⇒ ne compte pas (HYPOTHÈSE). Rapporté : les morts par dommages de poussée ne comptent pas (sspritenL) — non expliqué par le code client (X se déclenche pour toute mort).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "moyenne",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30463 ; spell-level 80627 (https://api.dofusdb.fr/spell-levels/80627)",
+     "https://api.dofusdb.fr/spells/30546 ; spell-level 80732 (https://api.dofusdb.fr/spell-levels/80732)",
+     "https://api.dofusdb.fr/spells/30549",
+     "https://api.dofusdb.fr/spells/30550"
+    ]
+   },
+   {
+    "name": "Attention, sol glissant",
+    "tier": 2,
+    "orientation": "Baroudeur (Acrobate)",
+    "ids": {
+     "general": 30497,
+     "subSpells": [
+      30498
+     ],
+     "reward": 30499,
+     "notification": 47,
+     "objectiveDoneState": 5907
+    },
+    "conditionText": "<b></b>\nUn combattant ennemi doit être achevé par des dommages de poussée.\n\n<b>",
+    "conditionFormal": "un ennemi est achevé par des dommages de poussée (collision).",
+    "evaluation": "mort d'un ennemi par DOMMAGES DE POUSSÉE (déclencheur XPD posé au début du tour de chaque allié)",
+    "scope": "événement (en pratique pendant le tour d'un allié)",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.2 (chaque joueur apprend le sort n°3 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5907 « Objectif 2 Fini » sur Sce ⇒ 30443 niv.3 : vote 3404 id 12",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Dommages de poussée des archétypes : 1000 Do Pou ⇒ ≈ 283 par case restante contre un obstacle (agent formules).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30497 ; spell-level 80668 (https://api.dofusdb.fr/spell-levels/80668)",
+     "https://api.dofusdb.fr/spells/30499 ; spell-level 80671 (https://api.dofusdb.fr/spell-levels/80671)",
+     "https://api.dofusdb.fr/spells/30498"
+    ]
+   },
+   {
+    "name": "Productivité",
+    "tier": 2,
+    "orientation": "Guérisseur (Magicien)",
+    "ids": {
+     "general": 30542,
+     "subSpells": [
+      30555
+     ],
+     "reward": 30543,
+     "notification": 57,
+     "objectiveDoneState": 5907
+    },
+    "conditionText": "<b></b>\nUn combattant allié doit utiliser 3 sorts pendant son tour.\n\n<b>",
+    "conditionFormal": "un allié lance 3 sorts dans son tour (compteur 5944→5945→récompense au 3e ; remis à zéro en fin de tour).",
+    "evaluation": "pendant le tour d'un allié, à chaque lancer de sort (déclencheur CAP)",
+    "scope": "tour d'un allié",
+    "counter": "5944/5945 sur le lanceur",
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.2 (chaque joueur apprend le sort n°3 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5907 « Objectif 2 Fini » sur Sce ⇒ 30443 niv.3 : vote 3404 id 12",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "N'importe quel sort (Frappe Repoussoir compris). Le plus simple (Magicien : PA + soin + soin, Khytrayer 04:41).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30542 ; spell-level 80736 (https://api.dofusdb.fr/spell-levels/80736)",
+     "https://api.dofusdb.fr/spells/30543 ; spell-level 80735 (https://api.dofusdb.fr/spell-levels/80735)",
+     "https://api.dofusdb.fr/spells/30555"
+    ]
+   },
+   {
+    "name": "Sauvez-le !",
+    "tier": 3,
+    "orientation": "Guérisseur (Magicien)",
+    "ids": {
+     "general": 30462,
+     "subSpells": [
+      30464,
+      30465,
+      30492
+     ],
+     "reward": 30466,
+     "notification": 58,
+     "objectiveDoneState": 5908
+    },
+    "conditionText": "<b></b>\nAu début de chaque tour global, un combattant allié est désigné. A la fin du tour global, il doit avoir tous ses points de vie.\n\n<b>",
+    "conditionFormal": "au contrôle, l'allié désigné (état 5942 « Heal Target ») a 100 % de ses PV (masque v100) ⇒ récompense. Désignation : premier allié à ≤ 10 % PV, sinon ≤ 20 %, … ≤ 90 %, sinon n'importe lequel (30464 niv.1-10, masques V10..V90).",
+    "evaluation": "fin du tour global (30710 : contrôle 30465 PUIS désignation 30464)",
+    "scope": "tour global complet (désigné en fin de tour N, contrôlé en fin de tour N+1)",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.3 (chaque joueur apprend le sort n°4 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5908 « Objectif 3 Fini » sur Sce ⇒ 30443 niv.4 : vote 3404 id 13",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "v100 : le code client 2.73 évalue « PV% > 100 » (impossible) ; le serveur utilise forcément « ≥ 100 % » puisque l'objectif est réalisable (HYPOTHÈSE). Le désigné est l'allié le PLUS BLESSÉ ⇒ difficile.",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute (logique) / moyenne (seuils)",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30462 ; spell-level 80623 (https://api.dofusdb.fr/spell-levels/80623)",
+     "https://api.dofusdb.fr/spells/30466 ; spell-level 80626 (https://api.dofusdb.fr/spell-levels/80626)",
+     "https://api.dofusdb.fr/spells/30464",
+     "https://api.dofusdb.fr/spells/30465",
+     "https://api.dofusdb.fr/spells/30492"
+    ]
+   },
+   {
+    "name": "Ébranlable",
+    "tier": 3,
+    "orientation": "Général",
+    "ids": {
+     "general": 30496,
+     "subSpells": [
+      30494,
+      30495
+     ],
+     "reward": 30493,
+     "notification": 43,
+     "objectiveDoneState": 5908
+    },
+    "conditionText": "<b></b>\nUn combattant ennemi doit être achevé dans l'état Inébranlable.\n\n<b>",
+    "conditionFormal": "un ennemi meurt alors qu'il porte l'état 157 Inébranlable (30495 : récompense si *E157 sur le mourant).",
+    "evaluation": "à la mort d'un ennemi (déclencheur X posé au début du tour de chaque allié)",
+    "scope": "événement",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.3 (chaque joueur apprend le sort n°4 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5908 « Objectif 3 Fini » sur Sce ⇒ 30443 niv.4 : vote 3404 id 13",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Inébranlable : Patroolleur (Troollibre, 1 tour), Troollement de Tambour (Nitrooll sur un allié). Un Inébranlable ne peut pas être poussé mais peut être échangé/téléporté (état 157 = effet 0 « cantBePushed » seulement).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30496 ; spell-level 80667 (https://api.dofusdb.fr/spell-levels/80667)",
+     "https://api.dofusdb.fr/spells/30493 ; spell-level 80663 (https://api.dofusdb.fr/spell-levels/80663)",
+     "https://api.dofusdb.fr/spells/30494",
+     "https://api.dofusdb.fr/spells/30495"
+    ]
+   },
+   {
+    "name": "Stop aux projectiles",
+    "tier": 3,
+    "orientation": "Gladiateur (Dompteur)",
+    "ids": {
+     "general": 30520,
+     "subSpells": [
+      30522,
+      30523
+     ],
+     "reward": 30521,
+     "notification": 53,
+     "objectiveDoneState": 5908
+    },
+    "conditionText": "<b></b>\nÀ la fin du tour global, aucun Artroolleur ne doit être présent sur le terrain.\n\n<b>",
+    "conditionFormal": "aucun Artroolleur (7982) vivant sur le terrain.",
+    "evaluation": "fin du tour global (30710)",
+    "scope": "fin de tour global",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.3 (chaque joueur apprend le sort n°4 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5908 « Objectif 3 Fini » sur Sce ⇒ 30443 niv.4 : vote 3404 id 13",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Se valide seul si aucun Artroolleur n'est présent (FAIT rapporté, Khytrayer 04:56). Artroolleurs dans les vagues 2, 3, 4, 6, 9, 10.",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30520 ; spell-level 80702 (https://api.dofusdb.fr/spell-levels/80702)",
+     "https://api.dofusdb.fr/spells/30521 ; spell-level 80703 (https://api.dofusdb.fr/spell-levels/80703)",
+     "https://api.dofusdb.fr/spells/30522",
+     "https://api.dofusdb.fr/spells/30523"
+    ]
+   },
+   {
+    "name": "Toi, par ici, et toi, par là",
+    "tier": 3,
+    "orientation": "Baroudeur (Acrobate)",
+    "ids": {
+     "general": 30528,
+     "subSpells": [
+      30529
+     ],
+     "reward": 30530,
+     "notification": 48,
+     "objectiveDoneState": 5908
+    },
+    "conditionText": "<b></b>\nPendant le tour d'un combattant allié, un combattant ennemi doit rentrer dans les pics, et un combattant allié doit sortir du glyphe.\n\n<b>",
+    "conditionFormal": "pendant le même tour d'allié : un ennemi gagne 5902 (entre dans les pics) ET un allié perd 5903 (sort des pics) ; états 5959 EnemyIn et 5958 AllyOut sur le Challenger ; récompense quand les deux sont présents.",
+    "evaluation": "pendant le tour d'un allié",
+    "scope": "tour d'un allié",
+    "counter": "5958 + 5959 sur le Challenger",
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.3 (chaque joueur apprend le sort n°4 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5908 « Objectif 3 Fini » sur Sce ⇒ 30443 niv.4 : vote 3404 id 13",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "L'allié qui sort peut être n'importe quel joueur (y compris l'actif). Sortir des pics rend ce joueur Vulnérable ×2 pendant 1 tour (30701).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30528 ; spell-level 80710 (https://api.dofusdb.fr/spell-levels/80710)",
+     "https://api.dofusdb.fr/spells/30530 ; spell-level 80724 (https://api.dofusdb.fr/spell-levels/80724)",
+     "https://api.dofusdb.fr/spells/30529"
+    ]
+   },
+   {
+    "name": "Tout le monde veut prendre sa place",
+    "tier": 4,
+    "orientation": "Général",
+    "ids": {
+     "general": 30450,
+     "subSpells": [
+      30451,
+      30452,
+      30453,
+      30454,
+      30455,
+      30477
+     ],
+     "reward": 30456,
+     "notification": 44,
+     "objectiveDoneState": 5909
+    },
+    "conditionText": "<b></b>\nAu début de son tour, chaque combattant allié marque la cellule du combattant ennemi le plus éloigné. Un combattant allié doit finir son tour sur une cellule marquée.\n\n<b>",
+    "conditionFormal": "au DÉBUT de son tour, l'allié (état 5917 Challenger) désigne l'ennemi le plus éloigné (hors Mama pré-combat) : un glyphe de fin de tour (#FF00C3) est posé sur SA case ; l'allié doit terminer son tour sur cette case.",
+    "evaluation": "fin du tour de l'allié (glyphe 402 de fin de tour → 30455)",
+    "scope": "tour d'un allié",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.4 (chaque joueur apprend le sort n°5 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5909 « Objectif 4 Fini » sur Sce ⇒ 30443 niv.5 : vote 3404 id 14",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "La case est occupée par l'ennemi au début du tour : il faut le déplacer (poussée) ou le tuer, puis s'y placer. Texte DPLN « le plus éloigné » confirmé par la description du sort 30451. Glyphes dissipés en fin de tour.",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute (condition) / moyenne (algorithme exact de sélection)",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30450 ; spell-level 80611 (https://api.dofusdb.fr/spell-levels/80611)",
+     "https://api.dofusdb.fr/spells/30456 ; spell-level 80618 (https://api.dofusdb.fr/spell-levels/80618)",
+     "https://api.dofusdb.fr/spells/30451",
+     "https://api.dofusdb.fr/spells/30452",
+     "https://api.dofusdb.fr/spells/30453",
+     "https://api.dofusdb.fr/spells/30454",
+     "https://api.dofusdb.fr/spells/30455",
+     "https://api.dofusdb.fr/spells/30477"
+    ]
+   },
+   {
+    "name": "Faire le mur",
+    "tier": 4,
+    "orientation": "Baroudeur (Acrobate)",
+    "ids": {
+     "general": 30500,
+     "subSpells": [
+      30501,
+      30502,
+      30503
+     ],
+     "reward": 30504,
+     "notification": 49,
+     "objectiveDoneState": 5909
+    },
+    "conditionText": "<b></b>\nPendant le tour d'un combattant allié, trois combattants ennemis différents doivent subir des dommages de poussée.\n\n<b>",
+    "conditionFormal": "3 ennemis DIFFÉRENTS subissent des dommages de poussée (déclencheurs PD ou XPD) ; chaque ennemi porte 5956 « Not pushed » jusqu'à son premier comptage. Compteur 5944→5945→5946 sur l'allié ; récompense au 3e.",
+    "evaluation": "pendant le tour d'un allié (état Challenger)",
+    "scope": "tour d'un allié",
+    "counter": "5944/5945/5946 sur le Challenger",
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.4 (chaque joueur apprend le sort n°5 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5909 « Objectif 4 Fini » sur Sce ⇒ 30443 niv.5 : vote 3404 id 14",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30500 ; spell-level 80673 (https://api.dofusdb.fr/spell-levels/80673)",
+     "https://api.dofusdb.fr/spells/30504 ; spell-level 80679 (https://api.dofusdb.fr/spell-levels/80679)",
+     "https://api.dofusdb.fr/spells/30501",
+     "https://api.dofusdb.fr/spells/30502",
+     "https://api.dofusdb.fr/spells/30503"
+    ]
+   },
+   {
+    "name": "Pas le temps de dire \"Aïe\"",
+    "tier": 4,
+    "orientation": "Gladiateur (Dompteur)",
+    "ids": {
+     "general": 30512,
+     "subSpells": [
+      30513
+     ],
+     "reward": 30514,
+     "notification": 54,
+     "objectiveDoneState": 5909
+    },
+    "conditionText": "<b></b>\nUn combattant allié doit achever un combattant ennemi qui possédait tous ses points de vie au début du tour de l'attaquant.\n\n<b>",
+    "conditionFormal": "au début du tour de chaque allié (et à l'activation), les ennemis à 100 % PV (masque v100) reçoivent un déclencheur X ; il est retiré en fin de tour ⇒ tuer pendant son tour un ennemi qui était plein PV au début de ce tour.",
+    "evaluation": "à la mort d'un ennemi marqué pendant le tour d'un allié",
+    "scope": "tour d'un allié",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.4 (chaque joueur apprend le sort n°5 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5909 « Objectif 4 Fini » sur Sce ⇒ 30443 niv.5 : vote 3404 id 14",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Même remarque v100 que Sauvez-le. Cible typique : monstre de la vague qui vient d'apparaître.",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30512 ; spell-level 80691 (https://api.dofusdb.fr/spell-levels/80691)",
+     "https://api.dofusdb.fr/spells/30514 ; spell-level 80696 (https://api.dofusdb.fr/spell-levels/80696)",
+     "https://api.dofusdb.fr/spells/30513"
+    ]
+   },
+   {
+    "name": "Distance d'insécurité",
+    "tier": 4,
+    "orientation": "Guérisseur (Magicien)",
+    "ids": {
+     "general": 30531,
+     "subSpells": [
+      30532,
+      30533
+     ],
+     "reward": 30534,
+     "notification": 59,
+     "objectiveDoneState": 5909
+    },
+    "conditionText": "<b></b>\nTous les Artroolleurs doivent être à une distance de trois cases ou moins d'un combattant allié à la fin du tour d'un combattant allié.\n\n<b>",
+    "conditionFormal": "chaque Artroolleur vivant est à distance ≤ 3 (zone cercle C3, distance de Manhattan) d'au moins un allié (état 5957 « Near Player ») ; sinon échec.",
+    "evaluation": "fin du tour de chaque allié (TE)",
+    "scope": "fin de tour d'un allié",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.4 (chaque joueur apprend le sort n°5 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5909 « Objectif 4 Fini » sur Sce ⇒ 30443 niv.5 : vote 3404 id 14",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Vrai par vacuité sans Artroolleur (FAIT rapporté).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30531 ; spell-level 80711 (https://api.dofusdb.fr/spell-levels/80711)",
+     "https://api.dofusdb.fr/spells/30534 ; spell-level 80716 (https://api.dofusdb.fr/spell-levels/80716)",
+     "https://api.dofusdb.fr/spells/30532",
+     "https://api.dofusdb.fr/spells/30533"
+    ]
+   },
+   {
+    "name": "Attirance",
+    "tier": 5,
+    "orientation": "Général",
+    "ids": {
+     "general": 30449,
+     "subSpells": [
+      30447,
+      30448
+     ],
+     "reward": 30544,
+     "notification": 45,
+     "objectiveDoneState": 5910
+    },
+    "conditionText": "<b></b>\nMama Troollette doit toucher tous les combattants alliés avec Rassemblement Troollesque.\n\n<b>",
+    "conditionFormal": "TOUS les joueurs vivants (`H`) reçoivent l'état 5918 « Grabbed » lors du même Rassemblement (être sur une des 4 lignes partant de la Mama) ; un joueur non attrapé donne 5914 à la Mama ⇒ échec.",
+    "evaluation": "à chaque Rassemblement Troollesque de la Mama (arrivée T8 puis début de chacun de ses tours) : 30432 niv.4 lance 30448 si la Mama porte 5915",
+    "scope": "événement (tour de la Mama)",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.5 (chaque joueur apprend le sort n°6 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5910 « Objectif 5 Fini » sur Sce ⇒ 30443 niv.6 : vote 3404 id 15",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Coûteux : les joueurs attrapés sont repoussés jusqu'au bord = dans les pics (2000 + Vulnérable).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30449 ; spell-level 80610 (https://api.dofusdb.fr/spell-levels/80610)",
+     "https://api.dofusdb.fr/spells/30544 ; spell-level 80730 (https://api.dofusdb.fr/spell-levels/80730)",
+     "https://api.dofusdb.fr/spells/30447",
+     "https://api.dofusdb.fr/spells/30448"
+    ]
+   },
+   {
+    "name": "Trous dans les Troolls",
+    "tier": 5,
+    "orientation": "Baroudeur (Acrobate)",
+    "ids": {
+     "general": 30505,
+     "subSpells": [
+      30506,
+      30507,
+      30508
+     ],
+     "reward": 30509,
+     "notification": 50,
+     "objectiveDoneState": 5910
+    },
+    "conditionText": "<b></b>\nPendant le tour d'un combattant allié, quatre combattants ennemis différents doivent rentrer dans les pics.\n\n<b>",
+    "conditionFormal": "4 ennemis DIFFÉRENTS gagnent l'état 5902 (= ENTRENT dans les pics ; EON5902) pendant le tour de l'allié. Compteur 5944..5946 ; récompense au 4e.",
+    "evaluation": "pendant le tour d'un allié",
+    "scope": "tour d'un allié",
+    "counter": "5944/5945/5946 sur le Challenger",
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.5 (chaque joueur apprend le sort n°6 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5910 « Objectif 5 Fini » sur Sce ⇒ 30443 niv.6 : vote 3404 id 15",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Un ennemi déjà dans les pics au début du tour ne compte pas (il faut une nouvelle entrée).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30505 ; spell-level 80680 (https://api.dofusdb.fr/spell-levels/80680)",
+     "https://api.dofusdb.fr/spells/30509 ; spell-level 80687 (https://api.dofusdb.fr/spell-levels/80687)",
+     "https://api.dofusdb.fr/spells/30506",
+     "https://api.dofusdb.fr/spells/30507",
+     "https://api.dofusdb.fr/spells/30508"
+    ]
+   },
+   {
+    "name": "D'une pierre trois coups",
+    "tier": 5,
+    "orientation": "Gladiateur (Dompteur)",
+    "ids": {
+     "general": 30511,
+     "subSpells": [
+      30553,
+      30554
+     ],
+     "reward": 30547,
+     "notification": 55,
+     "objectiveDoneState": 5910
+    },
+    "conditionText": "<b></b>\nUn combattant allié doit achever trois combattants ennemis avec un sort.\n\n<b>",
+    "conditionFormal": "3 ennemis meurent entre deux lancers de sort de l'allié actif (= « avec un seul sort »). Le compteur (5962/5963) va au Challenger quel que soit le tueur ⇒ les morts par entrée dans les pics provoquées par le sort comptent.",
+    "evaluation": "pendant le tour d'un allié ; compteur remis à zéro à CHAQUE lancer de sort (déclencheur CAP) et en fin de tour",
+    "scope": "un sort d'un allié",
+    "counter": "5962 « 1KillNoIcon » / 5963 « 2KillsNoIcon » sur le Challenger",
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.5 (chaque joueur apprend le sort n°6 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5910 « Objectif 5 Fini » sur Sce ⇒ 30443 niv.6 : vote 3404 id 15",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "CAP = « le porteur lance un sort » : jeton DOFUS 3 absent du client 2.73 (HYPOTHÈSE forte, cohérente avec Productivité).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "moyenne-haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30511 ; spell-level 80690 (https://api.dofusdb.fr/spell-levels/80690)",
+     "https://api.dofusdb.fr/spells/30547 ; spell-level 80733 (https://api.dofusdb.fr/spell-levels/80733)",
+     "https://api.dofusdb.fr/spells/30553",
+     "https://api.dofusdb.fr/spells/30554"
+    ]
+   },
+   {
+    "name": "Tout va bien",
+    "tier": 5,
+    "orientation": "Guérisseur (Magicien)",
+    "ids": {
+     "general": 30524,
+     "subSpells": [
+      30526,
+      30527
+     ],
+     "reward": 30525,
+     "notification": 60,
+     "objectiveDoneState": 5910
+    },
+    "conditionText": "<b></b>\nÀ la fin d'un tour global, tous les combattants alliés doivent posséder plus de 50% de leurs points de vie.\n\n<b>",
+    "conditionFormal": "aucun joueur vivant à ≤ 50 % PV (masque V50 ⇒ échec). Texte : « plus de 50 % ».",
+    "evaluation": "fin du tour global (30710)",
+    "scope": "fin de tour global",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.5 (chaque joueur apprend le sort n°6 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "état 5910 « Objectif 5 Fini » sur Sce ⇒ 30443 niv.6 : vote 3404 id 15",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Seuil : V50 = PV% ≤ 50 dans le code client ⇒ il faut strictement plus de 50 %.",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30524 ; spell-level 80706 (https://api.dofusdb.fr/spell-levels/80706)",
+     "https://api.dofusdb.fr/spells/30525 ; spell-level 80707 (https://api.dofusdb.fr/spell-levels/80707)",
+     "https://api.dofusdb.fr/spells/30526",
+     "https://api.dofusdb.fr/spells/30527"
+    ]
+   },
+   {
+    "name": "Solitude",
+    "tier": 6,
+    "orientation": "Général",
+    "ids": {
+     "general": 30439,
+     "subSpells": [
+      30440,
+      30441
+     ],
+     "reward": 30545,
+     "notification": 46,
+     "objectiveDoneState": 5911
+    },
+    "conditionText": "<b></b>\nMama Troollette doit être la seule combattante ennemie à la fin du tour global.\n\n<b>",
+    "conditionFormal": "la Mama Troollette (7984) est vivante et n'a AUCUN allié (30441 SelfTag sur `g` : sinon état 5913 « Trooll Ally Detected ») ⇒ récompense (2792 sur `H` si Mama *e5913).",
+    "evaluation": "fin du tour global (30710 effet 6 → 30440 lancé par la Mama)",
+    "scope": "fin de tour global",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.6 (chaque joueur apprend le sort n°7 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "aucun (dernier palier)",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "La Mama est dans le combat dès T1 (case 152, état pré-combat) et le masque n'exclut pas 5971 : Solitude peut se valider AVANT T8 si tous les Troolls sont morts en fin de tour global (HYPOTHÈSE).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute (logique) / moyenne (avant T8)",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30439 ; spell-level 80597 (https://api.dofusdb.fr/spell-levels/80597)",
+     "https://api.dofusdb.fr/spells/30545 ; spell-level 80731 (https://api.dofusdb.fr/spell-levels/80731)",
+     "https://api.dofusdb.fr/spells/30440",
+     "https://api.dofusdb.fr/spells/30441"
+    ]
+   },
+   {
+    "name": "Quintuplé",
+    "tier": 6,
+    "orientation": "Gladiateur (Dompteur)",
+    "ids": {
+     "general": 30510,
+     "subSpells": [
+      30551,
+      30552
+     ],
+     "reward": 30548,
+     "notification": 56,
+     "objectiveDoneState": 5911
+    },
+    "conditionText": "<b></b>\nPendant un tour global, 5 combattants ennemis doivent être achevés.\n\n<b>",
+    "conditionFormal": "5 ennemis tués par des JOUEURS (compteur partagé sur tous les alliés du tueur) au cours d'un même tour global.",
+    "evaluation": "à chaque mort d'ennemi ; remise à zéro en fin de tour global (30710 → 30552 niv.1)",
+    "scope": "tour global",
+    "counter": "5944..5947 sur tous les joueurs",
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.6 (chaque joueur apprend le sort n°7 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "aucun (dernier palier)",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Les morts causées par le glyphe (poseur Sce) ne comptent probablement pas (HYPOTHÈSE).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "moyenne-haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30510 ; spell-level 80689 (https://api.dofusdb.fr/spell-levels/80689)",
+     "https://api.dofusdb.fr/spells/30548 ; spell-level 80734 (https://api.dofusdb.fr/spell-levels/80734)",
+     "https://api.dofusdb.fr/spells/30551",
+     "https://api.dofusdb.fr/spells/30552"
+    ]
+   },
+   {
+    "name": "Au coin !",
+    "tier": 6,
+    "orientation": "Baroudeur (Acrobate)",
+    "ids": {
+     "general": 30515,
+     "subSpells": [
+      30516,
+      30517
+     ],
+     "reward": 30518,
+     "notification": 51,
+     "objectiveDoneState": 5911
+    },
+    "conditionText": "<b></b>\nTous les combattants ennemis doivent être dans les pics à la fin du tour d'un combattant allié.\n\n<b>",
+    "conditionFormal": "tous les ennemis vivants (hors Mama pré-combat, état 5971) portent 5902 (= sont dans les pics) ; un ennemi hors pics met 5905 « Objectif Échoué » sur l'allié.",
+    "evaluation": "fin du tour de chaque allié (TE)",
+    "scope": "fin de tour d'un allié",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.6 (chaque joueur apprend le sort n°7 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "aucun (dernier palier)",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Vrai par vacuité s'il n'y a plus aucun ennemi (hors Mama pré-combat). Après l'expiration de 5971 (début du T7 de la Mama selon le décompte, HYPOTHÈSE), la Mama sur 152 compte et empêche la validation jusqu'à ce qu'elle soit dans les pics.",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30515 ; spell-level 80692 (https://api.dofusdb.fr/spell-levels/80692)",
+     "https://api.dofusdb.fr/spells/30518 ; spell-level 80698 (https://api.dofusdb.fr/spell-levels/80698)",
+     "https://api.dofusdb.fr/spells/30516",
+     "https://api.dofusdb.fr/spells/30517"
+    ]
+   },
+   {
+    "name": "Même pas mal",
+    "tier": 6,
+    "orientation": "Guérisseur (Magicien)",
+    "ids": {
+     "general": 30535,
+     "subSpells": [
+      30539,
+      30541
+     ],
+     "reward": 30540,
+     "notification": 61,
+     "objectiveDoneState": 5911
+    },
+    "conditionText": "<b></b>\nUn combattant allié doit subir un sort de Mama Troollette sans perdre de points de vie.\n\n<b>",
+    "conditionFormal": "un joueur SUBIT un sort de la Mama (état 5961 « Attaque Subie », déclencheur D) SANS variation de PV (5960 « Vie inchangée » retiré au moindre changement de PV, déclencheur VA) ⇒ tout absorbé par un bouclier (ou résistance/invulnérabilité).",
+    "evaluation": "quand la Mama inflige des dommages (déclencheur CD sur la Mama)",
+    "scope": "tour de la Mama (≥ T8)",
+    "counter": null,
+    "reward": {
+     "spellUnlock": "30626 « Spell Manager » niv.6 (chaque joueur apprend le sort n°7 de son archétype)",
+     "mamaFavour": "30659 niv.1 lancé par la Mama : état Faveur −1 cran (V→IV→…→I→aucun) + niv.2 « −5 % dommages finaux » (permanent)",
+     "nextChoice": "aucun (dernier palier)",
+     "cleanup": "retire les sous-sorts/états de l'objectif (406/951/2018) et la notification 3401"
+    },
+    "notes": "Boucliers : Protection Prolongée (3000→5000), Muraille collective (15000).",
+    "status": "FAIT vérifié (logique lue dans les sorts) ; sémantique de certains jetons (CAP, V/v, Atq/Def) = HYPOTHÈSE",
+    "confidence": "haute",
+    "sources": [
+     "https://api.dofusdb.fr/spells/30535 ; spell-level 80717 (https://api.dofusdb.fr/spell-levels/80717)",
+     "https://api.dofusdb.fr/spells/30540 ; spell-level 80727 (https://api.dofusdb.fr/spell-levels/80727)",
+     "https://api.dofusdb.fr/spells/30539",
+     "https://api.dofusdb.fr/spells/30541"
+    ]
+   }
+  ]
+ },
+ "counters": {
+  "_note": "Compteurs génériques par états « n troolls tués » (5944..5954) ; RÉUTILISÉS comme compteurs d'événements par plusieurs objectifs (Faire le mur, Trous dans les Troolls, Productivité, Quintuplé, Meurtres en série). Un seul objectif est actif à la fois, donc pas de conflit.",
+  "countStates": {
+   "5944": "1 trooll tué",
+   "5945": "2 troolls tués",
+   "5946": "3 troolls tués",
+   "5947": "4 troolls tués",
+   "5948": "5 troolls tués",
+   "5949": "6 troolls tués",
+   "5950": "7 troolls tués",
+   "5951": "8 troolls tués",
+   "5952": "9 troolls tués",
+   "5953": "10 troolls tués",
+   "5954": "11 troolls tués"
+  },
+  "30457": {
+   "name": "KillCount",
+   "logic": "incrémente l'état n → n+1 (1..11) sur la cible (zone P1), 21 effets",
+   "source": "https://api.dofusdb.fr/spells/30457 ; spell-level 80619 (https://api.dofusdb.fr/spell-levels/80619)"
+  },
+  "30459": {
+   "name": "IncreaseKillCount",
+   "logic": "792 → 30457 sur les ennemis portant 5920 « CountsKills »",
+   "source": "https://api.dofusdb.fr/spells/30459 ; spell-level 80620 (https://api.dofusdb.fr/spell-levels/80620)"
+  },
+  "30460": {
+   "name": "KillCountable",
+   "logic": "pose sur les ennemis un déclencheur X : 1019 → le tueur lance 30457 sur lui-même (maxStack 1)",
+   "source": "https://api.dofusdb.fr/spells/30460 ; spell-level 80621 (https://api.dofusdb.fr/spell-levels/80621)"
+  },
+  "30461": {
+   "name": "PerSpellKillCounter",
+   "logic": "TB : 5920 « CountsKills » (1 tour) + 30460 sur les ennemis ; TE et CAP : 406 retire 30457 ⇒ compteur remis à zéro à chaque sort",
+   "source": "https://api.dofusdb.fr/spells/30461 ; spell-level 80622 (https://api.dofusdb.fr/spell-levels/80622)"
+  },
+  "evaluationSemantics": {
+   "criteriaSnapshot": "Les critères E/e d'un sort-compteur sont évalués sur l'état AVANT le lancer (sinon « 1 → 2 → reward » s'enchaînerait en un seul lancer) : HYPOTHÈSE forte, seule lecture cohérente avec les textes (3 poussées, 4 entrées, 3 sorts…).",
+   "CAP": "déclencheur DOFUS 3 inconnu du client 2.73 ; utilisé par Productivité (compter les sorts) et les compteurs « par sort » ⇒ « le porteur lance un sort » (HYPOTHÈSE forte).",
+   "X_vs_XPD": "X = mort ; XPD = mort par dommages de poussée. Le client 2.73 teste les jetons par recherche de sous-chaîne (X ⊂ XPD) et déclenche X pour toute mort ; rapport joueur : les morts par poussée ne comptent pas pour « Meurtres en série » (non confirmé)."
+  }
+ },
+ "bonusesByArchetype": {
+  "Dompteur": {
+   "accumulatorSpell": 30589,
+   "options": [
+    {
+     "cardSpellId": 30592,
+     "name": "Acclamation accélérante",
+     "effectId": 111,
+     "value": 1,
+     "stat": "PA",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30589 « Acclamations de la foule » niv.1 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 PA",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30592 ; spell-level 80816 (https://api.dofusdb.fr/spell-levels/80816)"
+    },
+    {
+     "cardSpellId": 30593,
+     "name": "Acclamation agile",
+     "effectId": 128,
+     "value": 1,
+     "stat": "PM",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30589 « Acclamations de la foule » niv.2 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 PM",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30593 ; spell-level 80817 (https://api.dofusdb.fr/spell-levels/80817)"
+    },
+    {
+     "cardSpellId": 30594,
+     "name": "Acclamation puissante",
+     "effectId": 1171,
+     "value": 10,
+     "stat": "% dommages finaux (multiplicateur, stat 107)",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30589 « Acclamations de la foule » niv.3 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "10% Dommages finaux",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30594 ; spell-level 80818 (https://api.dofusdb.fr/spell-levels/80818)"
+    },
+    {
+     "cardSpellId": 30632,
+     "name": "Acclamation optique",
+     "effectId": 117,
+     "value": 1,
+     "stat": "PO",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30589 « Acclamations de la foule » niv.4 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 Portée",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30632 ; spell-level 80886 (https://api.dofusdb.fr/spell-levels/80886)"
+    },
+    {
+     "cardSpellId": 30633,
+     "name": "Acclamation critique",
+     "effectId": 418,
+     "value": 500,
+     "stat": "dommages critiques (fixes, stat 86)",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30589 « Acclamations de la foule » niv.5 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "500 Dommages critiques",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30633 ; spell-level 80887 (https://api.dofusdb.fr/spell-levels/80887)"
+    },
+    {
+     "cardSpellId": 30634,
+     "name": "Acclamation chanceuse",
+     "effectId": 115,
+     "value": 20,
+     "stat": "% critique",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30589 « Acclamations de la foule » niv.6 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "20% Critique",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30634 ; spell-level 80888 (https://api.dofusdb.fr/spell-levels/80888)"
+    }
+   ]
+  },
+  "Acrobate": {
+   "accumulatorSpell": 30590,
+   "options": [
+    {
+     "cardSpellId": 30595,
+     "name": "Acclamation accélérante",
+     "effectId": 111,
+     "value": 1,
+     "stat": "PA",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30590 « Acclamations de la foule » niv.1 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 PA",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30595 ; spell-level 80819 (https://api.dofusdb.fr/spell-levels/80819)"
+    },
+    {
+     "cardSpellId": 30596,
+     "name": "Acclamation agile",
+     "effectId": 128,
+     "value": 1,
+     "stat": "PM",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30590 « Acclamations de la foule » niv.2 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 PM",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30596 ; spell-level 80820 (https://api.dofusdb.fr/spell-levels/80820)"
+    },
+    {
+     "cardSpellId": 30597,
+     "name": "Acclamation robuste",
+     "effectId": 1076,
+     "value": 10,
+     "stat": "% résistance tous éléments (plafond 50 %)",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30590 « Acclamations de la foule » niv.3 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "10% de résistances",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30597 ; spell-level 80821 (https://api.dofusdb.fr/spell-levels/80821)"
+    },
+    {
+     "cardSpellId": 30635,
+     "name": "Acclamation optique",
+     "effectId": 117,
+     "value": 1,
+     "stat": "PO",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30590 « Acclamations de la foule » niv.4 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 Portée",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30635 ; spell-level 80889 (https://api.dofusdb.fr/spell-levels/80889)"
+    },
+    {
+     "cardSpellId": 30636,
+     "name": "Acclamation repoussante",
+     "effectId": 414,
+     "value": 200,
+     "stat": "dommages de poussée",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30590 « Acclamations de la foule » niv.5 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "200 Dommages de poussée",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30636 ; spell-level 80890 (https://api.dofusdb.fr/spell-levels/80890)"
+    },
+    {
+     "cardSpellId": 30637,
+     "name": "Acclamation résistante",
+     "effectId": 2803,
+     "value": 10,
+     "stat": "% résistance mêlée (dommages mêlée reçus ×(100−x)/100)",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30590 « Acclamations de la foule » niv.6 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "10% Résistance mêlée",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30637 ; spell-level 80891 (https://api.dofusdb.fr/spell-levels/80891)"
+    }
+   ]
+  },
+  "Magicien": {
+   "accumulatorSpell": 30591,
+   "options": [
+    {
+     "cardSpellId": 30598,
+     "name": "Acclamation accélérante",
+     "effectId": 111,
+     "value": 1,
+     "stat": "PA",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30591 « Acclamations de la foule » niv.1 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 PA",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30598 ; spell-level 80822 (https://api.dofusdb.fr/spell-levels/80822)"
+    },
+    {
+     "cardSpellId": 30599,
+     "name": "Acclamation agile",
+     "effectId": 128,
+     "value": 1,
+     "stat": "PM",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30591 « Acclamations de la foule » niv.2 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 PM",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30599 ; spell-level 80823 (https://api.dofusdb.fr/spell-levels/80823)"
+    },
+    {
+     "cardSpellId": 30600,
+     "name": "Acclamation vitalesque",
+     "effectId": 125,
+     "value": 5000,
+     "stat": "Vitalité (PV max et courants)",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30591 « Acclamations de la foule » niv.3 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "5 000 Vitalité",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30600 ; spell-level 80824 (https://api.dofusdb.fr/spell-levels/80824)"
+    },
+    {
+     "cardSpellId": 30629,
+     "name": "Acclamation optique",
+     "effectId": 117,
+     "value": 1,
+     "stat": "PO",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30591 « Acclamations de la foule » niv.4 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "1 Portée",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30629 ; spell-level 80883 (https://api.dofusdb.fr/spell-levels/80883)"
+    },
+    {
+     "cardSpellId": 30630,
+     "name": "Acclamation soignante",
+     "effectId": 2971,
+     "value": 20,
+     "stat": "% soins finaux",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30591 « Acclamations de la foule » niv.5 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "20% aux soins finaux",
+     "matchesDPLN": true,
+     "source": "https://api.dofusdb.fr/spells/30630 ; spell-level 80884 (https://api.dofusdb.fr/spell-levels/80884)"
+    },
+    {
+     "cardSpellId": 30631,
+     "name": "Acclamation résistante",
+     "effectId": 2807,
+     "value": 15,
+     "stat": "% résistance distance (dommages distance reçus ×(100−x)/100)",
+     "duration": "permanent (-1)",
+     "alsoCasts": "30591 « Acclamations de la foule » niv.6 (même effet, même valeur + scripts visuels 16069-16072)",
+     "dpln": "10% Résistance distance",
+     "matchesDPLN": false,
+     "source": "https://api.dofusdb.fr/spells/30631 ; spell-level 80885 (https://api.dofusdb.fr/spell-levels/80885)"
+    }
+   ]
+  },
+  "_rules": {
+   "offer": "3 cartes tirées parmi les 6 de l'archétype, choix individuel (choix id 17), permanent et cumulable",
+   "when": "début des tours globaux T2..T9 (8 bonus par personnage au maximum) — observé (agent carte) ; DPLN « à chaque début de tour global »",
+   "doubleApplicationRisk": {
+    "fact": "La carte (ex. 30592) applique +1 PA ET lance 30589 niv.1 qui applique à nouveau +1 PA (tous deux visibles, durée -1).",
+    "interpretation": "Soit la carte n'est qu'une infobulle et seul 30589 est lancé, soit le bonus est réellement doublé. Les textes (DPLN, cartes : « 1 PA ») et les ordres de grandeur observés (Galvanisation ×3 → 22 PA, Koza) ne permettent pas de trancher.",
+    "simulatorDefault": "bonus simple (+1 PA, +10 %, …) ; option `acclamationDoubleApplication=true` pour tester",
+    "status": "FAIT vérifié (données) / HYPOTHÈSE (effet réel)",
+    "confidence": "basse"
+   },
+   "discrepancies": [
+    "Magicien « Acclamation résistante » : données 15 % résistance distance (2807) — DPLN 10 %"
+   ]
+  }
+ },
+ "spellUnlockOrder": {
+  "commonSpell": {
+   "slot": 0,
+   "note": "sort 30416 du monstre 7980 « Gladiatroolleur » (corps des joueurs)",
+   "spellLevelId": 80499,
+   "spellId": 30416,
+   "grade": 1,
+   "name": "Frappe Repoussoir [Commun]"
+  },
+  "byArchetype": {
+   "Dompteur": [
+    {
+     "slot": 1,
+     "source": "départ (choix d'archétype, serveur)",
+     "spellLevelId": 80500,
+     "spellId": 30395,
+     "grade": 1,
+     "name": "Impact [Sort 1]"
+    },
+    {
+     "slot": 2,
+     "source": "30626 niv.1 (objectif du palier 1)",
+     "spellLevelId": 80501,
+     "spellId": 30396,
+     "grade": 1,
+     "name": "Grondement Grandissant [Sort 2]"
+    },
+    {
+     "slot": 3,
+     "source": "30626 niv.2 (objectif du palier 2)",
+     "spellLevelId": 80502,
+     "spellId": 30397,
+     "grade": 1,
+     "name": "Prélèvement [Sort 3]"
+    },
+    {
+     "slot": 4,
+     "source": "30626 niv.3 (objectif du palier 3)",
+     "spellLevelId": 80503,
+     "spellId": 30398,
+     "grade": 1,
+     "name": "Détonation [Sort 4]"
+    },
+    {
+     "slot": 5,
+     "source": "30626 niv.4 (objectif du palier 4)",
+     "spellLevelId": 80504,
+     "spellId": 30399,
+     "grade": 1,
+     "name": "Coup de Sang [Sort 5]"
+    },
+    {
+     "slot": 6,
+     "source": "30626 niv.5 (objectif du palier 5)",
+     "spellLevelId": 80505,
+     "spellId": 30400,
+     "grade": 1,
+     "name": "Jaillissement [Sort 6]"
+    },
+    {
+     "slot": 7,
+     "source": "30626 niv.6 (objectif du palier 6)",
+     "spellLevelId": 80506,
+     "spellId": 30401,
+     "grade": 1,
+     "name": "Ombre Fracassante [Sort 7]"
+    }
+   ],
+   "Acrobate": [
+    {
+     "slot": 1,
+     "source": "départ (choix d'archétype, serveur)",
+     "spellLevelId": 80507,
+     "spellId": 30402,
+     "grade": 1,
+     "name": "Videur [Sort 1]"
+    },
+    {
+     "slot": 2,
+     "source": "30626 niv.1 (objectif du palier 1)",
+     "spellLevelId": 80513,
+     "spellId": 30408,
+     "grade": 1,
+     "name": "Hanedimane [Sort 7]"
+    },
+    {
+     "slot": 3,
+     "source": "30626 niv.2 (objectif du palier 2)",
+     "spellLevelId": 80510,
+     "spellId": 30404,
+     "grade": 1,
+     "name": "Voltige [Sort 3]"
+    },
+    {
+     "slot": 4,
+     "source": "30626 niv.3 (objectif du palier 3)",
+     "spellLevelId": 80522,
+     "spellId": 30405,
+     "grade": 1,
+     "name": "Aïronemane [Sort 4]"
+    },
+    {
+     "slot": 5,
+     "source": "30626 niv.4 (objectif du palier 4)",
+     "spellLevelId": 80511,
+     "spellId": 30406,
+     "grade": 1,
+     "name": "Pugnace [Sort 5]"
+    },
+    {
+     "slot": 6,
+     "source": "30626 niv.5 (objectif du palier 5)",
+     "spellLevelId": 80509,
+     "spellId": 30403,
+     "grade": 1,
+     "name": "Soutien Stratégique [Sort 2]"
+    },
+    {
+     "slot": 7,
+     "source": "30626 niv.6 (objectif du palier 6)",
+     "spellLevelId": 80512,
+     "spellId": 30407,
+     "grade": 1,
+     "name": "Va-t-en-guerre [Sort 6]"
+    }
+   ],
+   "Magicien": [
+    {
+     "slot": 1,
+     "source": "départ (choix d'archétype, serveur)",
+     "spellLevelId": 80514,
+     "spellId": 30409,
+     "grade": 1,
+     "name": "Pulsation d'Énergie [Sort 1]"
+    },
+    {
+     "slot": 2,
+     "source": "30626 niv.1 (objectif du palier 1)",
+     "spellLevelId": 80515,
+     "spellId": 30410,
+     "grade": 1,
+     "name": "Regain Vigoureux [Sort 2]"
+    },
+    {
+     "slot": 3,
+     "source": "30626 niv.2 (objectif du palier 2)",
+     "spellLevelId": 80516,
+     "spellId": 30411,
+     "grade": 1,
+     "name": "Amplification [Sort 3]"
+    },
+    {
+     "slot": 4,
+     "source": "30626 niv.3 (objectif du palier 3)",
+     "spellLevelId": 80519,
+     "spellId": 30414,
+     "grade": 1,
+     "name": "Protection Prolongée [Sort 6]"
+    },
+    {
+     "slot": 5,
+     "source": "30626 niv.4 (objectif du palier 4)",
+     "spellLevelId": 80521,
+     "spellId": 30415,
+     "grade": 1,
+     "name": "Délivrance [Sort 7]"
+    },
+    {
+     "slot": 6,
+     "source": "30626 niv.5 (objectif du palier 5)",
+     "spellLevelId": 80517,
+     "spellId": 30412,
+     "grade": 1,
+     "name": "Vents Contraires [Sort 4]"
+    },
+    {
+     "slot": 7,
+     "source": "30626 niv.6 (objectif du palier 6)",
+     "spellLevelId": 80518,
+     "spellId": 30413,
+     "grade": 1,
+     "name": "Vague de Dégradation [Sort 5]"
+    }
+   ]
+  },
+  "rule": "Le n-ième objectif validé (palier n) débloque le sort n+1 de CHAQUE joueur (3405 CharacterLearnTemporarySpell sur tous les alliés, filtré par l'état d'archétype). Sorts de départ : 30395 Impact, 30402 Videur, 30409 Pulsation d'Énergie (spell-levels 80500/80507/80514, désappris par leurs améliorations ⇒ sorts temporaires appris au choix d'archétype).",
+  "matchesDPLN": true,
+  "status": "FAIT vérifié",
+  "confidence": "haute",
+  "source": "https://api.dofusdb.fr/spells/30626"
+ },
+ "spellImprovements": {
+  "mechanism": "choix id 10 (cadeau) → sort « Amélioration : X » : pose l'état « boostedSpell … », 3406 désapprend le sort de base, 3405 apprend la version améliorée (nouveau sort ⇒ intervalle de relance remis à zéro, cf. DPLN). 30470 « Améliore un sort » = simple infobulle (666).",
+  "status": "FAIT vérifié",
+  "list": {
+   "30469": {
+    "name": "Amélioration : Impact",
+    "boostedState": {
+     "id": 5996,
+     "name": "boostedSpell dompteur1"
+    },
+    "forgets": {
+     "spellLevelId": 80500,
+     "spellId": 30395,
+     "grade": 1,
+     "name": "Impact [Sort 1]"
+    },
+    "learns": {
+     "spellLevelId": 80748,
+     "spellId": 30558,
+     "grade": 1,
+     "name": "Impact [Amélioré 1]"
+    },
+    "description": "Améliore le sort {{spell,30395,1::<b>Impact</b>}} : • Taille du cercle : 2 cases > 3 cases • Lancer par tour : 2 > 3"
+   },
+   "30471": {
+    "name": "Amélioration : Grondement Grandissant",
+    "boostedState": {
+     "id": 5997,
+     "name": "boostedSpell dompteur2"
+    },
+    "forgets": {
+     "spellLevelId": 80501,
+     "spellId": 30396,
+     "grade": 1,
+     "name": "Grondement Grandissant [Sort 2]"
+    },
+    "learns": {
+     "spellLevelId": 80751,
+     "spellId": 30560,
+     "grade": 1,
+     "name": "Grondement Grandissant [Amélioré 2]"
+    },
+    "description": "Améliore le sort {{spell,30396,1::<b>Grondement Grandissant</b>}} : • Taille de la croix : 1 case > 3 cases"
+   },
+   "30472": {
+    "name": "Amélioration : Prélèvement",
+    "boostedState": {
+     "id": 5998,
+     "name": "boostedSpell dompteur3"
+    },
+    "forgets": {
+     "spellLevelId": 80502,
+     "spellId": 30397,
+     "grade": 1,
+     "name": "Prélèvement [Sort 3]"
+    },
+    "learns": {
+     "spellLevelId": 80754,
+     "spellId": 30561,
+     "grade": 1,
+     "name": "Prélèvement [Amélioré 3]"
+    },
+    "description": "Améliore le sort {{spell,30397,1::<b>Prélèvement</b>}} : • Taille du cercle en critique : 2 cases > 3 cases • Érosion : 15% > 20% • Lancer par tour : 3 > 4"
+   },
+   "30473": {
+    "name": "Amélioration : Détonation",
+    "boostedState": {
+     "id": 5999,
+     "name": "boostedSpell dompteur4"
+    },
+    "forgets": {
+     "spellLevelId": 80503,
+     "spellId": 30398,
+     "grade": 1,
+     "name": "Détonation [Sort 4]"
+    },
+    "learns": {
+     "spellLevelId": 80756,
+     "spellId": 30562,
+     "grade": 1,
+     "name": "Détonation [Amélioré 4]"
+    },
+    "description": "Améliore le sort {{spell,30398,1::<b>Détonation</b>}} : • Taille du rectangle : 3 par 2 cases > 5 par 2 cases"
+   },
+   "30474": {
+    "name": "Amélioration : Coup de Sang",
+    "boostedState": {
+     "id": 6000,
+     "name": "boostedSpell dompteur5"
+    },
+    "forgets": {
+     "spellLevelId": 80504,
+     "spellId": 30399,
+     "grade": 1,
+     "name": "Coup de Sang [Sort 5]"
+    },
+    "learns": {
+     "spellLevelId": 80758,
+     "spellId": 30563,
+     "grade": 1,
+     "name": "Coup de Sang [Amélioré 5]"
+    },
+    "description": "Améliore le sort {{spell,30399,1::<b>Coup de Sang</b>}} : • Taille du cercle : 2 cases > 3 cases"
+   },
+   "30475": {
+    "name": "Amélioration : Jaillissement",
+    "boostedState": {
+     "id": 6001,
+     "name": "boostedSpell dompteur6"
+    },
+    "forgets": {
+     "spellLevelId": 80505,
+     "spellId": 30400,
+     "grade": 1,
+     "name": "Jaillissement [Sort 6]"
+    },
+    "learns": {
+     "spellLevelId": 80750,
+     "problem": "404 sur DofusDB : spell-level inexistant. Le sort 30564 « Jaillissement [Amélioré 6] » a pour seul niveau 80760 ⇒ probable coquille 80750/80760 dans les données : l'amélioration désapprendrait Jaillissement sans rien apprendre (bug possible, non observé en vidéo)",
+     "expectedSpellLevelId": 80760,
+     "expectedSpellId": 30564
+    },
+    "description": "Améliore le sort {{spell,30400,1::<b>Jaillissement</b>}} : • Taille du carré : 1 case > 2 cases"
+   },
+   "30476": {
+    "name": "Amélioration : Ombre Fracassante",
+    "boostedState": {
+     "id": 6002,
+     "name": "boostedSpell dompteur7"
+    },
+    "forgets": {
+     "spellLevelId": 80506,
+     "spellId": 30401,
+     "grade": 1,
+     "name": "Ombre Fracassante [Sort 7]"
+    },
+    "learns": {
+     "spellLevelId": 80762,
+     "spellId": 30565,
+     "grade": 1,
+     "name": "Ombre Fracassante [Amélioré 7]"
+    },
+    "description": "Améliore le sort {{spell,30401,1::<b>Ombre Fracassante</b>}} : • Taille de la fourche : 4 cases > 5 cases"
+   },
+   "30478": {
+    "name": "Amélioration : Videur",
+    "boostedState": {
+     "id": 6003,
+     "name": "boostedSpell acrobate1"
+    },
+    "forgets": {
+     "spellLevelId": 80507,
+     "spellId": 30402,
+     "grade": 1,
+     "name": "Videur [Sort 1]"
+    },
+    "learns": {
+     "spellLevelId": 80766,
+     "spellId": 30567,
+     "grade": 1,
+     "name": "Videur [Amélioré 1]"
+    },
+    "description": "Améliore le sort {{spell,30402,1::<b>Videur</b>}} : • Taille de la ligne perpendiculaire : 5 cases > 7 cases • Distance de poussée : 3 cases > 4 cases"
+   },
+   "30479": {
+    "name": "Amélioration : Soutien Stratégique",
+    "boostedState": {
+     "id": 6004,
+     "name": "boostedSpell acrobate2"
+    },
+    "forgets": {
+     "spellLevelId": 80509,
+     "spellId": 30403,
+     "grade": 1,
+     "name": "Soutien Stratégique [Sort 2]"
+    },
+    "learns": {
+     "spellLevelId": 80773,
+     "spellId": 30569,
+     "grade": 1,
+     "name": "Soutien Stratégique [Amélioré 2]"
+    },
+    "description": "Améliore le sort {{spell,30403,1::<b>Soutien Stratégique</b>}} : • Taille du cercle de renvoi : 2 cases > 3 cases • Taille de la croix d'attirance : 5 cases > 7 cases • Distance d'attirance : 4 cases > 6 cases"
+   },
+   "30480": {
+    "name": "Amélioration : Voltige",
+    "boostedState": {
+     "id": 6005,
+     "name": "boostedSpell acrobate3"
+    },
+    "forgets": {
+     "spellLevelId": 80510,
+     "spellId": 30404,
+     "grade": 1,
+     "name": "Voltige [Sort 3]"
+    },
+    "learns": {
+     "spellLevelId": 80775,
+     "spellId": 30570,
+     "grade": 1,
+     "name": "Voltige [Amélioré 3]"
+    },
+    "description": "Améliore le sort {{spell,30404,1::<b>Voltige</b>}} : • Portée maximale : 5 > 7 • Lancers par tour : 2 > 3"
+   },
+   "30481": {
+    "name": "Amélioration : Aïronemane",
+    "boostedState": {
+     "id": 6006,
+     "name": "boostedSpell acrobate4"
+    },
+    "forgets": {
+     "spellLevelId": 80522,
+     "spellId": 30405,
+     "grade": 1,
+     "name": "Aïronemane [Sort 4]"
+    },
+    "learns": {
+     "spellLevelId": 80778,
+     "spellId": 30571,
+     "grade": 1,
+     "name": "Aïronemane [Amélioré 4]"
+    },
+    "description": "Améliore le sort {{spell,30405,1::<b>Aïronemane</b>}} : • Distance de poussée : 4 cases > 6 cases"
+   },
+   "30482": {
+    "name": "Amélioration : Pugnace",
+    "boostedState": {
+     "id": 6007,
+     "name": "boostedSpell acrobate5"
+    },
+    "forgets": {
+     "spellLevelId": 80511,
+     "spellId": 30406,
+     "grade": 1,
+     "name": "Pugnace [Sort 5]"
+    },
+    "learns": {
+     "spellLevelId": 80780,
+     "spellId": 30572,
+     "grade": 1,
+     "name": "Pugnace [Amélioré 5]"
+    },
+    "description": "Améliore le sort {{spell,30406,1::<b>Pugnace</b>}} : • Résistances : 25% > 50%"
+   },
+   "30483": {
+    "name": "Amélioration : Va-t-en-guerre",
+    "boostedState": {
+     "id": 6008,
+     "name": "boostedSpell acrobate6"
+    },
+    "forgets": {
+     "spellLevelId": 80512,
+     "spellId": 30407,
+     "grade": 1,
+     "name": "Va-t-en-guerre [Sort 6]"
+    },
+    "learns": {
+     "spellLevelId": 80782,
+     "spellId": 30573,
+     "grade": 1,
+     "name": "Va-t-en-guerre [Amélioré 6]"
+    },
+    "description": "Améliore le sort {{spell,30407,1::<b>Va-t-en-guerre</b>}} : • Distance de rapprochement : 2 cases > 4 cases"
+   },
+   "30484": {
+    "name": "Amélioration : Hanedimane",
+    "boostedState": {
+     "id": 6009,
+     "name": "boostedSpell acrobate7"
+    },
+    "forgets": {
+     "spellLevelId": 80513,
+     "spellId": 30408,
+     "grade": 1,
+     "name": "Hanedimane [Sort 7]"
+    },
+    "learns": {
+     "spellLevelId": 80784,
+     "spellId": 30574,
+     "grade": 1,
+     "name": "Hanedimane [Amélioré 7]"
+    },
+    "description": "Améliore le sort {{spell,30408,1::<b>Hanedimane</b>}} : • Taille de la fourche : 3 cases > 4 cases • Distance de déplacement : 4 cases > 6 cases"
+   },
+   "30485": {
+    "name": "Amélioration : Pulsation d'Énergie",
+    "boostedState": {
+     "id": 6010,
+     "name": "boostedSpell magicien1"
+    },
+    "forgets": {
+     "spellLevelId": 80514,
+     "spellId": 30409,
+     "grade": 1,
+     "name": "Pulsation d'Énergie [Sort 1]"
+    },
+    "learns": {
+     "spellLevelId": 80786,
+     "spellId": 30575,
+     "grade": 1,
+     "name": "Pulsation d'Énergie [Amélioré 1]"
+    },
+    "description": "Améliore le sort {{spell,30409,1::<b>Pulsation d'Énergie</b>}} : • Taille du cercle de soin : 2 cases > 3 cases"
+   },
+   "30486": {
+    "name": "Amélioration : Regain Vigoureux",
+    "boostedState": {
+     "id": 6011,
+     "name": "boostedSpell magicien2"
+    },
+    "forgets": {
+     "spellLevelId": 80515,
+     "spellId": 30410,
+     "grade": 1,
+     "name": "Regain Vigoureux [Sort 2]"
+    },
+    "learns": {
+     "spellLevelId": 80788,
+     "spellId": 30576,
+     "grade": 1,
+     "name": "Regain Vigoureux [Amélioré 2]"
+    },
+    "description": "Améliore le sort {{spell,30410,1::<b>Regain Vigoureux</b>}} : • Zone d'effet : cercle > tout le monde • Bonus PA et PM : 2 > 3"
+   },
+   "30487": {
+    "name": "Amélioration : Amplification",
+    "boostedState": {
+     "id": 6012,
+     "name": "boostedSpell magicien3"
+    },
+    "forgets": {
+     "spellLevelId": 80516,
+     "spellId": 30411,
+     "grade": 1,
+     "name": "Amplification [Sort 3]"
+    },
+    "learns": {
+     "spellLevelId": 80791,
+     "spellId": 30578,
+     "grade": 1,
+     "name": "Amplification [Amélioré 3]"
+    },
+    "description": "Améliore le sort {{spell,30411,1::<b>Amplification</b>}} : • Bonus de dommages et soins finaux : 20% > 30% • Bonus Critique : 30% > 50% • Bonus Dommages Poussée : 100 > 200"
+   },
+   "30488": {
+    "name": "Amélioration : Vents Contraires",
+    "boostedState": {
+     "id": 6013,
+     "name": "boostedSpell magicien4"
+    },
+    "forgets": {
+     "spellLevelId": 80517,
+     "spellId": 30412,
+     "grade": 1,
+     "name": "Vents Contraires [Sort 4]"
+    },
+    "learns": {
+     "spellLevelId": 80793,
+     "spellId": 30579,
+     "grade": 1,
+     "name": "Vents Contraires [Amélioré 4]"
+    },
+    "description": "Améliore le sort {{spell,30412,1::<b>Vents Contraires</b>}} : • Taille de la croix du malus PM : 1 > 2 • Malus PM : 2 > 3"
+   },
+   "30489": {
+    "name": "Amélioration : Vague de Dégradation",
+    "boostedState": {
+     "id": 6014,
+     "name": "boostedSpell magicien5"
+    },
+    "forgets": {
+     "spellLevelId": 80518,
+     "spellId": 30413,
+     "grade": 1,
+     "name": "Vague de Dégradation [Sort 5]"
+    },
+    "learns": {
+     "spellLevelId": 80795,
+     "spellId": 30580,
+     "grade": 1,
+     "name": "Vague de Dégradation [Amélioré 5]"
+    },
+    "description": "Améliore le sort {{spell,30413,1::<b>Vague de Dégradation</b>}} : • Taille du cercle : 2 cases > 3 cases • Malus d'érosion et de dommages finaux : 15% > 30%"
+   },
+   "30490": {
+    "name": "Amélioration : Protection Prolongée",
+    "boostedState": {
+     "id": 6015,
+     "name": "boostedSpell magicien6"
+    },
+    "forgets": {
+     "spellLevelId": 80519,
+     "spellId": 30414,
+     "grade": 1,
+     "name": "Protection Prolongée [Sort 6]"
+    },
+    "learns": {
+     "spellLevelId": 80800,
+     "spellId": 30584,
+     "grade": 1,
+     "name": "Protection Prolongée [Amélioré 6]"
+    },
+    "description": "Améliore le sort {{spell,30414,1::<b>Protection Prolongée</b>}} : • Bouclier : 3000 > 5000 • Les soins augmentent"
+   },
+   "30491": {
+    "name": "Amélioration : Délivrance",
+    "boostedState": {
+     "id": 6016,
+     "name": "boostedSpell magicien7"
+    },
+    "forgets": {
+     "spellLevelId": 80521,
+     "spellId": 30415,
+     "grade": 1,
+     "name": "Délivrance [Sort 7]"
+    },
+    "learns": {
+     "spellLevelId": 80802,
+     "spellId": 30585,
+     "grade": 1,
+     "name": "Délivrance [Amélioré 7]"
+    },
+    "description": "Améliore le sort {{spell,30415,1::<b>Délivrance</b>}} : • Lancer par tour : 1 > Lancer par tour : 3"
+   }
+  }
+ },
+ "uniqueSpells": {
+  "count": 19,
+  "byArchetype": {
+   "Dompteur": [
+    {
+     "spellId": 30602,
+     "name": "Punition Collective",
+     "adminName": "Gladiateur Unique 1",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30603,
+     "name": "Galvanisation",
+     "adminName": "Gladiateur Unique 2",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30611,
+     "name": "Relâchement de Fureur",
+     "adminName": "Gladiateur Unique 3",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30612,
+     "name": "Pulsation Chaotique",
+     "adminName": "Gladiateur Unique 4",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30613,
+     "name": "Malédiction Collatérale",
+     "adminName": "Gladiateur Unique 5",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30614,
+     "name": "Immortalité du Berserker",
+     "adminName": "Gladiateur Unique 6",
+     "apCost": 5,
+     "singleUse": true
+    }
+   ],
+   "Acrobate": [
+    {
+     "spellId": 30604,
+     "name": "Dégagez !",
+     "adminName": "Baroudeur Unique 1",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30605,
+     "name": "Courage, fuyons",
+     "adminName": "Baroudeur Unique 2",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30616,
+     "name": "Immortalité du Courageux",
+     "adminName": "Baroudeur Unique 6",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30617,
+     "name": "Malédiction Mouvante",
+     "adminName": "Baroudeur Unique 5",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30618,
+     "name": "Chamboulement",
+     "adminName": "Baroudeur Unique 4",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30619,
+     "name": "Un pour un",
+     "adminName": "Baroudeur Unique 3",
+     "apCost": 5,
+     "singleUse": true
+    }
+   ],
+   "Magicien": [
+    {
+     "spellId": 30606,
+     "name": "Influx de Vitalité",
+     "adminName": "Guérisseur Unique 1",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30607,
+     "name": "Démotivation des troupes",
+     "adminName": "Guérisseur Unique 2",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30620,
+     "name": "Immortalité du Bienfaiteur",
+     "adminName": "Guérisseur Unique 6",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30621,
+     "name": "Malédiction Régénérante",
+     "adminName": "Guérisseur Unique 5",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30622,
+     "name": "Muraille collective",
+     "adminName": "Guérisseur Unique 4",
+     "apCost": 5,
+     "singleUse": true
+    },
+    {
+     "spellId": 30623,
+     "name": "Ultime Espoir",
+     "adminName": "Guérisseur Unique 3",
+     "apCost": 5,
+     "singleUse": true
+    }
+   ],
+   "Commun": [
+    {
+     "spellId": 30615,
+     "name": "Pense Vite",
+     "adminName": "",
+     "apCost": 5,
+     "singleUse": true
+    }
+   ]
+  },
+  "rule": "obtenus par le choix id 10 (cadeau) ; usage unique (3406 sur son propre spell-level) ; détails : notes 1x_archetype_*",
+  "pulsationChaotique": {
+   "chain": "30612 : 1160 → 30667 niv.1 sur la cible puis 35-42 dégâts ; 30667 : marque la cible (5916), inflige 35-42 +20/rebond (effet 293 cumulatif), désigne l'ennemi non marqué le plus proche (2792 limite 1) puis relance 30667 sur lui (2160). 30665/30666 « Pulsion Chaotique » = scripts visuels (666).",
+   "damagePerHit_Force6000": [
+    {
+     "hit": 0,
+     "roll": [
+      35,
+      42
+     ],
+     "damage": [
+      2135,
+      2562
+     ],
+     "damageVulnerable": [
+      4270,
+      5124
+     ]
+    },
+    {
+     "hit": 1,
+     "roll": [
+      55,
+      62
+     ],
+     "damage": [
+      3355,
+      3782
+     ],
+     "damageVulnerable": [
+      6710,
+      7564
+     ]
+    },
+    {
+     "hit": 2,
+     "roll": [
+      75,
+      82
+     ],
+     "damage": [
+      4575,
+      5002
+     ],
+     "damageVulnerable": [
+      9150,
+      10004
+     ]
+    },
+    {
+     "hit": 3,
+     "roll": [
+      95,
+      102
+     ],
+     "damage": [
+      5795,
+      6222
+     ],
+     "damageVulnerable": [
+      11590,
+      12444
+     ]
+    },
+    {
+     "hit": 4,
+     "roll": [
+      115,
+      122
+     ],
+     "damage": [
+      7015,
+      7442
+     ],
+     "damageVulnerable": [
+      14030,
+      14884
+     ]
+    },
+    {
+     "hit": 5,
+     "roll": [
+      135,
+      142
+     ],
+     "damage": [
+      8235,
+      8662
+     ],
+     "damageVulnerable": [
+      16470,
+      17324
+     ]
+    }
+   ],
+   "note": "la cible initiale est touchée deux fois (30612 + 30667 niv.1, jet de base sans bonus) ; critique 0 %",
+   "status": "FAIT vérifié (données) + calcul",
+   "source": "https://api.dofusdb.fr/spells/30612 ; spell-level 80840 (https://api.dofusdb.fr/spell-levels/80840) ; https://api.dofusdb.fr/spells/30667"
+  },
+  "penseVite": {
+   "data": "5 PA ; 111 +999 PA avec délai 1 (au début du PROCHAIN tour, 1 tour) ; 3407 durée du prochain tour = 10 s",
+   "dpln": "999 PA, 15 secondes",
+   "verdict": "données actuelles : 10 s (DPLN/GD bêta : 15 s) — confirmé par Khytrayer (3.6) « 10 segundos »",
+   "status": "FAIT vérifié",
+   "source": "https://api.dofusdb.fr/spells/30615 ; spell-level 80843 (https://api.dofusdb.fr/spell-levels/80843)"
+  }
+ },
+ "boss": {
+  "monsterId": 7984,
+  "name": "Mama Troollette",
+  "stats": {
+   "level": 1000,
+   "hp": 150000,
+   "ap": 20,
+   "mp": 6,
+   "strength": 4500,
+   "dodgeAP": 20,
+   "dodgeMP": 20,
+   "source": "https://api.dofusdb.fr/monsters/7984"
+  },
+  "initialSpell": {
+   "spellId": 30430,
+   "castAt": "début du combat (startingSpellId = spell-level 80586)",
+   "casts": [
+    "30750 Passe-tour",
+    "30609 Passe-tour + TP (effets retardés de 7)",
+    "30724 Faveurs de la foule",
+    "30723 Délock (invulnérabilité)",
+    "30718 état à la mort"
+   ],
+   "source": "https://api.dofusdb.fr/spells/30430 ; spell-level 80586 (https://api.dofusdb.fr/spell-levels/80586)"
+  },
+  "preFight": {
+   "cell": 152,
+   "cellNote": "case 152 (gradins, zone isolée linkedZone 32, entourée de cases bloquant la LdV) ; la Mama est DANS la timeline dès T1 et « a toujours l'initiative » (DPLN)",
+   "state5971": {
+    "id": 5971,
+    "name": "Mama Trooll (pré fight)",
+    "flags": [
+     "isSilent",
+     "cantBeMoved",
+     "cantSwitchPosition"
+    ],
+    "stateEffectsIds": [
+     16,
+     4,
+     3,
+     18
+    ]
+   },
+   "state5971Duration": 6,
+   "passTurn": "140 « Tour annulé », durée 6",
+   "effectsOnObjectives": "plusieurs objectifs excluent `e5971` (Tout le monde veut prendre sa place, Au coin !, Pulsation Chaotique) : la Mama n'y compte pas tant qu'elle est « pré-combat »",
+   "timingHypothesis": "Les sorts de début de combat ne sont pas décomptés au premier début de tour (agent formules) : délai 7 ⇒ effets au début du T8 de la Mama (= T8 global, elle joue en premier) ; durée 6 ⇒ Passe-tour et 5971 expirent au début de son T7 ⇒ au T7 elle n'est plus « pré-combat » mais reste bloquée sur 152 (HYPOTHÈSE, conséquence : « Au coin ! » impossible au T7).",
+   "status": "FAIT vérifié (valeurs) / HYPOTHÈSE (décompte)",
+   "sources": [
+    "https://api.dofusdb.fr/spells/30750 ; spell-level 81182 (https://api.dofusdb.fr/spell-levels/81182)",
+    "https://api.dofusdb.fr/spells/30609 ; spell-level 80835 (https://api.dofusdb.fr/spell-levels/80835)"
+   ]
+  },
+  "arrival": {
+   "turn": 8,
+   "turnData": "délai 7 sur les deux effets de 30609 niv.1 (spell-level 80835)",
+   "adminNameHint": "« Passe-tour + TP T5 » : le nom interne indique une première conception à T5 ; la donnée actuelle (délai 7) donne T8",
+   "sequence": [
+    "T8, début du tour de la Mama : 406 retire 30750 (Passe-tour) ; 792 → 30609 niv.2",
+    "niv.2 : 792 → niv.3 (2960 : lance niv.4 sur la cellule [300]) + 792 → 30432 niv.1 (installe le Rassemblement au début de chacun de ses tours, TB)",
+    "niv.4 : effet 4 « Téléporte sur la case ciblée », zone C63 ⇒ 300 si libre, sinon première case libre la plus proche (observé : 287) ; puis 406 retire 30609 et 30750",
+    "Rassemblement Troollesque exécuté dès l'arrivée (observé) puis au début de chacun de ses tours"
+   ],
+   "cell": 300,
+   "fallbackObserved": 287,
+   "status": "FAIT vérifié (cellule 300, délai 7) + FAIT rapporté (T8, repli 287 : vidéos)",
+   "confidence": "haute",
+   "sources": [
+    "https://api.dofusdb.fr/spells/30609",
+    "research/data/map_annotations.json (mamaArrival*)"
+   ]
+  },
+  "rassemblementTroollesque": {
+   "spellId": 30432,
+   "trigger": "TB : début de chaque tour de la Mama après l'arrivée",
+   "zone": "croix X63 à partir de la distance 1 (les 4 lignes partant de la Mama, toute la carte)",
+   "effects": [
+    "950 état 5918 « Grabbed » (1 tour) sur les ennemis (joueurs) en ligne",
+    "6 « Attire de 63 cases » sur ses alliés `g` (Troolls) en ligne ⇒ ramenés contre elle",
+    "1103 « Repousse de 63 cases SANS dommages » sur les joueurs en ligne ⇒ jusqu'au bord = dans les pics (2000 + Vulnérable)",
+    "si l'objectif Attirance est actif (5915) : contrôle 30448"
+   ],
+   "execution": "30432 niv.2 : 1160 → niv.3 pour CHAQUE cible en ligne → niv.4 (zone complète) : exécuté N fois, sans effet supplémentaire une fois les cibles au bord",
+   "pushLines": {
+    "fromCell300": {
+     "x=17": [
+      192,
+      206,
+      219,
+      233,
+      246,
+      260,
+      273,
+      287,
+      300,
+      314,
+      327,
+      341,
+      354,
+      368,
+      381,
+      395,
+      408
+     ],
+     "y=-4": [
+      184,
+      199,
+      213,
+      228,
+      242,
+      257,
+      271,
+      286,
+      300,
+      315,
+      329,
+      344,
+      358,
+      373,
+      387,
+      402,
+      416
+     ]
+    },
+    "fromCell287": {
+     "x=17": [
+      192,
+      206,
+      219,
+      233,
+      246,
+      260,
+      273,
+      287,
+      300,
+      314,
+      327,
+      341,
+      354,
+      368,
+      381,
+      395,
+      408
+     ],
+     "y=-3": [
+      171,
+      185,
+      200,
+      214,
+      229,
+      243,
+      258,
+      272,
+      287,
+      301,
+      316,
+      330,
+      345,
+      359,
+      374,
+      388,
+      403
+     ]
+    },
+    "note": "Un personnage aligne est repousse jusqu au bord (cellule de profondeur 1, dans les pics). Observe : 300->408, 272->171, 246->192, 301->403, 329->416."
+   },
+   "sideEffect": "un Trooll attiré hors des pics devient Vulnérable ×2 pendant 1 tour (30701)",
+   "status": "FAIT vérifié",
+   "confidence": "haute",
+   "source": "https://api.dofusdb.fr/spells/30432"
+  },
+  "invulnerability": {
+   "state": {
+    "id": 56,
+    "name": "Invulnérable",
+    "flags": [
+     "invulnerable",
+     "displayTurnRemaining"
+    ],
+    "stateEffectsIds": [
+     7
+    ]
+   },
+   "appliedBy": "30723 niv.1, durée -1 (tout le combat)",
+   "unlock": "déclencheur EON5902 (la Mama ENTRE dans les pics) → 30723 niv.2 : 952 « Désactive l'état Invulnérable » durée 1 ⇒ vulnérable jusqu'au début de son prochain tour (elle joue en premier ⇒ ≈ le reste du tour global)",
+   "inPikes": "dans les pics elle a aussi le 1163 x200 (masque Def) ; PAS de vulnérabilité de sortie (pas de passif 30700)",
+   "reLock": "pour une nouvelle fenêtre, elle doit ressortir puis re-entrer dans les pics",
+   "howTo": "poussée (Acrobate) ; si Inébranlable (157 = cantBePushed seulement) : échange de place (Voltige) ou téléportation",
+   "dpln": "« il faut la placer dans le glyphe, elle deviendra vulnérable pour un tour »",
+   "matchesDPLN": true,
+   "status": "FAIT vérifié",
+   "confidence": "haute",
+   "sources": [
+    "https://api.dofusdb.fr/spells/30723",
+    "https://api.dofusdb.fr/spell-states/56"
+   ]
+  },
+  "crowdFavour": {
+   "initial": "30724 : état 5973 « Faveurs de la foule V » + 1171 +25 % dommages finaux (permanent)",
+   "perObjective": "30659 niv.1 (lancé par la Mama à chaque récompense) : V→IV→III→II→I→(aucun) + niv.2 : 1172 −5 % dommages finaux permanent",
+   "finalDamageByObjectives": {
+    "0": 125,
+    "1": 120,
+    "2": 115,
+    "3": 110,
+    "4": 105,
+    "5": 100,
+    "6": 95
+   },
+   "note": "le −5 % du niv.2 n'a pas de condition ⇒ le 6e objectif donne encore −5 % (95 %) ; DPLN : « cumulable 5 fois »",
+   "states": [
+    {
+     "id": 5973,
+     "name": "Faveurs de la foule V",
+     "flags": [],
+     "stateEffectsIds": []
+    },
+    {
+     "id": 5974,
+     "name": "Faveurs de la foule IV",
+     "flags": [],
+     "stateEffectsIds": []
+    },
+    {
+     "id": 5975,
+     "name": "Faveurs de la foule III",
+     "flags": [],
+     "stateEffectsIds": []
+    },
+    {
+     "id": 5976,
+     "name": "Faveurs de la foule II",
+     "flags": [],
+     "stateEffectsIds": []
+    },
+    {
+     "id": 5977,
+     "name": "Faveurs de la foule I",
+     "flags": [],
+     "stateEffectsIds": []
+    }
+   ],
+   "status": "FAIT vérifié",
+   "confidence": "haute",
+   "sources": [
+    "https://api.dofusdb.fr/spells/30724 ; spell-level 81098 (https://api.dofusdb.fr/spell-levels/81098)",
+    "https://api.dofusdb.fr/spells/30659"
+   ]
+  },
+  "onDeath": {
+   "spell": 30718,
+   "effect": "état 6024 « Mama Trooll Dead » sur chaque joueur (`H`) ; usage inconnu (scénario)",
+   "fightContinues": "OUI : les vagues 9 et 10 arrivent encore (FAIT rapporté, 4 vidéos)",
+   "source": "https://api.dofusdb.fr/spells/30718"
+  },
+  "expectedDamageOnPlayer_Force4500": [
+   {
+    "spell": "Troollooportation 30389 (zone X1 autour de la case d'arrivée, 2/tour)",
+    "dpln": "3 500",
+    "normal_DF100": [
+     2760,
+     3220
+    ],
+    "critical_DF100": [
+     3312,
+     3864
+    ],
+    "normal_FaveurV_DF125": [
+     3450,
+     4025
+    ],
+    "critical_FaveurV_DF125": [
+     4140,
+     4830
+    ],
+    "normal_5objectifs_DF100": [
+     2760,
+     3220
+    ],
+    "normal_FaveurV_plus_Catastrooll_DF145": [
+     4002,
+     4669
+    ]
+   },
+   {
+    "spell": "Uppertrooll 30392 (vol de vie + poussée 6, 3/tour, 1/cible)",
+    "dpln": "3 000",
+    "normal_DF100": [
+     2116,
+     2484
+    ],
+    "critical_DF100": [
+     2576,
+     2990
+    ],
+    "normal_FaveurV_DF125": [
+     2645,
+     3105
+    ],
+    "critical_FaveurV_DF125": [
+     3220,
+     3737
+    ],
+    "normal_5objectifs_DF100": [
+     2116,
+     2484
+    ],
+    "normal_FaveurV_plus_Catastrooll_DF145": [
+     3068,
+     3601
+    ]
+   },
+   {
+    "spell": "Mitroollette de Poings 30393 (cercle C3, 1/tour)",
+    "dpln": "4 500",
+    "normal_DF100": [
+     4278,
+     4968
+    ],
+    "critical_DF100": [
+     5106,
+     5934
+    ],
+    "normal_FaveurV_DF125": [
+     5347,
+     6210
+    ],
+    "critical_FaveurV_DF125": [
+     6382,
+     7417
+    ],
+    "normal_5objectifs_DF100": [
+     4278,
+     4968
+    ],
+    "normal_FaveurV_plus_Catastrooll_DF145": [
+     6203,
+     7203
+    ]
+   }
+  ],
+  "damageNote": "Force 4500 ⇒ ×46 ; dommages finaux 100 + 25 (Faveur V) − 5×objectifs (+20 Catastrooll, effet 1171 durée 0 : portée exacte non établie) ; DPLN semble donner les valeurs sans Faveur (Mitroollette « 4 500 ») ou avec (Uppertrooll « 3 000 »)."
+ },
+ "waves": {
+  "inData": {
+   "found": false,
+   "evidence": [
+    "aucun effet d'invocation (181/1008/1011/405…) des sorts 30370-30800 ne fait apparaître 7981/7982/7983 (INDEX DofusDB, vérifié)",
+    "le « Stratège Dompteur » 7985/7986 N'EST PAS l'entité des vagues : c'est l'invocation (0 PA, 0 PM, 5500 PV) du sort Soutien Stratégique de l'Acrobate (30403/30569, effet 181), sort de départ 30421/30568",
+    "les seuls cellIds explicites (hors pics et 300) appartiennent à « Lancer de dagues » / « Course de larves », autres attractions de la Foire (autre carte : 4 des 9 cellules « Fond de map » sont non marchables sur 139988488)"
+   ],
+   "conclusion": "vagues gérées par le script serveur du combat (non exposé)",
+   "status": "FAIT vérifié",
+   "confidence": "haute"
+  },
+  "composition": {
+   "1": {
+    "Troollibre": 2
+   },
+   "2": {
+    "Troollibre": 1,
+    "Artroolleur": 2
+   },
+   "3": {
+    "Nitrooll": 2,
+    "Artroolleur": 1
+   },
+   "4": {
+    "Nitrooll": 1,
+    "Artroolleur": 1,
+    "Troollibre": 1
+   },
+   "5": {
+    "Troollibre": 3
+   },
+   "6": {
+    "Artroolleur": 3
+   },
+   "7": {
+    "Nitrooll": 3
+   },
+   "8": {
+    "Mama Troollette": 1
+   },
+   "9": {
+    "Nitrooll": 1,
+    "Troollibre": 2,
+    "Artroolleur": 2
+   },
+   "10": {
+    "Nitrooll": 2,
+    "Troollibre": 2,
+    "Artroolleur": 2
+   }
+  },
+  "compositionSource": "https://www.dofuspourlesnoobs.com/gladiatrool.html (maj 21/05/2026) ; concordance vidéos (V1, V8, V10) et comptage agent carte",
+  "compositionStatus": "FAIT rapporté",
+  "compositionConfidence": "haute",
+  "timing": {
+   "V1": "fin du placement",
+   "V2-V7, V9": "début du tour global, juste après la fenêtre de bonus",
+   "V8": "arrivée de la Mama (sort retardé 30609, pas un spawn)",
+   "V10": "début de T10 (pas de fenêtre de bonus)",
+   "accumulation": "les vagues arrivent même si la précédente vit encore",
+   "status": "FAIT rapporté (agent carte, 11 combats ; vidéos)"
+  },
+  "spawnCells": {
+   "V1": [
+    242,
+    358
+   ],
+   "model": {
+    "status": "HYPOTHESE (forte regularite observee)",
+    "rule": "Positions tirees, a chaque vague, parmi un petit ensemble de cellules fixes relatives au centre 300, dependant du type de monstre et de la vague. Pas de dependance evidente a la position des joueurs. V1 est deterministe.",
+    "slotsByType": {
+     "artroolleur": {
+      "loin (V2,V3)": [
+       187,
+       188,
+       411,
+       412
+      ],
+      "distance 6 (V4,V6,V9,V10)": [
+       214,
+       241,
+       218,
+       247,
+       204,
+       353,
+       359,
+       386
+      ],
+      "rares": [
+       227,
+       367,
+       291,
+       372,
+       339,
+       219
+      ]
+     },
+     "nitrooll": {
+      "loin (V3)": [
+       290,
+       311,
+       255,
+       318,
+       283,
+       262
+      ],
+      "distance 4-5 (V4,V7,V9,V10)": [
+       270,
+       330,
+       370,
+       231,
+       371,
+       230,
+       274,
+       355
+      ],
+      "rares": [
+       316,
+       317,
+       425,
+       246,
+       313
+      ]
+     },
+     "troollibre": {
+      "V1": [
+       242,
+       358
+      ],
+      "V2": [
+       242,
+       358,
+       246
+      ],
+      "distance 2-4 (V4,V5,V9,V10)": [
+       257,
+       344,
+       260,
+       341,
+       298,
+       356,
+       244,
+       342,
+       329,
+       284,
+       245
+      ],
+      "rares": [
+       271,
+       286,
+       314,
+       315,
+       368,
+       230,
+       274,
+       370
+      ]
+     }
+    },
+    "simulatorAdvice": "Tirer les positions dans les listes candidates de la vague (poids = nb d observations), en excluant les cellules occupees ; V1 fixe {242,358}."
+   },
+   "detail": "research/data/map_annotations.json : monsterSpawnCells.waveN.candidates, perFightWaveSpawns",
+   "status": "FAIT rapporté + HYPOTHÈSE"
+  }
+ },
+ "victoryCondition": {
+  "victory": {
+   "condition": "tous les ennemis (camp Def : Troolls ET Mama) sont morts ET l'état 5965 « combatCanFinish » est posé sur Sce",
+   "finishTrigger": {
+    "spellId": 30577,
+    "name": "Finish Fight Trigger",
+    "effect": "950 état 5965 « combatCanFinish » sur Sce, durée -1",
+    "castBy": "serveur (sort racine, jamais référencé)",
+    "when": "HYPOTHÈSE : après l'apparition de la vague 10 (GD : « à partir du tour 10 il n'y a plus de vague, vous pouvez gagner tour 10 ou 11 »)",
+    "source": "https://api.dofusdb.fr/spells/30577 ; spell-level 80790 (https://api.dofusdb.fr/spell-levels/80790)"
+   },
+   "killingMamaEndsFight": false,
+   "earliestWin": "T10 (si V10 et tous les restes meurent pendant T10), sinon T11+",
+   "status": "FAIT vérifié (état) + FAIT rapporté (condition : GD, forums, 4 vidéos) + HYPOTHÈSE (moment du déclencheur)",
+   "confidence": "haute (condition) / moyenne (moment)"
+  },
+  "defeat": {
+   "condition": "tous les joueurs morts (règle standard) ; gagner avec 1 survivant est possible",
+   "status": "FAIT rapporté"
+  },
+  "turnLimit": {
+   "value": null,
+   "note": "aucune limite dans les données ni les sources fiables",
+   "status": "FAIT rapporté / HYPOTHÈSE"
+  }
+ },
+ "turnStructure": {
+  "fightStart": [
+   "placement : joueurs sur 286/287/314/315 ; Mama sur 152 (dans la timeline)",
+   "choix d'archétype (id 16) pour chaque joueur → passif 30644/30648/30649 (état 5899/5900/5901) + sort de départ",
+   "sorts de départ : joueurs 30639 Gladiatrooller (60 s par tour, état 5970 : ne tacle pas / pas taclé, passif 30700) ; Troolls 30694 Trooler (30700 + contrôle Empalé) ; Mama 30430",
+   "serveur/Sce : pose du Glyphe de combat 30390 (pics) ; 30443 Objectif (Empalé imposé)",
+   "vague 1 : 2 Troollibres sur 242 et 358"
+  ],
+  "globalTurnN": [
+   "[T2..T9] fenêtre de bonus (choix 17, ≈30 s)",
+   "[T2..T7, T9, T10] apparition de la vague N (T8 : la Mama arrive à son propre début de tour)",
+   "[T2..T9] un nouveau cadeau (30566) sur une case libre parmi 272, 273, 299, 301, 327, 328, 329 (≈ 72 % des tours)",
+   "timeline : la Mama d'abord (T1-T7 : tour annulé ; T8 : arrivée + Rassemblement ; ensuite Rassemblement à chaque début de tour), puis joueurs et Troolls selon l'initiative",
+   "pendant les tours : glyphes (pics), déclencheurs d'objectifs, votes (3404) en pause dès qu'un objectif est validé",
+   "fin du tour global : 30710 Objectif Check",
+   "[T10] 30577 Finish Fight Trigger (HYPOTHÈSE)"
+  ],
+  "status": "FAIT vérifié (contenu des sorts) + FAIT rapporté (ordre et moments observés) + HYPOTHÈSE (ordre exact serveur)",
+  "confidence": "moyenne"
+ },
+ "otherSystemSpells": [
+  {
+   "spellIds": [
+    30373,
+    30374,
+    30375,
+    30377,
+    30378,
+    30379,
+    30344,
+    30345,
+    30346,
+    30696,
+    30697,
+    30698,
+    30702,
+    30703,
+    30705,
+    30706,
+    30738
+   ],
+   "name": "Lancer de dagues / Dague Classique / Dagues Jumelles / Dague Instable",
+   "role": "AUTRE attraction de la Foire du Trool (race 312 « Lancer de dagues » : Lanceur de dagues 7975/7992, Poutch Simple/Double/Triple 7976-7978, Fond de map 7979, Belguel 7991). 30373 tue les cibles puis 30375 invoque des Poutchs sur des cellules tirées au hasard (random 11,11 % chacune) ; 30374 invoque les « Fond de map » ; 30377/30379 : tir en 3 lignes vers la cible choisie ; score 30696-30698.",
+   "gladiatroolRelevance": "AUCUNE : leurs cellIds se rapportent à une autre carte ; à ne pas utiliser pour le simulateur",
+   "status": "FAIT vérifié"
+  },
+  {
+   "spellIds": [
+    30692,
+    30699
+   ],
+   "name": "Ligne d'arrivée (Course de larves)",
+   "role": "autre attraction (course de larves)",
+   "gladiatroolRelevance": "aucune",
+   "status": "FAIT vérifié"
+  },
+  {
+   "spellIds": [
+    30422
+   ],
+   "name": "Rugissement [Sort initial]",
+   "role": "Rugissement du « Chaton Enragé » (type 2288, invocation de classe) : +30/60/90 Puissance à l'invocateur. Dans la plage d'ids par hasard.",
+   "gladiatroolRelevance": "aucune",
+   "status": "FAIT vérifié"
+  },
+  {
+   "spellIds": [
+    30665,
+    30666
+   ],
+   "name": "Pulsion Chaotique [Script Proc / Script Link]",
+   "role": "effets visuels (666) de la chaîne Pulsation Chaotique (30612/30667)",
+   "gladiatroolRelevance": "visuel seulement",
+   "status": "FAIT vérifié"
+  },
+  {
+   "spellIds": [
+    30656
+   ],
+   "name": "Déclenche un objectif",
+   "role": "infobulle « Déclenche un objectif » (666), lancée par chaque objectif",
+   "gladiatroolRelevance": "aucune mécanique",
+   "status": "FAIT vérifié"
+  },
+  {
+   "spellIds": [
+    30470
+   ],
+   "name": "Améliore un sort",
+   "role": "infobulle (666) des améliorations",
+   "gladiatroolRelevance": "aucune mécanique",
+   "status": "FAIT vérifié"
+  },
+  {
+   "spellIds": [
+    30640,
+    30641,
+    30642
+   ],
+   "name": "Baroudeur : / Gladiateur : / Guérisseur :",
+   "role": "infobulles de l'Amplification du Magicien (effet selon l'archétype de la cible)",
+   "gladiatroolRelevance": "affichage",
+   "status": "FAIT vérifié"
+  },
+  {
+   "spellIds": [
+    30739,
+    30687,
+    30660,
+    30661,
+    30719
+   ],
+   "name": "animations",
+   "role": "Transformation d'Archétype, Event Glyph Manager [Animation], Rassemblement [Animation allié/ennemi], Pense Vite [FX]",
+   "gladiatroolRelevance": "visuel",
+   "status": "FAIT vérifié"
+  }
+ ],
+ "simulatorParameters": {
+  "playersDoubledInsideSpikes": {
+   "default": false,
+   "why": "données : x200 de l'aura sur Def seulement",
+   "alt": "True = lecture DPLN"
+  },
+  "playerTurnStartSpikeDamage": {
+   "default": 1000,
+   "alt": 2000
+  },
+  "stackExitAndInsideVulnerability": {
+   "default": true,
+   "why": "les 1163 se multiplient (code client) ⇒ ×4 pour un monstre ré-entré < 1 tour après sa sortie",
+   "confidence": "basse-moyenne"
+  },
+  "acclamationDoubleApplication": {
+   "default": false
+  },
+  "mamaArrivalTurn": {
+   "default": 8
+  },
+  "mamaArrivalCell": {
+   "default": 300,
+   "fallback": "première case libre la plus proche (observé 287)"
+  },
+  "pushKillCountsForKillObjectives": {
+   "default": true,
+   "alt": false,
+   "why": "rapport joueur contraire (Meurtres en série)"
+  },
+  "glyphKillCreditedToPlayer": {
+   "default": false,
+   "why": "le tueur est le poseur du glyphe (Sce)"
+  },
+  "maxObjectives": {
+   "default": 6
+  }
+ },
+ "discrepancies": [
+  {
+   "topic": "Vulnérable",
+   "data": "×2 (1163 x200 %)",
+   "DPLN": "+200 %",
+   "resolution": "données (+ vidéos)"
+  },
+  {
+   "topic": "Début de tour dans les pics (joueur)",
+   "data": "1000",
+   "DPLN": "2000",
+   "resolution": "non tranché"
+  },
+  {
+   "topic": "x200 des joueurs dans les pics",
+   "data": "non (seulement 1 tour après la sortie)",
+   "DPLN": "oui",
+   "resolution": "non tranché ; défaut = données"
+  },
+  {
+   "topic": "Acclamation résistante (Magicien)",
+   "data": "15 %",
+   "DPLN": "10 %",
+   "resolution": "données"
+  },
+  {
+   "topic": "Pense Vite",
+   "data": "999 PA, tour de 10 s",
+   "DPLN": "999 PA, 15 s",
+   "resolution": "données (Khytrayer 3.6 : 10 s)"
+  },
+  {
+   "topic": "Faveur de la Mama",
+   "data": "−5 % par objectif, sans plafond (6e objectif ⇒ 95 %)",
+   "DPLN": "cumulable 5 fois",
+   "resolution": "données (6e objectif rare)"
+  },
+  {
+   "topic": "Passif Gladiatrooller",
+   "data": "+3000 Puissance / ±5000 Vitalité selon archétype",
+   "DPLN": "30 000 PV pour tous, dégâts ×61",
+   "resolution": "bonus non appliqués (lancé avant le choix) — agents archétypes"
+  },
+  {
+   "topic": "Arrivée de la Mama",
+   "data": "délai 7 ⇒ T8 (nom interne « TP T5 »)",
+   "DPLN": "« tour 8 (?) »",
+   "resolution": "T8"
+  },
+  {
+   "topic": "Objectifs proposés",
+   "data": "paliers de 4 objectifs",
+   "DPLN": "liste de 21 sans palier",
+   "resolution": "complémentaires"
+  }
+ ],
+ "openQuestions": [
+  "Portée exacte des masques Atq/Def/Sce (sémantique DOFUS 3 non documentée) : les joueurs sont-ils ×2 dans les pics ?",
+  "Contenu des listes de choix 10/11-15/16/17 (côté serveur) : nombre de cartes, probabilités, critères d'apparition (ex. objectifs liés à la Mama avant T8).",
+  "Moment exact du lancement de 30710 (fin de tour global) et de 30577 (T10 ?).",
+  "Double application des Acclamations (carte + 30589).",
+  "Ré-entrée dans les pics < 1 tour après une sortie : ×4 réel ?",
+  "Décompte des durées de la Mama (5971 expire-t-il au T7 ?).",
+  "Crédit des morts par dommages de poussée / par le glyphe pour les objectifs de kills.",
+  "Seuils V#/v# côté serveur (≤ / < ; v100 = PV pleins)."
+ ]
+}

@@ -10,3 +10,4 @@ __pycache__/
 tools/**/cache/
 tools/**/node_modules/
 .DS_Store
+research/figures/*_overlay.png

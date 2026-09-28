@@ -1,0 +1,124 @@
+{
+ "113": {
+  "id": 113,
+  "superRaceId": 25,
+  "aggressiveZoneSize": 0,
+  "aggressiveLevelDiff": 0,
+  "aggressiveImmunityCriterion": "",
+  "aggressiveAttackDelay": 0,
+  "monsters": [
+   3476,
+   3477,
+   3478,
+   3479,
+   3480,
+   3481,
+   3482,
+   3483,
+   3484,
+   3485,
+   3486,
+   3487,
+   3522
+  ],
+  "name": {
+   "id": "484442",
+   "de": "Monster der Kartonpath-Insel",
+   "en": "Krismahlo Island Monsters",
+   "es": "Monstruos de la isla Rokartón",
+   "fr": "Monstres de l'île de Kartonpath",
+   "pt": "Monstros da Ilha de Pamapelche"
+  },
+  "className": "MonsterRaceData",
+  "m_id": 113,
+  "createdAt": "2026-03-03T17:13:37.052Z",
+  "updatedAt": "2026-03-03T17:13:37.052Z"
+ },
+ "220": {
+  "id": 220,
+  "superRaceId": 28,
+  "aggressiveZoneSize": 0,
+  "aggressiveLevelDiff": 0,
+  "aggressiveImmunityCriterion": "",
+  "aggressiveAttackDelay": 0,
+  "monsters": [
+   3112,
+   3113,
+   3114,
+   3120,
+   5161,
+   5162,
+   5163
+  ],
+  "name": {
+   "id": "1133607",
+   "de": "Beschwörungen der Klasse Halsabschneider",
+   "en": "Rogue Class Summons",
+   "es": "Invocaciones de clase Tymador",
+   "fr": "Invocations de classe Roublard",
+   "pt": "Invocações de classe Ladino"
+  },
+  "className": "MonsterRaceData",
+  "m_id": 220,
+  "createdAt": "2026-03-03T17:13:37.053Z",
+  "updatedAt": "2026-03-03T17:13:37.053Z"
+ },
+ "312": {
+  "id": 312,
+  "superRaceId": 46,
+  "aggressiveZoneSize": 0,
+  "aggressiveLevelDiff": 0,
+  "aggressiveImmunityCriterion": "",
+  "aggressiveAttackDelay": 0,
+  "monsters": [
+   7975,
+   7976,
+   7977,
+   7978,
+   7979,
+   7991,
+   7992
+  ],
+  "name": {
+   "id": "1099897",
+   "de": "Dolchwurf",
+   "en": "Dagger Throw",
+   "es": "Lanzamiento de dagas",
+   "fr": "Lancer de dagues",
+   "pt": "Arremesso de Adagas"
+  },
+  "className": "MonsterRaceData",
+  "m_id": 312,
+  "createdAt": "2026-03-03T17:13:37.053Z",
+  "updatedAt": "2026-03-03T17:13:37.053Z"
+ },
+ "313": {
+  "id": 313,
+  "superRaceId": 46,
+  "aggressiveZoneSize": 0,
+  "aggressiveLevelDiff": 0,
+  "aggressiveImmunityCriterion": "",
+  "aggressiveAttackDelay": 0,
+  "monsters": [
+   7980,
+   7981,
+   7982,
+   7983,
+   7984,
+   7985,
+   7986
+  ],
+  "name": {
+   "id": "1088621",
+   "de": "Gladiatrool",
+   "en": "Gladiatrool",
+   "es": "Gladiatrool",
+   "fr": "Gladiatrool",
+   "pt": "Gladiatrool"
+  },
+  "className": "MonsterRaceData",
+  "m_id": 313,
+  "createdAt": "2026-03-03T17:13:37.053Z",
+  "updatedAt": "2026-03-03T17:13:37.053Z"
+ }
+}

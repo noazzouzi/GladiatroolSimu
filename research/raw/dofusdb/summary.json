@@ -1,0 +1,64 @@
+{
+ "generated_at": "2026-09-28T12:30:22+00:00",
+ "api": "https://api.dofusdb.fr",
+ "params": {
+  "range": [
+   30370,
+   30700
+  ],
+  "extra_range": [
+   30701,
+   30800
+  ],
+  "extra_types": [
+   3834,
+   3864,
+   3872,
+   3883,
+   3915,
+   3919,
+   3920
+  ],
+  "races": [
+   313
+  ],
+  "maps": [
+   139988485,
+   139725313
+  ],
+  "subareas": [
+   84
+  ],
+  "name_regexes": {
+   "name.fr": [
+    "Trool",
+    "Gladia"
+   ],
+   "adminName": [
+    "Trool",
+    "Gladia"
+   ]
+  }
+ },
+ "counts": {
+  "spells": 373,
+  "spells_in_range": 284,
+  "spells_seeds": 312,
+  "spells_added_by_closure": 61,
+  "spell_levels": 642,
+  "effects_normal": 2663,
+  "effects_critical": 123,
+  "distinct_effect_ids": 106,
+  "states": 268,
+  "monsters": 22,
+  "races": 4,
+  "spell_types": 116,
+  "reference_edges": 2549,
+  "cell_refs": 1022,
+  "unresolved": 1,
+  "closure_rounds": 6
+ },
+ "http_requests": 187,
+ "cache_hits": 26,
+ "elapsed_s": 99.7
+}

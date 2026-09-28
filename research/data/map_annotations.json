@@ -1,0 +1,2980 @@
+{
+ "mapId": 139988488,
+ "mapName": "Arene du Gladiatrool (instance de combat)",
+ "generatedOn": "2026-09-28",
+ "producedBy": "agent CARTE - analyse visuelle (notes : research/notes/40_carte_positions.md)",
+ "coordinateSystem": {
+  "cellIds": "0..559, 14 colonnes x 40 demi-rangees, rangees impaires decalees",
+  "mapPoint": "a,r=divmod(id,28); r<14 -> (a+r, r-a) ; sinon (a+1+r-14, r-14-a). Centre 300 = (17,-4). offsetFrom300 = (x-17, y+4).",
+  "inLine": "meme x ou meme y (MapPoint)",
+  "source": "identique a research/data/map_139988488.json (agent donnees)"
+ },
+ "fightMap": {
+  "value": 139988488,
+  "confidence": "haute",
+  "sources": [
+   "139 988 488 : https://www.twitch.tv/videos/2852548819, 11 combats, cadrage identique ; recalage SIFT image video -> rendu https://api.dofusdb.fr/img/maps/1/139988488.jpg : 998 points d accord (contre 316 pour 139988485 et 18 pour 139725313)",
+   "DPLN tuto2k-5_orig.jpg (vue de l arene = rendu 139988488)"
+  ]
+ },
+ "spikeGlyphCells": [
+  131,
+  132,
+  133,
+  144,
+  145,
+  146,
+  147,
+  148,
+  149,
+  157,
+  158,
+  159,
+  160,
+  161,
+  162,
+  163,
+  171,
+  172,
+  177,
+  178,
+  184,
+  185,
+  191,
+  192,
+  198,
+  199,
+  206,
+  207,
+  211,
+  212,
+  220,
+  221,
+  225,
+  226,
+  235,
+  236,
+  239,
+  249,
+  253,
+  264,
+  266,
+  267,
+  277,
+  278,
+  281,
+  292,
+  294,
+  295,
+  305,
+  306,
+  309,
+  320,
+  322,
+  323,
+  333,
+  334,
+  337,
+  348,
+  351,
+  361,
+  365,
+  366,
+  375,
+  376,
+  379,
+  380,
+  388,
+  389,
+  394,
+  395,
+  402,
+  403,
+  408,
+  409,
+  415,
+  416,
+  423,
+  424,
+  429,
+  430,
+  437,
+  438,
+  439,
+  440,
+  441,
+  442,
+  443,
+  452,
+  453,
+  454,
+  455,
+  456,
+  457,
+  467,
+  468,
+  469
+ ],
+ "spikeGlyphCellsRawSpellList": [
+  131,
+  132,
+  133,
+  144,
+  145,
+  146,
+  147,
+  148,
+  149,
+  157,
+  158,
+  159,
+  160,
+  161,
+  162,
+  163,
+  171,
+  172,
+  177,
+  178,
+  184,
+  185,
+  191,
+  192,
+  198,
+  199,
+  206,
+  207,
+  211,
+  212,
+  220,
+  221,
+  225,
+  226,
+  235,
+  236,
+  239,
+  249,
+  250,
+  253,
+  264,
+  266,
+  267,
+  277,
+  278,
+  281,
+  292,
+  293,
+  294,
+  295,
+  305,
+  306,
+  309,
+  320,
+  321,
+  322,
+  323,
+  333,
+  334,
+  337,
+  348,
+  351,
+  361,
+  362,
+  365,
+  366,
+  375,
+  376,
+  379,
+  380,
+  388,
+  389,
+  394,
+  395,
+  402,
+  403,
+  408,
+  409,
+  415,
+  416,
+  423,
+  424,
+  429,
+  430,
+  437,
+  438,
+  439,
+  440,
+  441,
+  442,
+  443,
+  452,
+  453,
+  454,
+  455,
+  456,
+  457,
+  467,
+  468,
+  469
+ ],
+ "spikeGlyphNonWalkableListed": [
+  250,
+  293,
+  321,
+  362
+ ],
+ "spikeGlyphConfidence": "haute",
+ "spikeGlyphSources": [
+  "sort 30390 Glyphe de combat, spell-level 80489 (DofusDB, liste de 102 ids, 100 distincts)",
+  "dalles trouees du rendu 139988488 : texture (ecart-type de luminance) AUC 0.981 pics vs hors pics, 0.81-0.89 si grille decalee d une case",
+  "video https://www.twitch.tv/videos/2852548819 : AUC 0.957 sur une image 1080p de placement (s1257_05), 0.80-0.87 si decalee",
+  "recoupe research/data/map_139988488.json (agent donnees) : identique"
+ ],
+ "playerStartCells": [
+  286,
+  287,
+  314,
+  315
+ ],
+ "playerStartConfidence": "haute",
+ "playerStartSources": [
+  "cellules red du client (research/data/map_139988488.json)",
+  "video : anneaux bleus sur 286/287/314/315 pendant la phase de placement de chaque combat (14 debuts de combat detectes)"
+ ],
+ "monsterSpawnCells": {
+  "wave1": {
+   "composition_DPLN": "2 Troollibres",
+   "turn": 1,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 242,
+     "offsetFrom300": [
+      -4,
+      0
+     ],
+     "fights": 11
+    },
+    {
+     "cell": 358,
+     "offsetFrom300": [
+      4,
+      0
+     ],
+     "fights": 10
+    },
+    {
+     "cell": 171,
+     "offsetFrom300": [
+      -8,
+      1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 402,
+     "offsetFrom300": [
+      7,
+      0
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "haute",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel",
+   "fixedCells": [
+    242,
+    358
+   ],
+   "note": "FAIT observe : 11/11 combats, les 2 Troollibres apparaissent sur 242 (-4,0) et 358 (+4,0), alignes avec 286/315 sur l axe y=-4 du centre 300. Les autres cellules (199, 402, 171) sont des monstres deja deplaces/pousses a la premiere image exploitable."
+  },
+  "wave2": {
+   "composition_DPLN": "1 Troollibre + 2 Artroolleurs",
+   "turn": 2,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 412,
+     "offsetFrom300": [
+      4,
+      -4
+     ],
+     "fights": 8
+    },
+    {
+     "cell": 188,
+     "offsetFrom300": [
+      -4,
+      4
+     ],
+     "fights": 6
+    },
+    {
+     "cell": 187,
+     "offsetFrom300": [
+      -5,
+      3
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 358,
+     "offsetFrom300": [
+      4,
+      0
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 242,
+     "offsetFrom300": [
+      -4,
+      0
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 411,
+     "offsetFrom300": [
+      3,
+      -5
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 246,
+     "offsetFrom300": [
+      0,
+      4
+     ],
+     "fights": 2
+    }
+   ],
+   "confidence": "haute",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel",
+   "structure": {
+    "artroolleurs": "un sur {187,188} (coin -x+y, distance 8 du centre) et un sur {411,412} (coin +x-y, distance 8)",
+    "troollibre": "un sur {242,358,246} (distance 4, sur un axe du centre)"
+   }
+  },
+  "wave3": {
+   "composition_DPLN": "2 Nitroolls + 1 Artroolleur",
+   "turn": 3,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 290,
+     "offsetFrom300": [
+      3,
+      4
+     ],
+     "fights": 8
+    },
+    {
+     "cell": 311,
+     "offsetFrom300": [
+      -3,
+      -4
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 255,
+     "offsetFrom300": [
+      -5,
+      -2
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 412,
+     "offsetFrom300": [
+      4,
+      -4
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 188,
+     "offsetFrom300": [
+      -4,
+      4
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 187,
+     "offsetFrom300": [
+      -5,
+      3
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 283,
+     "offsetFrom300": [
+      -4,
+      -3
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 318,
+     "offsetFrom300": [
+      4,
+      3
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 411,
+     "offsetFrom300": [
+      3,
+      -5
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 262,
+     "offsetFrom300": [
+      2,
+      5
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "haute",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel",
+   "structure": {
+    "nitroolls": "2 cellules a distance 7 du centre, souvent opposees : {290,311}, {283,318}, {255,290}, {262,311}, {255,318}, {283,290}",
+    "artroolleur": "un coin distance 8 : {187,188,411,412}"
+   }
+  },
+  "wave4": {
+   "composition_DPLN": "1 Nitrooll + 1 Artroolleur + 1 Troollibre",
+   "turn": 4,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 231,
+     "offsetFrom300": [
+      -2,
+      3
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 353,
+     "offsetFrom300": [
+      -1,
+      -5
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 218,
+     "offsetFrom300": [
+      -1,
+      5
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 230,
+     "offsetFrom300": [
+      -3,
+      2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 247,
+     "offsetFrom300": [
+      1,
+      5
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 257,
+     "offsetFrom300": [
+      -3,
+      0
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 298,
+     "offsetFrom300": [
+      -2,
+      -2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 344,
+     "offsetFrom300": [
+      3,
+      0
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 356,
+     "offsetFrom300": [
+      2,
+      -2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 359,
+     "offsetFrom300": [
+      5,
+      1
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 370,
+     "offsetFrom300": [
+      2,
+      -3
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 371,
+     "offsetFrom300": [
+      3,
+      -2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 214,
+     "offsetFrom300": [
+      -5,
+      1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 219,
+     "offsetFrom300": [
+      0,
+      6
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 241,
+     "offsetFrom300": [
+      -5,
+      -1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 260,
+     "offsetFrom300": [
+      0,
+      3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 270,
+     "offsetFrom300": [
+      -3,
+      -1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 325,
+     "offsetFrom300": [
+      -2,
+      -4
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 329,
+     "offsetFrom300": [
+      2,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 341,
+     "offsetFrom300": [
+      0,
+      -3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 342,
+     "offsetFrom300": [
+      1,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 383,
+     "offsetFrom300": [
+      2,
+      -4
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 386,
+     "offsetFrom300": [
+      5,
+      -1
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "moyenne",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel"
+  },
+  "wave5": {
+   "composition_DPLN": "3 Troollibres",
+   "turn": 5,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 344,
+     "offsetFrom300": [
+      3,
+      0
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 298,
+     "offsetFrom300": [
+      -2,
+      -2
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 257,
+     "offsetFrom300": [
+      -3,
+      0
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 260,
+     "offsetFrom300": [
+      0,
+      3
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 341,
+     "offsetFrom300": [
+      0,
+      -3
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 342,
+     "offsetFrom300": [
+      1,
+      -2
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 356,
+     "offsetFrom300": [
+      2,
+      -2
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 230,
+     "offsetFrom300": [
+      -3,
+      2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 244,
+     "offsetFrom300": [
+      -2,
+      2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 284,
+     "offsetFrom300": [
+      -3,
+      -2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 329,
+     "offsetFrom300": [
+      2,
+      0
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 242,
+     "offsetFrom300": [
+      -4,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 271,
+     "offsetFrom300": [
+      -2,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 274,
+     "offsetFrom300": [
+      1,
+      3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 314,
+     "offsetFrom300": [
+      0,
+      -1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 315,
+     "offsetFrom300": [
+      1,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 368,
+     "offsetFrom300": [
+      0,
+      -5
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 370,
+     "offsetFrom300": [
+      2,
+      -3
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "moyenne",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel"
+  },
+  "wave6": {
+   "composition_DPLN": "3 Artroolleurs",
+   "turn": 6,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 353,
+     "offsetFrom300": [
+      -1,
+      -5
+     ],
+     "fights": 6
+    },
+    {
+     "cell": 386,
+     "offsetFrom300": [
+      5,
+      -1
+     ],
+     "fights": 6
+    },
+    {
+     "cell": 241,
+     "offsetFrom300": [
+      -5,
+      -1
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 218,
+     "offsetFrom300": [
+      -1,
+      5
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 247,
+     "offsetFrom300": [
+      1,
+      5
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 204,
+     "offsetFrom300": [
+      -2,
+      5
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 214,
+     "offsetFrom300": [
+      -5,
+      1
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 359,
+     "offsetFrom300": [
+      5,
+      1
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 227,
+     "offsetFrom300": [
+      -6,
+      -1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 257,
+     "offsetFrom300": [
+      -3,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 273,
+     "offsetFrom300": [
+      0,
+      2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 291,
+     "offsetFrom300": [
+      4,
+      5
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 298,
+     "offsetFrom300": [
+      -2,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 315,
+     "offsetFrom300": [
+      1,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 327,
+     "offsetFrom300": [
+      0,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 339,
+     "offsetFrom300": [
+      -2,
+      -5
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 344,
+     "offsetFrom300": [
+      3,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 367,
+     "offsetFrom300": [
+      -1,
+      -6
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 372,
+     "offsetFrom300": [
+      4,
+      -1
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "moyenne-haute",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel"
+  },
+  "wave7": {
+   "composition_DPLN": "3 Nitroolls",
+   "turn": 7,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 370,
+     "offsetFrom300": [
+      2,
+      -3
+     ],
+     "fights": 7
+    },
+    {
+     "cell": 270,
+     "offsetFrom300": [
+      -3,
+      -1
+     ],
+     "fights": 6
+    },
+    {
+     "cell": 330,
+     "offsetFrom300": [
+      3,
+      1
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 231,
+     "offsetFrom300": [
+      -2,
+      3
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 371,
+     "offsetFrom300": [
+      3,
+      -2
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 274,
+     "offsetFrom300": [
+      1,
+      3
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 230,
+     "offsetFrom300": [
+      -3,
+      2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 246,
+     "offsetFrom300": [
+      0,
+      4
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 260,
+     "offsetFrom300": [
+      0,
+      3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 313,
+     "offsetFrom300": [
+      -1,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 316,
+     "offsetFrom300": [
+      2,
+      1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 317,
+     "offsetFrom300": [
+      3,
+      2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 355,
+     "offsetFrom300": [
+      1,
+      -3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 356,
+     "offsetFrom300": [
+      2,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 425,
+     "offsetFrom300": [
+      3,
+      -6
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "moyenne-haute",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel"
+  },
+  "wave9": {
+   "composition_DPLN": "1 Nitrooll + 2 Troollibres + 2 Artroolleurs",
+   "turn": 9,
+   "observedFights": 11,
+   "candidates": [
+    {
+     "cell": 214,
+     "offsetFrom300": [
+      -5,
+      1
+     ],
+     "fights": 8
+    },
+    {
+     "cell": 341,
+     "offsetFrom300": [
+      0,
+      -3
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 370,
+     "offsetFrom300": [
+      2,
+      -3
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 218,
+     "offsetFrom300": [
+      -1,
+      5
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 260,
+     "offsetFrom300": [
+      0,
+      3
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 298,
+     "offsetFrom300": [
+      -2,
+      -2
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 241,
+     "offsetFrom300": [
+      -5,
+      -1
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 344,
+     "offsetFrom300": [
+      3,
+      0
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 330,
+     "offsetFrom300": [
+      3,
+      1
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 342,
+     "offsetFrom300": [
+      1,
+      -2
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 353,
+     "offsetFrom300": [
+      -1,
+      -5
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 359,
+     "offsetFrom300": [
+      5,
+      1
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 386,
+     "offsetFrom300": [
+      5,
+      -1
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 230,
+     "offsetFrom300": [
+      -3,
+      2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 231,
+     "offsetFrom300": [
+      -2,
+      3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 244,
+     "offsetFrom300": [
+      -2,
+      2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 245,
+     "offsetFrom300": [
+      -1,
+      3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 247,
+     "offsetFrom300": [
+      1,
+      5
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 270,
+     "offsetFrom300": [
+      -3,
+      -1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 274,
+     "offsetFrom300": [
+      1,
+      3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 284,
+     "offsetFrom300": [
+      -3,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 356,
+     "offsetFrom300": [
+      2,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 371,
+     "offsetFrom300": [
+      3,
+      -2
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 372,
+     "offsetFrom300": [
+      4,
+      -1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 402,
+     "offsetFrom300": [
+      7,
+      0
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "moyenne",
+   "source": "https://www.twitch.tv/videos/2852548819 (1080p) turn starts, detection auto + controle visuel"
+  },
+  "wave10": {
+   "composition_DPLN": "2 Nitroolls + 2 Troollibres + 2 Artroolleurs",
+   "turn": 10,
+   "observedFights": 10,
+   "candidates": [
+    {
+     "cell": 218,
+     "offsetFrom300": [
+      -1,
+      5
+     ],
+     "fights": 6
+    },
+    {
+     "cell": 371,
+     "offsetFrom300": [
+      3,
+      -2
+     ],
+     "fights": 5
+    },
+    {
+     "cell": 244,
+     "offsetFrom300": [
+      -2,
+      2
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 298,
+     "offsetFrom300": [
+      -2,
+      -2
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 359,
+     "offsetFrom300": [
+      5,
+      1
+     ],
+     "fights": 4
+    },
+    {
+     "cell": 230,
+     "offsetFrom300": [
+      -3,
+      2
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 231,
+     "offsetFrom300": [
+      -2,
+      3
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 247,
+     "offsetFrom300": [
+      1,
+      5
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 344,
+     "offsetFrom300": [
+      3,
+      0
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 356,
+     "offsetFrom300": [
+      2,
+      -2
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 370,
+     "offsetFrom300": [
+      2,
+      -3
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 386,
+     "offsetFrom300": [
+      5,
+      -1
+     ],
+     "fights": 3
+    },
+    {
+     "cell": 216,
+     "offsetFrom300": [
+      -3,
+      3
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 260,
+     "offsetFrom300": [
+      0,
+      3
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 270,
+     "offsetFrom300": [
+      -3,
+      -1
+     ],
+     "fights": 2
+    },
+    {
+     "cell": 175,
+     "offsetFrom300": [
+      -4,
+      5
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 214,
+     "offsetFrom300": [
+      -5,
+      1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 257,
+     "offsetFrom300": [
+      -3,
+      0
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 274,
+     "offsetFrom300": [
+      1,
+      3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 314,
+     "offsetFrom300": [
+      0,
+      -1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 316,
+     "offsetFrom300": [
+      2,
+      1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 330,
+     "offsetFrom300": [
+      3,
+      1
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 341,
+     "offsetFrom300": [
+      0,
+      -3
+     ],
+     "fights": 1
+    },
+    {
+     "cell": 353,
+     "offsetFrom300": [
+      -1,
+      -5
+     ],
+     "fights": 1
+    }
+   ],
+   "confidence": "basse-moyenne",
+   "source": "https://www.twitch.tv/videos/2852548819 (480p) ; pas de fenetre de bonus a T10, detection par apparition groupee",
+   "note": "480p uniquement ; combat 1:38:07 exclu (detection bruitee, 10 cellules). 7/10 ensembles ont exactement 6 cellules."
+  },
+  "wave8": {
+   "composition_DPLN": "Mama Troollette (boss)",
+   "turn": 8,
+   "cells": [
+    300
+   ],
+   "fallbackCell": 287,
+   "confidence": "haute (300) / moyenne (287 si 300 occupee)",
+   "note": "voir mamaArrivalCell"
+  }
+ },
+ "monsterSpawnModel": {
+  "status": "HYPOTHESE (forte regularite observee)",
+  "rule": "Positions tirees, a chaque vague, parmi un petit ensemble de cellules fixes relatives au centre 300, dependant du type de monstre et de la vague. Pas de dependance evidente a la position des joueurs. V1 est deterministe.",
+  "slotsByType": {
+   "artroolleur": {
+    "loin (V2,V3)": [
+     187,
+     188,
+     411,
+     412
+    ],
+    "distance 6 (V4,V6,V9,V10)": [
+     214,
+     241,
+     218,
+     247,
+     204,
+     353,
+     359,
+     386
+    ],
+    "rares": [
+     227,
+     367,
+     291,
+     372,
+     339,
+     219
+    ]
+   },
+   "nitrooll": {
+    "loin (V3)": [
+     290,
+     311,
+     255,
+     318,
+     283,
+     262
+    ],
+    "distance 4-5 (V4,V7,V9,V10)": [
+     270,
+     330,
+     370,
+     231,
+     371,
+     230,
+     274,
+     355
+    ],
+    "rares": [
+     316,
+     317,
+     425,
+     246,
+     313
+    ]
+   },
+   "troollibre": {
+    "V1": [
+     242,
+     358
+    ],
+    "V2": [
+     242,
+     358,
+     246
+    ],
+    "distance 2-4 (V4,V5,V9,V10)": [
+     257,
+     344,
+     260,
+     341,
+     298,
+     356,
+     244,
+     342,
+     329,
+     284,
+     245
+    ],
+    "rares": [
+     271,
+     286,
+     314,
+     315,
+     368,
+     230,
+     274,
+     370
+    ]
+   }
+  },
+  "simulatorAdvice": "Tirer les positions dans les listes candidates de la vague (poids = nb d observations), en excluant les cellules occupees ; V1 fixe {242,358}."
+ },
+ "mamaWaitingCell": 152,
+ "mamaWaitingConfidence": "haute",
+ "mamaWaitingSources": [
+  "DPLN ark26gladia128_orig.png : Mama dans les gradins, recalage SIFT 59-66 points : pieds sur 152",
+  "video https://www.twitch.tv/videos/2852548819 : boule avec icones Faveur (V, IV, I) + invulnerable sur 152 de T1 a T7 (ex. s288_08, s725_03, s1443_01), disparue a T8 (s1443_10)",
+  "client : 152 = unique cellule blue, isolee (linkedZone 32), nonWalkableDuringFight"
+ ],
+ "mamaArrivalCell": 300,
+ "mamaArrivalFallbackCell": 287,
+ "mamaArrivalTurn": 8,
+ "mamaArrivalConfidence": "haute pour 300 (donnees + 5 combats) ; moyenne pour la regle de repli 287 (3 combats + capture DPLN)",
+ "mamaArrivalObservations": [
+  {
+   "fight": "0:47:14",
+   "cell": 300,
+   "cell300OccupiedBefore": false,
+   "frame": "s393_03"
+  },
+  {
+   "fight": "1:38:07",
+   "cell": 287,
+   "cell300OccupiedBefore": "monstre",
+   "frame": "s682_07",
+   "pushes": "246->192 (axe x=17), 301->403 (axe y=-3)"
+  },
+  {
+   "fight": "1:59:17",
+   "cell": 287,
+   "cell300OccupiedBefore": "joueur",
+   "frame": "s803_35 (4 img/s)",
+   "pushes": "300->408 (axe x=17), 272->171 (axe y=-3)"
+  },
+  {
+   "fight": "2:42:56",
+   "cell": 300,
+   "cell300OccupiedBefore": false,
+   "frame": "s1077_09",
+   "pushes": "329->416 (axe y=-4)"
+  },
+  {
+   "fight": "3:09:11",
+   "cell": 300,
+   "cell300OccupiedBefore": false,
+   "frame": "s1225_05"
+  },
+  {
+   "fight": "3:29:29",
+   "cell": 300,
+   "cell300OccupiedBefore": false,
+   "frame": "s1338_03",
+   "confidence": "moyenne"
+  },
+  {
+   "fight": "3:47:33",
+   "cell": 300,
+   "cell300OccupiedBefore": false,
+   "frame": "s1443_10",
+   "note": "icones I + invulnerable identifient Mama"
+  },
+  {
+   "fight": "4:29:58",
+   "cell": 287,
+   "cell300OccupiedBefore": "joueur",
+   "frame": "s1708_06"
+  },
+  {
+   "fight": "DPLN tuto2k-46",
+   "cell": 287,
+   "note": "recalage SIFT 25 points (+-1 case) ; joueur pousse sur 408 (axe x=17), meme configuration que 1:59:17"
+  }
+ ],
+ "mamaPushLines": {
+  "fromCell300": {
+   "x=17": [
+    192,
+    206,
+    219,
+    233,
+    246,
+    260,
+    273,
+    287,
+    300,
+    314,
+    327,
+    341,
+    354,
+    368,
+    381,
+    395,
+    408
+   ],
+   "y=-4": [
+    184,
+    199,
+    213,
+    228,
+    242,
+    257,
+    271,
+    286,
+    300,
+    315,
+    329,
+    344,
+    358,
+    373,
+    387,
+    402,
+    416
+   ]
+  },
+  "fromCell287": {
+   "x=17": [
+    192,
+    206,
+    219,
+    233,
+    246,
+    260,
+    273,
+    287,
+    300,
+    314,
+    327,
+    341,
+    354,
+    368,
+    381,
+    395,
+    408
+   ],
+   "y=-3": [
+    171,
+    185,
+    200,
+    214,
+    229,
+    243,
+    258,
+    272,
+    287,
+    301,
+    316,
+    330,
+    345,
+    359,
+    374,
+    388,
+    403
+   ]
+  },
+  "note": "Un personnage aligne est repousse jusqu au bord (cellule de profondeur 1, dans les pics). Observe : 300->408, 272->171, 246->192, 301->403, 329->416."
+ },
+ "eventGlyphCells": [
+  272,
+  273,
+  299,
+  301,
+  327,
+  328,
+  329
+ ],
+ "eventGlyphCounts": {
+  "301": 12,
+  "327": 12,
+  "272": 9,
+  "299": 9,
+  "329": 9,
+  "328": 8,
+  "273": 4
+ },
+ "eventGlyphNeverObserved": [
+  271,
+  300
+ ],
+ "eventGlyphTiming": "Au debut des tours globaux T2 a T9, juste apres la fenetre de bonus : un rayon de lumiere tombe sur la case, puis le cadeau apparait. Nouveau cadeau vu a 63 debuts de tour sur 88 (11 combats), jamais a T1. Plusieurs cadeaux peuvent coexister.",
+ "eventGlyphConfidence": "haute pour la liste (7 cases, 63 observations) ; basse pour l exclusion de 271",
+ "eventGlyphSources": [
+  "video https://www.twitch.tv/videos/2852548819, 11 combats, detection de la dalle orange + controle visuel (s1338_02 rayon sur 272, s1443_10 rayon sur 299, s803_34 rayon sur 329, s735_09 cadeau sur 273)",
+  "DPLN ark26gladia91_orig.png (aspect du cadeau)",
+  "sort 30566 Glyphe Evenementiel (effet 1165, couleur #FFBE00, zone P1) : la cellule n est pas dans les donnees (choix serveur)"
+ ],
+ "obstacles": {
+  "staticInFight": [],
+  "dynamicObserved": [],
+  "hallMapOnly": {
+   "mapId": 139988485,
+   "throne": "trone en bois central du hall RP (PNJ Monsieur Layool)",
+   "decorativeSpikeTiles": [
+    207,
+    248,
+    486,
+    501
+   ]
+  },
+  "confidence": "haute pour l absence d obstacle statique ; moyenne pour l absence d obstacles dynamiques",
+  "note": "Le trone et les petites dalles a pics (haut-gauche, bas-centre) sont sur le hall 139988485, pas sur la carte de combat. Aucun obstacle apparu en cours de combat dans les 11 combats (mode creature : seules les entites occupent des cases). Seule entite fixe connue : l invocation Strategue Dompteur (7985/7986) de l Acrobate.",
+  "sources": [
+   "research/data/map_139988485.json (spikeTile)",
+   "rendu 139988485",
+   "video https://www.twitch.tv/videos/2852548819"
+  ]
+ },
+ "videoSources": {
+  "main": {
+   "url": "https://www.twitch.tv/videos/2852548819",
+   "title": "[KOURIAL] DECOUVERTE GLADIATROOL ?! !discord",
+   "channel": "twynetv",
+   "date": "2026-08-21",
+   "durationS": 21490,
+   "fightsComplete": [
+    "0:47:14",
+    "1:38:07",
+    "1:59:17",
+    "2:42:56",
+    "3:09:11",
+    "3:29:29",
+    "3:47:33",
+    "4:09:25",
+    "4:29:58",
+    "4:48:55",
+    "5:10:58"
+   ],
+   "fightsPartial": [
+    "0:31",
+    "0:38:12",
+    "1:14:29",
+    "5:47:45"
+   ]
+  },
+  "youtube": "echec : URLs googlevideo en 403 (egress IP), voir notes"
+ },
+ "perFightWaveSpawns": {
+  "0:47:14": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    188,
+    246,
+    412
+   ],
+   "wave3": [
+    290,
+    311,
+    411
+   ],
+   "wave4": [
+    247,
+    257,
+    370
+   ],
+   "wave5": [
+    329,
+    344,
+    356,
+    368
+   ],
+   "wave6": [
+    247,
+    273,
+    353,
+    386
+   ],
+   "wave7": [
+    246,
+    270,
+    274,
+    370
+   ],
+   "wave9": [
+    214,
+    244,
+    344,
+    353,
+    370,
+    372
+   ],
+   "wave10": [
+    244,
+    247,
+    298,
+    370,
+    371,
+    386
+   ]
+  },
+  "1:38:07": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    187,
+    246,
+    412
+   ],
+   "wave3": [
+    255,
+    318,
+    412
+   ],
+   "wave4": [
+    218,
+    329,
+    341,
+    371
+   ],
+   "wave5": [
+    242,
+    284,
+    298
+   ],
+   "wave6": [
+    204,
+    218,
+    241,
+    257,
+    327
+   ],
+   "wave7": [
+    313,
+    356,
+    370,
+    371
+   ],
+   "wave9": [
+    214,
+    298,
+    341,
+    342,
+    370,
+    386
+   ]
+  },
+  "1:59:17": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    187,
+    242,
+    412
+   ],
+   "wave3": [
+    188,
+    290,
+    311
+   ],
+   "wave4": [
+    230,
+    247,
+    342,
+    383
+   ],
+   "wave5": [
+    230,
+    257,
+    329,
+    344
+   ],
+   "wave6": [
+    247,
+    353,
+    359
+   ],
+   "wave7": [
+    230,
+    270,
+    371
+   ],
+   "wave9": [
+    218,
+    341,
+    344,
+    370,
+    386
+   ],
+   "wave10": [
+    218,
+    270,
+    298,
+    344,
+    359,
+    371
+   ]
+  },
+  "2:42:56": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    188,
+    358,
+    412
+   ],
+   "wave3": [
+    187,
+    255,
+    290
+   ],
+   "wave4": [
+    214,
+    356,
+    371
+   ],
+   "wave5": [
+    257,
+    260,
+    341
+   ],
+   "wave6": [
+    241,
+    353,
+    386
+   ],
+   "wave7": [
+    231,
+    270,
+    330
+   ],
+   "wave9": [
+    214,
+    218,
+    260,
+    341,
+    370
+   ],
+   "wave10": [
+    218,
+    230,
+    316,
+    344,
+    359,
+    371
+   ]
+  },
+  "3:09:11": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    188,
+    358,
+    411
+   ],
+   "wave3": [
+    283,
+    290,
+    412
+   ],
+   "wave4": [
+    257,
+    353,
+    359
+   ],
+   "wave5": [
+    230,
+    244,
+    274,
+    341
+   ],
+   "wave6": [
+    218,
+    241,
+    344,
+    353
+   ],
+   "wave7": [
+    317,
+    330,
+    425
+   ],
+   "wave9": [
+    218,
+    241,
+    260,
+    270,
+    298
+   ],
+   "wave10": [
+    230,
+    244,
+    247,
+    353,
+    371
+   ]
+  },
+  "3:29:29": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    187,
+    242,
+    412
+   ],
+   "wave3": [
+    283,
+    318,
+    412
+   ],
+   "wave4": [
+    241,
+    260,
+    370
+   ],
+   "wave5": [
+    298,
+    342,
+    370
+   ],
+   "wave6": [
+    218,
+    241,
+    298,
+    386
+   ],
+   "wave7": [
+    316,
+    330,
+    370
+   ],
+   "wave9": [
+    214,
+    230,
+    241,
+    260,
+    344
+   ],
+   "wave10": [
+    214,
+    218,
+    244,
+    274,
+    298,
+    371
+   ]
+  },
+  "3:47:33": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    188,
+    411
+   ],
+   "wave3": [
+    188,
+    290,
+    311
+   ],
+   "wave4": [
+    230,
+    298,
+    359
+   ],
+   "wave5": [
+    260,
+    298,
+    314,
+    344
+   ],
+   "wave6": [
+    204,
+    218,
+    359
+   ],
+   "wave7": [
+    260,
+    330,
+    370
+   ],
+   "wave9": [
+    214,
+    298,
+    342,
+    359,
+    370
+   ],
+   "wave10": [
+    244,
+    270,
+    330,
+    356,
+    386
+   ]
+  },
+  "4:09:25": {
+   "wave1": [
+    242
+   ],
+   "wave2": [
+    187,
+    242,
+    411
+   ],
+   "wave3": [
+    262,
+    311,
+    411
+   ],
+   "wave4": [
+    218,
+    231,
+    325,
+    356
+   ],
+   "wave5": [
+    342,
+    344,
+    356
+   ],
+   "wave6": [
+    214,
+    353,
+    386
+   ],
+   "wave7": [
+    270,
+    355,
+    370
+   ],
+   "wave9": [
+    214,
+    247,
+    274,
+    341,
+    402
+   ],
+   "wave10": [
+    218,
+    231,
+    260,
+    314,
+    341,
+    359,
+    370
+   ]
+  },
+  "4:29:58": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    187,
+    358,
+    412
+   ],
+   "wave3": [
+    255,
+    290,
+    412
+   ],
+   "wave4": [
+    231,
+    298,
+    386
+   ],
+   "wave5": [
+    244,
+    271,
+    342,
+    356
+   ],
+   "wave6": [
+    227,
+    241,
+    367,
+    386
+   ],
+   "wave7": [
+    270,
+    274,
+    371
+   ],
+   "wave9": [
+    214,
+    231,
+    330,
+    341,
+    356,
+    359
+   ],
+   "wave10": [
+    175,
+    216,
+    231,
+    247,
+    257,
+    344
+   ]
+  },
+  "4:48:55": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    188,
+    412
+   ],
+   "wave3": [
+    187,
+    255,
+    290
+   ],
+   "wave4": [
+    219,
+    231,
+    344,
+    353
+   ],
+   "wave5": [
+    260,
+    284,
+    298
+   ],
+   "wave6": [
+    247,
+    291,
+    372,
+    386
+   ],
+   "wave7": [
+    231,
+    330,
+    370
+   ],
+   "wave9": [
+    241,
+    284,
+    298,
+    353,
+    371
+   ],
+   "wave10": [
+    216,
+    218,
+    231,
+    260,
+    356,
+    359
+   ]
+  },
+  "5:10:58": {
+   "wave1": [
+    242,
+    358
+   ],
+   "wave2": [
+    188,
+    358,
+    412
+   ],
+   "wave3": [
+    188,
+    290,
+    311
+   ],
+   "wave4": [
+    270,
+    344,
+    353
+   ],
+   "wave5": [
+    257,
+    315,
+    341,
+    344
+   ],
+   "wave6": [
+    214,
+    315,
+    339,
+    353
+   ],
+   "wave7": [
+    231,
+    270,
+    370
+   ],
+   "wave9": [
+    214,
+    218,
+    245,
+    260,
+    330
+   ],
+   "wave10": [
+    218,
+    230,
+    298,
+    356,
+    370,
+    386
+   ]
+  }
+ },
+ "giftTable": [
+  {
+   "fight": "0:47:14",
+   "turn": 2,
+   "newGift": []
+  },
+  {
+   "fight": "0:47:14",
+   "turn": 3,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "0:47:14",
+   "turn": 4,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "0:47:14",
+   "turn": 5,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "0:47:14",
+   "turn": 6,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "0:47:14",
+   "turn": 7,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "0:47:14",
+   "turn": 8,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "0:47:14",
+   "turn": 9,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 2,
+   "newGift": []
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 3,
+   "newGift": []
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 4,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 5,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 6,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 7,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 8,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "1:38:07",
+   "turn": 9,
+   "newGift": [
+    273
+   ]
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 2,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 3,
+   "newGift": [
+    273
+   ]
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 4,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 5,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 6,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 7,
+   "newGift": []
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 8,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "1:59:17",
+   "turn": 9,
+   "newGift": []
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 2,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 3,
+   "newGift": [
+    273
+   ]
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 4,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 5,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 6,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 7,
+   "newGift": []
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 8,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "2:42:56",
+   "turn": 9,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 2,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 3,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 4,
+   "newGift": []
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 5,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 6,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 7,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 8,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "3:09:11",
+   "turn": 9,
+   "newGift": [
+    273
+   ]
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 2,
+   "newGift": []
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 3,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 4,
+   "newGift": []
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 5,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 6,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 7,
+   "newGift": []
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 8,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "3:29:29",
+   "turn": 9,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 2,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 3,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 4,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 5,
+   "newGift": []
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 6,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 7,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 8,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "3:47:33",
+   "turn": 9,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 2,
+   "newGift": []
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 3,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 4,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 5,
+   "newGift": []
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 6,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 7,
+   "newGift": [
+    272
+   ]
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 8,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "4:09:25",
+   "turn": 9,
+   "newGift": []
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 2,
+   "newGift": []
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 3,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 4,
+   "newGift": []
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 5,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 6,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 7,
+   "newGift": []
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 8,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "4:29:58",
+   "turn": 9,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 2,
+   "newGift": [
+    327
+   ]
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 3,
+   "newGift": []
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 4,
+   "newGift": []
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 5,
+   "newGift": []
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 6,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 7,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 8,
+   "newGift": [
+    328
+   ]
+  },
+  {
+   "fight": "4:48:55",
+   "turn": 9,
+   "newGift": []
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 2,
+   "newGift": []
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 3,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 4,
+   "newGift": [
+    299
+   ]
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 5,
+   "newGift": [
+    329
+   ]
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 6,
+   "newGift": [
+    301
+   ]
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 7,
+   "newGift": []
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 8,
+   "newGift": []
+  },
+  {
+   "fight": "5:10:58",
+   "turn": 9,
+   "newGift": []
+  }
+ ]
+}

@@ -1,0 +1,2670 @@
+{
+ "13": {
+  "id": 13,
+  "longName": {
+   "id": "805222",
+   "de": "Halsabschneider",
+   "en": "Rogue",
+   "es": "Tymador",
+   "fr": "Roublard",
+   "pt": "Ladino"
+  },
+  "shortName": {
+   "id": "65416",
+   "de": "Zauber der Halsabschneider",
+   "en": "Rogue Spells",
+   "es": "Hechizos de los tymadores",
+   "fr": "Sorts de Roublard",
+   "pt": "Magias Roublard"
+  },
+  "className": "SpellTypeData",
+  "m_id": 13,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "117": {
+  "id": 117,
+  "longName": {
+   "id": "727524",
+   "de": "Emotes",
+   "en": "Emotes",
+   "es": "Actitudes",
+   "fr": "Attitudes",
+   "pt": "Emotes"
+  },
+  "shortName": {
+   "id": "727522",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 117,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "421": {
+  "id": 421,
+  "longName": {
+   "id": "952728",
+   "de": "Boss Anomalie 1",
+   "en": "Anomaly Boss 1",
+   "es": "Anomalía de Jefe 1",
+   "fr": "AT - Champion de l'Aurore Pourpre",
+   "pt": "Chefe Anomalia 1"
+  },
+  "shortName": {
+   "id": "783413",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 421,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "425": {
+  "id": 425,
+  "longName": {
+   "id": "783551",
+   "de": "[!] _VRAC",
+   "en": "[!] _VRAC",
+   "es": "[!] _VRAC",
+   "fr": "_VRAC",
+   "pt": "[!] _VRAC"
+  },
+  "shortName": {
+   "id": "783552",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 425,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "528": {
+  "id": 528,
+  "longName": {
+   "id": "1171928",
+   "de": "Legendäre Vertrautenkräfte",
+   "en": "Legendary Pet Powers",
+   "es": "Poderes legendarios de mascotas",
+   "fr": "Pouvoirs légendaires de familier",
+   "pt": "Poderes lendários de mascote"
+  },
+  "shortName": {
+   "id": "795590",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 528,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "614": {
+  "id": 614,
+  "longName": {
+   "id": "798825",
+   "de": "Halsabschneider-Varianten",
+   "en": "Rogue Variants",
+   "es": "Variantes Tymador",
+   "fr": "Variantes Roublard",
+   "pt": "Variantes Ladino"
+  },
+  "shortName": {
+   "id": "798837",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 614,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "1682": {
+  "id": 1682,
+  "longName": {
+   "id": "918323",
+   "de": "[!] Trooll démolisseur",
+   "en": "[!] Trooll démolisseur",
+   "es": "[!] Trooll démolisseur",
+   "fr": "Trooll démolisseur",
+   "pt": "[!] Trooll démolisseur"
+  },
+  "shortName": {
+   "id": "918324",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 1682,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "1936": {
+  "id": 1936,
+  "longName": {
+   "id": "935257",
+   "de": "[!] Trooll profanateur (6913)",
+   "en": "[!] Trooll profanateur (6913)",
+   "es": "[!] Trooll profanateur (6913)",
+   "fr": "Trooll profanateur (6913)",
+   "pt": "[!] Trooll profanateur (6913)"
+  },
+  "shortName": {
+   "id": "935247",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 1936,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "1937": {
+  "id": 1937,
+  "longName": {
+   "id": "935256",
+   "de": "[!] Trooll nécrophage (6914)",
+   "en": "[!] Trooll nécrophage (6914)",
+   "es": "[!] Trooll nécrophage (6914)",
+   "fr": "Trooll nécrophage (6914)",
+   "pt": "[!] Trooll nécrophage (6914)"
+  },
+  "shortName": {
+   "id": "935251",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 1937,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "1938": {
+  "id": 1938,
+  "longName": {
+   "id": "935253",
+   "de": "[!] Troll sacrilège (6915)",
+   "en": "[!] Troll sacrilège (6915)",
+   "es": "[!] Troll sacrilège (6915)",
+   "fr": "Troll sacrilège (6915)",
+   "pt": "[!] Troll sacrilège (6915)"
+  },
+  "shortName": {
+   "id": "935255",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 1938,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2004": {
+  "id": 2004,
+  "longName": {
+   "id": "960457",
+   "de": "Halsabschneider-Anfangszauber",
+   "en": "Rogue Starting Spells",
+   "es": "Hechizos iniciales tymador",
+   "fr": "Sorts initiaux Roublard",
+   "pt": "Feitiços iniciais Ladino"
+  },
+  "shortName": {
+   "id": "939204",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2004,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2288": {
+  "id": 2288,
+  "longName": {
+   "id": "952896",
+   "de": "Wütendes Kätzchen",
+   "en": "Enraged Kitten",
+   "es": "Gatito rabioso",
+   "fr": "Chaton Enragé",
+   "pt": "Gatinho Enfurecido"
+  },
+  "shortName": {
+   "id": "952897",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2288,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2317": {
+  "id": 2317,
+  "longName": {
+   "id": "959536",
+   "de": "Halsabschneider-Tooltips",
+   "en": "Rogue Tooltips",
+   "es": "Información tymador",
+   "fr": "Tooltips Roublard",
+   "pt": "Dicas de tela de Ladino"
+  },
+  "shortName": {
+   "id": "959540",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2317,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2324": {
+  "id": 2324,
+  "longName": {
+   "id": "960042",
+   "de": "Anmachen",
+   "en": "Ignition",
+   "es": "Encendimiento",
+   "fr": "Allumage",
+   "pt": "Combustão"
+  },
+  "shortName": {
+   "id": "960024",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2324,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2325": {
+  "id": 2325,
+  "longName": {
+   "id": "960028",
+   "de": "Bomben-Combo",
+   "en": "Bomb Combo",
+   "es": "Combo bombas",
+   "fr": "Combo bombes",
+   "pt": "Combo bombas"
+  },
+  "shortName": {
+   "id": "960032",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2325,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2329": {
+  "id": 2329,
+  "longName": {
+   "id": "960070",
+   "de": "Wanderbombe",
+   "en": "Walking Bomb",
+   "es": "Bomba Ambulante",
+   "fr": "Bombe Ambulante",
+   "pt": "Bomba Ambulante"
+  },
+  "shortName": {
+   "id": "960074",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2329,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2330": {
+  "id": 2330,
+  "longName": {
+   "id": "960078",
+   "de": "Megabombe",
+   "en": "Megabomb",
+   "es": "Megabomba",
+   "fr": "Mégabombe",
+   "pt": "Megabomba"
+  },
+  "shortName": {
+   "id": "960082",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2330,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2331": {
+  "id": 2331,
+  "longName": {
+   "id": "960087",
+   "de": "Wanderbomben-Auslöser",
+   "en": "Triggered via Walking Bombs",
+   "es": "Activados Bomba Ambulante",
+   "fr": "Déclenchés Bombe Ambulante",
+   "pt": "Acionados Bomba Ambulante"
+  },
+  "shortName": {
+   "id": "960091",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2331,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "2332": {
+  "id": 2332,
+  "longName": {
+   "id": "960103",
+   "de": "Megabomben-Auslöser",
+   "en": "Triggered via Megabombs",
+   "es": "Activados Megabomba",
+   "fr": "Déclenchés Mégabombe",
+   "pt": "Acionados Megabomba"
+  },
+  "shortName": {
+   "id": "960107",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 2332,
+  "createdAt": "2026-03-03T17:13:45.911Z",
+  "updatedAt": "2026-03-03T17:13:45.911Z"
+ },
+ "3790": {
+  "id": 3790,
+  "longName": {
+   "id": "1088171",
+   "de": "Dolchwurf",
+   "en": "Dagger Throw",
+   "es": "Lanzamiento de dagas",
+   "fr": "Lancer de dagues",
+   "pt": "Arremesso de Adagas"
+  },
+  "shortName": {
+   "id": "1088172",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3790,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3793": {
+  "id": 3793,
+  "longName": {
+   "id": "1088526",
+   "de": "[!] Trool 1",
+   "en": "[!] Trool 1",
+   "es": "[!] Trool 1",
+   "fr": "Trool 1",
+   "pt": "[!] Trool 1"
+  },
+  "shortName": {
+   "id": "1088530",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3793,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3794": {
+  "id": 3794,
+  "longName": {
+   "id": "1088534",
+   "de": "[!] Trool 2",
+   "en": "[!] Trool 2",
+   "es": "[!] Trool 2",
+   "fr": "Trool 2",
+   "pt": "[!] Trool 2"
+  },
+  "shortName": {
+   "id": "1088538",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3794,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3795": {
+  "id": 3795,
+  "longName": {
+   "id": "1088542",
+   "de": "[!] Trool 3",
+   "en": "[!] Trool 3",
+   "es": "[!] Trool 3",
+   "fr": "Trool 3",
+   "pt": "[!] Trool 3"
+  },
+  "shortName": {
+   "id": "1088546",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3795,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3796": {
+  "id": 3796,
+  "longName": {
+   "id": "1088550",
+   "de": "[!] Boss Trool",
+   "en": "[!] Boss Trool",
+   "es": "[!] Boss Trool",
+   "fr": "Boss Trool",
+   "pt": "[!] Boss Trool"
+  },
+  "shortName": {
+   "id": "1088554",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3796,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3797": {
+  "id": 3797,
+  "longName": {
+   "id": "1090697",
+   "de": "[!] PLAYER SPELLS",
+   "en": "[!] PLAYER SPELLS",
+   "es": "[!] PLAYER SPELLS",
+   "fr": "PLAYER SPELLS",
+   "pt": "[!] PLAYER SPELLS"
+  },
+  "shortName": {
+   "id": "1088562",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3797,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3804": {
+  "id": 3804,
+  "longName": {
+   "id": "1089234",
+   "de": "[!] Objectif 1",
+   "en": "[!] Objectif 1",
+   "es": "[!] Objectif 1",
+   "fr": "Objectif 1",
+   "pt": "[!] Objectif 1"
+  },
+  "shortName": {
+   "id": "1089235",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3804,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3810": {
+  "id": 3810,
+  "longName": {
+   "id": "1089246",
+   "de": "Allgemein",
+   "en": "General",
+   "es": "General",
+   "fr": "Général",
+   "pt": "Geral"
+  },
+  "shortName": {
+   "id": "1089247",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3810,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3811": {
+  "id": 3811,
+  "longName": {
+   "id": "1089248",
+   "de": "Schwerpunkt Gladiator",
+   "en": "Gladiator Oriented",
+   "es": "Orientado a gladiador",
+   "fr": "Orienté Gladiateur",
+   "pt": "Foco Gladiador"
+  },
+  "shortName": {
+   "id": "1089249",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3811,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3812": {
+  "id": 3812,
+  "longName": {
+   "id": "1089250",
+   "de": "Schwerpunkt Glücksritter",
+   "en": "Scrapper Oriented",
+   "es": "Orientado a pendenciero",
+   "fr": "Orienté Baroudeur",
+   "pt": "Foco Guerreiro"
+  },
+  "shortName": {
+   "id": "1089251",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3812,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3813": {
+  "id": 3813,
+  "longName": {
+   "id": "1089252",
+   "de": "Schwerpunkt Heiler",
+   "en": "Healer Oriented",
+   "es": "Orientado a curandero",
+   "fr": "Orienté Guérisseur",
+   "pt": "Foco Curandeiro"
+  },
+  "shortName": {
+   "id": "1089253",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3813,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3814": {
+  "id": 3814,
+  "longName": {
+   "id": "1089254",
+   "de": "Schwerpunkt Heiler",
+   "en": "Healer Oriented",
+   "es": "Orientado a curandero",
+   "fr": "Orienté Guérisseur",
+   "pt": "Foco Curandeiro"
+  },
+  "shortName": {
+   "id": "1089255",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3814,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3815": {
+  "id": 3815,
+  "longName": {
+   "id": "1089256",
+   "de": "Schwerpunkt Glücksritter",
+   "en": "Scrapper Oriented",
+   "es": "Orientado a pendenciero",
+   "fr": "Orienté Baroudeur",
+   "pt": "Foco Guerreiro"
+  },
+  "shortName": {
+   "id": "1089257",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3815,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3816": {
+  "id": 3816,
+  "longName": {
+   "id": "1089258",
+   "de": "Schwerpunkt Gladiator",
+   "en": "Gladiator Oriented",
+   "es": "Orientado a gladiador",
+   "fr": "Orienté Gladiateur",
+   "pt": "Foco Gladiador"
+  },
+  "shortName": {
+   "id": "1089259",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3816,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3817": {
+  "id": 3817,
+  "longName": {
+   "id": "1089260",
+   "de": "Allgemein",
+   "en": "General",
+   "es": "General",
+   "fr": "Général",
+   "pt": "Geral"
+  },
+  "shortName": {
+   "id": "1089261",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3817,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3818": {
+  "id": 3818,
+  "longName": {
+   "id": "1089262",
+   "de": "Schwerpunkt Gladiator",
+   "en": "Gladiator Oriented",
+   "es": "Orientado a gladiador",
+   "fr": "Orienté Gladiateur",
+   "pt": "Foco Gladiador"
+  },
+  "shortName": {
+   "id": "1089263",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3818,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3819": {
+  "id": 3819,
+  "longName": {
+   "id": "1089264",
+   "de": "Schwerpunkt Heiler",
+   "en": "Healer Oriented",
+   "es": "Orientado a curandero",
+   "fr": "Orienté Guérisseur",
+   "pt": "Foco Curandeiro"
+  },
+  "shortName": {
+   "id": "1089265",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3819,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3820": {
+  "id": 3820,
+  "longName": {
+   "id": "1089266",
+   "de": "Allgemein",
+   "en": "General",
+   "es": "General",
+   "fr": "Général",
+   "pt": "Geral"
+  },
+  "shortName": {
+   "id": "1089267",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3820,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3821": {
+  "id": 3821,
+  "longName": {
+   "id": "1089268",
+   "de": "Schwerpunkt Glücksritter",
+   "en": "Scrapper Oriented",
+   "es": "Orientado a pendenciero",
+   "fr": "Orienté Baroudeur",
+   "pt": "Foco Guerreiro"
+  },
+  "shortName": {
+   "id": "1089269",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3821,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3822": {
+  "id": 3822,
+  "longName": {
+   "id": "1089270",
+   "de": "Schwerpunkt Gladiator",
+   "en": "Gladiator Oriented",
+   "es": "Orientado a gladiador",
+   "fr": "Orienté Gladiateur",
+   "pt": "Foco Gladiador"
+  },
+  "shortName": {
+   "id": "1089271",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3822,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3823": {
+  "id": 3823,
+  "longName": {
+   "id": "1089272",
+   "de": "Schwerpunkt Glücksritter",
+   "en": "Scrapper Oriented",
+   "es": "Orientado a pendenciero",
+   "fr": "Orienté Baroudeur",
+   "pt": "Foco Guerreiro"
+  },
+  "shortName": {
+   "id": "1089273",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3823,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3824": {
+  "id": 3824,
+  "longName": {
+   "id": "1089274",
+   "de": "Schwerpunkt Heiler",
+   "en": "Healer Oriented",
+   "es": "Orientado a curandero",
+   "fr": "Orienté Guérisseur",
+   "pt": "Foco Curandeiro"
+  },
+  "shortName": {
+   "id": "1089275",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3824,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3825": {
+  "id": 3825,
+  "longName": {
+   "id": "1089276",
+   "de": "Allgemein",
+   "en": "General",
+   "es": "General",
+   "fr": "Général",
+   "pt": "Geral"
+  },
+  "shortName": {
+   "id": "1089277",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3825,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3826": {
+  "id": 3826,
+  "longName": {
+   "id": "1089278",
+   "de": "Schwerpunkt Gladiator",
+   "en": "Gladiator Oriented",
+   "es": "Orientado a gladiador",
+   "fr": "Orienté Gladiateur",
+   "pt": "Foco Gladiador"
+  },
+  "shortName": {
+   "id": "1089279",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3826,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3827": {
+  "id": 3827,
+  "longName": {
+   "id": "1089280",
+   "de": "Schwerpunkt Heiler",
+   "en": "Healer Oriented",
+   "es": "Orientado a curandero",
+   "fr": "Orienté Guérisseur",
+   "pt": "Foco Curandeiro"
+  },
+  "shortName": {
+   "id": "1089281",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3827,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3828": {
+  "id": 3828,
+  "longName": {
+   "id": "1089282",
+   "de": "Allgemein",
+   "en": "General",
+   "es": "General",
+   "fr": "Général",
+   "pt": "Geral"
+  },
+  "shortName": {
+   "id": "1089283",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3828,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3829": {
+  "id": 3829,
+  "longName": {
+   "id": "1089284",
+   "de": "Schwerpunkt Glücksritter",
+   "en": "Scrapper Oriented",
+   "es": "Orientado a pendenciero",
+   "fr": "Orienté Baroudeur",
+   "pt": "Foco Guerreiro"
+  },
+  "shortName": {
+   "id": "1089285",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3829,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3830": {
+  "id": 3830,
+  "longName": {
+   "id": "1089336",
+   "de": "[!] Vrac",
+   "en": "[!] Vrac",
+   "es": "[!] Vrac",
+   "fr": "Vrac",
+   "pt": "[!] Vrac"
+  },
+  "shortName": {
+   "id": "1089337",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3830,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3831": {
+  "id": 3831,
+  "longName": {
+   "id": "1089343",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1089344",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3831,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3832": {
+  "id": 3832,
+  "longName": {
+   "id": "1089374",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1089375",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3832,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3833": {
+  "id": 3833,
+  "longName": {
+   "id": "1089384",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1089385",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3833,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3834": {
+  "id": 3834,
+  "longName": {
+   "id": "1090700",
+   "de": "[!] MANAGERS",
+   "en": "[!] MANAGERS",
+   "es": "[!] MANAGERS",
+   "fr": "MANAGERS",
+   "pt": "[!] MANAGERS"
+  },
+  "shortName": {
+   "id": "1089404",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3834,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3835": {
+  "id": 3835,
+  "longName": {
+   "id": "1089451",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1089452",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3835,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3836": {
+  "id": 3836,
+  "longName": {
+   "id": "1089497",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1089498",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3836,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3837": {
+  "id": 3837,
+  "longName": {
+   "id": "1089548",
+   "de": "[!] Comptage de kills",
+   "en": "[!] Comptage de kills",
+   "es": "[!] Comptage de kills",
+   "fr": "Comptage de kills",
+   "pt": "[!] Comptage de kills"
+  },
+  "shortName": {
+   "id": "1089549",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3837,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3838": {
+  "id": 3838,
+  "longName": {
+   "id": "1089563",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1089564",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3838,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3841": {
+  "id": 3841,
+  "longName": {
+   "id": "1098535",
+   "de": "[!] Choix améliorations Dompteur",
+   "en": "[!] Choix améliorations Dompteur",
+   "es": "[!] Choix améliorations Dompteur",
+   "fr": "Choix améliorations Dompteur",
+   "pt": "[!] Choix améliorations Dompteur"
+  },
+  "shortName": {
+   "id": "1089791",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3841,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3842": {
+  "id": 3842,
+  "longName": {
+   "id": "1098520",
+   "de": "[!] Choix améliorations Acrobate",
+   "en": "[!] Choix améliorations Acrobate",
+   "es": "[!] Choix améliorations Acrobate",
+   "fr": "Choix améliorations Acrobate",
+   "pt": "[!] Choix améliorations Acrobate"
+  },
+  "shortName": {
+   "id": "1089850",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3842,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3843": {
+  "id": 3843,
+  "longName": {
+   "id": "1098524",
+   "de": "[!] Choix améliorations Magicien",
+   "en": "[!] Choix améliorations Magicien",
+   "es": "[!] Choix améliorations Magicien",
+   "fr": "Choix améliorations Magicien",
+   "pt": "[!] Choix améliorations Magicien"
+  },
+  "shortName": {
+   "id": "1089914",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3843,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3844": {
+  "id": 3844,
+  "longName": {
+   "id": "1098533",
+   "de": "[!] Déclenchés Dompteur",
+   "en": "[!] Déclenchés Dompteur",
+   "es": "[!] Déclenchés Dompteur",
+   "fr": "Déclenchés Dompteur",
+   "pt": "[!] Déclenchés Dompteur"
+  },
+  "shortName": {
+   "id": "1089980",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3844,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3845": {
+  "id": 3845,
+  "longName": {
+   "id": "1090044",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090045",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3845,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3846": {
+  "id": 3846,
+  "longName": {
+   "id": "1090053",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090054",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3846,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3847": {
+  "id": 3847,
+  "longName": {
+   "id": "1090066",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090067",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3847,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3848": {
+  "id": 3848,
+  "longName": {
+   "id": "1090097",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090098",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3848,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3849": {
+  "id": 3849,
+  "longName": {
+   "id": "1090117",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090118",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3849,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3850": {
+  "id": 3850,
+  "longName": {
+   "id": "1090128",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090129",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3850,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3851": {
+  "id": 3851,
+  "longName": {
+   "id": "1090145",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090146",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3851,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3852": {
+  "id": 3852,
+  "longName": {
+   "id": "1090154",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090155",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3852,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3853": {
+  "id": 3853,
+  "longName": {
+   "id": "1090168",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090169",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3853,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3854": {
+  "id": 3854,
+  "longName": {
+   "id": "1090177",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090178",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3854,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3855": {
+  "id": 3855,
+  "longName": {
+   "id": "1090191",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090192",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3855,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3856": {
+  "id": 3856,
+  "longName": {
+   "id": "1090264",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090265",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3856,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3857": {
+  "id": 3857,
+  "longName": {
+   "id": "1090290",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090291",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3857,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3858": {
+  "id": 3858,
+  "longName": {
+   "id": "1090329",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090330",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3858,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3859": {
+  "id": 3859,
+  "longName": {
+   "id": "1090343",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "Activados",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1090344",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3859,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3860": {
+  "id": 3860,
+  "longName": {
+   "id": "1090448",
+   "de": "[!] Tooltips",
+   "en": "[!] Tooltips",
+   "es": "[!] Tooltips",
+   "fr": "Tooltips",
+   "pt": "[!] Tooltips"
+  },
+  "shortName": {
+   "id": "1090452",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3860,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3862": {
+  "id": 3862,
+  "longName": {
+   "id": "1098518",
+   "de": "[!] Déclenchés Acrobate",
+   "en": "[!] Déclenchés Acrobate",
+   "es": "[!] Déclenchés Acrobate",
+   "fr": "Déclenchés Acrobate",
+   "pt": "[!] Déclenchés Acrobate"
+  },
+  "shortName": {
+   "id": "1090576",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3862,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3864": {
+  "id": 3864,
+  "longName": {
+   "id": "1090729",
+   "de": "[!] PASSIVE SPELLS",
+   "en": "[!] PASSIVE SPELLS",
+   "es": "[!] PASSIVE SPELLS",
+   "fr": "PASSIVE SPELLS",
+   "pt": "[!] PASSIVE SPELLS"
+  },
+  "shortName": {
+   "id": "1090728",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3864,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3866": {
+  "id": 3866,
+  "longName": {
+   "id": "1101376",
+   "de": "[!] Dompteur",
+   "en": "[!] Dompteur",
+   "es": "[!] Dompteur",
+   "fr": "Dompteur",
+   "pt": "[!] Dompteur"
+  },
+  "shortName": {
+   "id": "1090882",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3866,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3867": {
+  "id": 3867,
+  "longName": {
+   "id": "1101377",
+   "de": "[!] Acrobate",
+   "en": "[!] Acrobate",
+   "es": "[!] Acrobate",
+   "fr": "Acrobate",
+   "pt": "[!] Acrobate"
+  },
+  "shortName": {
+   "id": "1090884",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3867,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3868": {
+  "id": 3868,
+  "longName": {
+   "id": "1101375",
+   "de": "[!] Magicien",
+   "en": "[!] Magicien",
+   "es": "[!] Magicien",
+   "fr": "Magicien",
+   "pt": "[!] Magicien"
+  },
+  "shortName": {
+   "id": "1090886",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3868,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3869": {
+  "id": 3869,
+  "longName": {
+   "id": "1090887",
+   "de": "[!] Buffs individuels",
+   "en": "[!] Buffs individuels",
+   "es": "[!] Buffs individuels",
+   "fr": "Buffs individuels",
+   "pt": "[!] Buffs individuels"
+  },
+  "shortName": {
+   "id": "1090888",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3869,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3870": {
+  "id": 3870,
+  "longName": {
+   "id": "1090889",
+   "de": "[!] Buffs individuels",
+   "en": "[!] Buffs individuels",
+   "es": "[!] Buffs individuels",
+   "fr": "Buffs individuels",
+   "pt": "[!] Buffs individuels"
+  },
+  "shortName": {
+   "id": "1090890",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3870,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3871": {
+  "id": 3871,
+  "longName": {
+   "id": "1090891",
+   "de": "[!] Buffs individuels",
+   "en": "[!] Buffs individuels",
+   "es": "[!] Buffs individuels",
+   "fr": "Buffs individuels",
+   "pt": "[!] Buffs individuels"
+  },
+  "shortName": {
+   "id": "1090892",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3871,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3872": {
+  "id": 3872,
+  "longName": {
+   "id": "1090899",
+   "de": "[!] Sort uniques",
+   "en": "[!] Sort uniques",
+   "es": "[!] Sort uniques",
+   "fr": "Sort uniques",
+   "pt": "[!] Sort uniques"
+  },
+  "shortName": {
+   "id": "1090900",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3872,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3873": {
+  "id": 3873,
+  "longName": {
+   "id": "1101310",
+   "de": "[!] Dompteur",
+   "en": "[!] Dompteur",
+   "es": "[!] Dompteur",
+   "fr": "Dompteur",
+   "pt": "[!] Dompteur"
+  },
+  "shortName": {
+   "id": "1090902",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3873,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3874": {
+  "id": 3874,
+  "longName": {
+   "id": "1101311",
+   "de": "[!] Acrobate",
+   "en": "[!] Acrobate",
+   "es": "[!] Acrobate",
+   "fr": "Acrobate",
+   "pt": "[!] Acrobate"
+  },
+  "shortName": {
+   "id": "1090904",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3874,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3875": {
+  "id": 3875,
+  "longName": {
+   "id": "1101312",
+   "de": "[!] Magicien",
+   "en": "[!] Magicien",
+   "es": "[!] Magicien",
+   "fr": "Magicien",
+   "pt": "[!] Magicien"
+  },
+  "shortName": {
+   "id": "1090906",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3875,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3876": {
+  "id": 3876,
+  "longName": {
+   "id": "1091106",
+   "de": "[!] Déclenchés",
+   "en": "[!] Déclenchés",
+   "es": "[!] Déclenchés",
+   "fr": "Déclenchés",
+   "pt": "[!] Déclenchés"
+  },
+  "shortName": {
+   "id": "1091110",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3876,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3877": {
+  "id": 3877,
+  "longName": {
+   "id": "1091114",
+   "de": "[!] Passif",
+   "en": "[!] Passif",
+   "es": "[!] Passif",
+   "fr": "Passif",
+   "pt": "[!] Passif"
+  },
+  "shortName": {
+   "id": "1091118",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3877,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3878": {
+  "id": 3878,
+  "longName": {
+   "id": "1091284",
+   "de": "[!] Déclenchés",
+   "en": "[!] Déclenchés",
+   "es": "[!] Déclenchés",
+   "fr": "Déclenchés",
+   "pt": "[!] Déclenchés"
+  },
+  "shortName": {
+   "id": "1091285",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3878,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3879": {
+  "id": 3879,
+  "longName": {
+   "id": "1091326",
+   "de": "[!] Déclenchés",
+   "en": "[!] Déclenchés",
+   "es": "[!] Déclenchés",
+   "fr": "Déclenchés",
+   "pt": "[!] Déclenchés"
+  },
+  "shortName": {
+   "id": "1091327",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3879,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3880": {
+  "id": 3880,
+  "longName": {
+   "id": "1098527",
+   "de": "[!] Tooltips Magicien",
+   "en": "[!] Tooltips Magicien",
+   "es": "[!] Tooltips Magicien",
+   "fr": "Tooltips Magicien",
+   "pt": "[!] Tooltips Magicien"
+  },
+  "shortName": {
+   "id": "1091519",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3880,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3882": {
+  "id": 3882,
+  "longName": {
+   "id": "1091883",
+   "de": "[!] Tooltips Objectifs",
+   "en": "[!] Tooltips Objectifs",
+   "es": "[!] Tooltips Objectifs",
+   "fr": "Tooltips Objectifs",
+   "pt": "[!] Tooltips Objectifs"
+  },
+  "shortName": {
+   "id": "1091887",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3882,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3883": {
+  "id": 3883,
+  "longName": {
+   "id": "1097269",
+   "de": "Auslöser",
+   "en": "Triggered",
+   "es": "[!] Triggered",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1097273",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3883,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3884": {
+  "id": 3884,
+  "longName": {
+   "id": "1098516",
+   "de": "[!] Choix initial Acrobate",
+   "en": "[!] Choix initial Acrobate",
+   "es": "[!] Choix initial Acrobate",
+   "fr": "Choix initial Acrobate",
+   "pt": "[!] Choix initial Acrobate"
+  },
+  "shortName": {
+   "id": "1097561",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3884,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3885": {
+  "id": 3885,
+  "longName": {
+   "id": "1098529",
+   "de": "[!] Choix initial Dompteur",
+   "en": "[!] Choix initial Dompteur",
+   "es": "[!] Choix initial Dompteur",
+   "fr": "Choix initial Dompteur",
+   "pt": "[!] Choix initial Dompteur"
+  },
+  "shortName": {
+   "id": "1097569",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3885,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3886": {
+  "id": 3886,
+  "longName": {
+   "id": "1098522",
+   "de": "[!] Choix initial Magicien",
+   "en": "[!] Choix initial Magicien",
+   "es": "[!] Choix initial Magicien",
+   "fr": "Choix initial Magicien",
+   "pt": "[!] Choix initial Magicien"
+  },
+  "shortName": {
+   "id": "1097580",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3886,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3887": {
+  "id": 3887,
+  "longName": {
+   "id": "1098540",
+   "de": "[!] Sorts Magicien",
+   "en": "[!] Sorts Magicien",
+   "es": "[!] Sorts Magicien",
+   "fr": "Sorts Magicien",
+   "pt": "[!] Sorts Magicien"
+  },
+  "shortName": {
+   "id": "1097591",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3887,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3888": {
+  "id": 3888,
+  "longName": {
+   "id": "1098537",
+   "de": "[!] Sorts Acrobate",
+   "en": "[!] Sorts Acrobate",
+   "es": "[!] Sorts Acrobate",
+   "fr": "Sorts Acrobate",
+   "pt": "[!] Sorts Acrobate"
+  },
+  "shortName": {
+   "id": "1097599",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3888,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3889": {
+  "id": 3889,
+  "longName": {
+   "id": "1098538",
+   "de": "[!] Sorts Dompteur",
+   "en": "[!] Sorts Dompteur",
+   "es": "[!] Sorts Dompteur",
+   "fr": "Sorts Dompteur",
+   "pt": "[!] Sorts Dompteur"
+  },
+  "shortName": {
+   "id": "1097607",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3889,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3890": {
+  "id": 3890,
+  "longName": {
+   "id": "1097751",
+   "de": "[!] Animations",
+   "en": "[!] Animations",
+   "es": "[!] Animations",
+   "fr": "Animations",
+   "pt": "[!] Animations"
+  },
+  "shortName": {
+   "id": "1097755",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3890,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3893": {
+  "id": 3893,
+  "longName": {
+   "id": "1097798",
+   "de": "[!] Dramak",
+   "en": "[!] Dramak",
+   "es": "[!] Dramak",
+   "fr": "Dramak",
+   "pt": "[!] Dramak"
+  },
+  "shortName": {
+   "id": "1097799",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3893,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3899": {
+  "id": 3899,
+  "longName": {
+   "id": "1097810",
+   "de": "[!] Pantin",
+   "en": "[!] Pantin",
+   "es": "[!] Pantin",
+   "fr": "Pantin",
+   "pt": "[!] Pantin"
+  },
+  "shortName": {
+   "id": "1097811",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3899,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3900": {
+  "id": 3900,
+  "longName": {
+   "id": "1097828",
+   "de": "Auslöser",
+   "en": "[!] Déclenchés",
+   "es": "[!] Déclenchés",
+   "fr": "Déclenchés",
+   "pt": "Acionados"
+  },
+  "shortName": {
+   "id": "1097829",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3900,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3901": {
+  "id": 3901,
+  "longName": {
+   "id": "1098539",
+   "de": "[!] Sorts améliorés Dompteur",
+   "en": "[!] Sorts améliorés Dompteur",
+   "es": "[!] Sorts améliorés Dompteur",
+   "fr": "Sorts améliorés Dompteur",
+   "pt": "[!] Sorts améliorés Dompteur"
+  },
+  "shortName": {
+   "id": "1097858",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3901,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3902": {
+  "id": 3902,
+  "longName": {
+   "id": "1098536",
+   "de": "[!] Sorts améliorés Acrobate",
+   "en": "[!] Sorts améliorés Acrobate",
+   "es": "[!] Sorts améliorés Acrobate",
+   "fr": "Sorts améliorés Acrobate",
+   "pt": "[!] Sorts améliorés Acrobate"
+  },
+  "shortName": {
+   "id": "1097868",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3902,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3903": {
+  "id": 3903,
+  "longName": {
+   "id": "1098541",
+   "de": "[!] Sorts améliorés Magicien",
+   "en": "[!] Sorts améliorés Magicien",
+   "es": "[!] Sorts améliorés Magicien",
+   "fr": "Sorts améliorés Magicien",
+   "pt": "[!] Sorts améliorés Magicien"
+  },
+  "shortName": {
+   "id": "1097880",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3903,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3904": {
+  "id": 3904,
+  "longName": {
+   "id": "1097968",
+   "de": "[!] Jyfus",
+   "en": "[!] Jyfus",
+   "es": "[!] Jyfus",
+   "fr": "Jyfus",
+   "pt": "[!] Jyfus"
+  },
+  "shortName": {
+   "id": "1097940",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3904,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3906": {
+  "id": 3906,
+  "longName": {
+   "id": "1100265",
+   "de": "[!] Course de larves",
+   "en": "[!] Course de larves",
+   "es": "[!] Course de larves",
+   "fr": "Course de larves",
+   "pt": "[!] Course de larves"
+  },
+  "shortName": {
+   "id": "1098563",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3906,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3913": {
+  "id": 3913,
+  "longName": {
+   "id": "1100917",
+   "de": "[!] Sort initial",
+   "en": "[!] Sort initial",
+   "es": "[!] Sort initial",
+   "fr": "Sort initial",
+   "pt": "[!] Sort initial"
+  },
+  "shortName": {
+   "id": "1100918",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3913,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3914": {
+  "id": 3914,
+  "longName": {
+   "id": "1100919",
+   "de": "[!] Déclenchés Dagues",
+   "en": "[!] Déclenchés Dagues",
+   "es": "[!] Déclenchés Dagues",
+   "fr": "Déclenchés Dagues",
+   "pt": "[!] Déclenchés Dagues"
+  },
+  "shortName": {
+   "id": "1100920",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3914,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3915": {
+  "id": 3915,
+  "longName": {
+   "id": "1101468",
+   "de": "[!] Déclenchés Mama Troollette",
+   "en": "[!] Déclenchés Mama Troollette",
+   "es": "[!] Déclenchés Mama Troollette",
+   "fr": "Déclenchés Mama Troollette",
+   "pt": "[!] Déclenchés Mama Troollette"
+  },
+  "shortName": {
+   "id": "1101472",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3915,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3916": {
+  "id": 3916,
+  "longName": {
+   "id": "1101501",
+   "de": "[!] Dagues Améliorées",
+   "en": "[!] Dagues Améliorées",
+   "es": "[!] Dagues Améliorées",
+   "fr": "Dagues Améliorées",
+   "pt": "[!] Dagues Améliorées"
+  },
+  "shortName": {
+   "id": "1101500",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3916,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3917": {
+  "id": 3917,
+  "longName": {
+   "id": "1101598",
+   "de": "[!] Déclenchés Dagues Améliorées",
+   "en": "[!] Déclenchés Dagues Améliorées",
+   "es": "[!] Déclenchés Dagues Améliorées",
+   "fr": "Déclenchés Dagues Améliorées",
+   "pt": "[!] Déclenchés Dagues Améliorées"
+  },
+  "shortName": {
+   "id": "1101503",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3917,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3919": {
+  "id": 3919,
+  "longName": {
+   "id": "1102140",
+   "de": "[!] Passif",
+   "en": "[!] Passif",
+   "es": "[!] Passif",
+   "fr": "Passif",
+   "pt": "[!] Passif"
+  },
+  "shortName": {
+   "id": "1102141",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3919,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ },
+ "3920": {
+  "id": 3920,
+  "longName": {
+   "id": "1102142",
+   "de": "[!] Déclenchés",
+   "en": "[!] Déclenchés",
+   "es": "[!] Déclenchés",
+   "fr": "Déclenchés",
+   "pt": "[!] Déclenchés"
+  },
+  "shortName": {
+   "id": "1102143",
+   "de": "",
+   "en": "",
+   "es": "",
+   "fr": "",
+   "pt": ""
+  },
+  "className": "SpellTypeData",
+  "m_id": 3920,
+  "createdAt": "2026-03-03T17:13:45.912Z",
+  "updatedAt": "2026-03-03T17:13:45.912Z"
+ }
+}
