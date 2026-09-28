@@ -1,0 +1,853 @@
+{
+ "timeline": {
+  "model": "alternate_spawn_order",
+  "newMonstersInsertion": "append",
+  "playerOrder": ["acrobate","dompteur","dompteur","magicien"],
+  "deadPlayersKeepSlot": true
+ },
+ "ai": {
+  "focus": "maxDamage",
+  "skipIfInSpikes": true,
+  "skipIfNoTargetReachable": true,
+  "engageRadius": null,
+  "avoidSpikes": true,
+  "moveBeforeCast": true,
+  "monstersCanTargetAllies": false,
+  "mamaFocusSingleTarget": true,
+  "profiles": {
+   "troollibre": {
+    "moveBeforeCast": true,
+    "preferredDistance": [1,2],
+    "spells": [
+     {"spellLevelId":80485,"when":"enemyReachable"},
+     {"spellLevelId":80484,"when":"targetAtDistance2"},
+     {"spellLevelId":80483,"when":"enemyInRing1to2"},
+     {"spellLevelId":80484,"when":"anyTarget"}
+    ]
+   },
+   "artroolleur": {
+    "moveBeforeCast": false,
+    "preferredDistance": [3,8],
+    "spells": [{"spellLevelId":80487,"when":"maxTargets"},{"spellLevelId":80486,"when":"pushTowardSpikes","maxTargets":2}]
+   },
+   "nitrooll": {
+    "moveBeforeCast": false,
+    "preferredDistance": [1,6],
+    "healThresholdPct": 80,
+    "spells": [
+     {"spellLevelId":80494,"when":"mostInjuredAlly"},
+     {"spellLevelId":80496,"when":"threatenedAlly"},
+     {"spellLevelId":80490,"when":"pushTowardSpikes"},
+     {"spellLevelId":80493,"when":"pushTowardSpikes"}
+    ]
+   },
+   "mama": {
+    "moveBeforeCast": false,
+    "preferredDistance": [1,8],
+    "spells": [
+     {"spellLevelId":80498,"when":"playersInZoneAtLeast","count":2},
+     {"spellLevelId":80497,"when":"maxTargets"},
+     {"spellLevelId":80495,"when":"anyTarget","times":3},
+     {"spellLevelId":80488,"when":"nearLowestHpPlayer","times":2}
+    ]
+   }
+  }
+ },
+ "spikes": {
+  "entryDamage": 2000,
+  "monsterTurnStartDamageRaw": 1000,
+  "playerTurnStartDamage": 1000,
+  "playersDoubledInside": false,
+  "stackExitAndInside": true,
+  "exitVulnerabilityTurns": 1,
+  "triggerWhenWalkingThrough": true,
+  "walkThroughInterruptsMovement": false,
+  "retriggerOnMoveInside": false,
+  "auraAppliesMidSpell": true
+ },
+ "spawn": {"mode":"weighted_observed","seed":null,"excludeOccupied":true,"allowUnassigned":false},
+ "boss": {
+  "arrivalCell": 300,
+  "arrivalFallback": [287,"axisTowardWaitCell","nearestFree"],
+  "actsBeforeArrival": false,
+  "rassemblementBlockedByUnshakable": true,
+  "rassemblementPullThenPush": true,
+  "giftCancelsRassemblement": false,
+  "invulnerabilityLiftedBeforeEntryDamage": true,
+  "invulnerabilityBackBeforeTurnStartSpikes": true,
+  "catastroollBonusScope": "restOfTurn",
+  "levelForPushDamage": 1000,
+  "favourCap": null
+ },
+ "objectives": {
+  "maxCount": 6,
+  "offerCount": 2,
+  "offerDraw": "uniform",
+  "tier6Offered": true,
+  "votePolicy": "planner",
+  "pushKillsCount": true,
+  "glyphKillsCreditPlayer": false,
+  "solitudeBeforeArrival": true,
+  "mamaCountsFromTurn": 7,
+  "v100MeansFull": true
+ },
+ "bonuses": {"offerCount":3,"draw":"uniform_distinct","firstTurn":2,"lastTurn":9,"doubleApplication":false,"policy":"planner"},
+ "gifts": {
+  "spawnProbability": 0.72,
+  "cells": [272,273,299,301,327,328,329],
+  "firstTurn": 2,
+  "lastTurn": 9,
+  "cellDraw": "uniform_free",
+  "cardCount": 2,
+  "cardMix": {"twoUniques":1,"twoUpgrades":1,"oneEach":1},
+  "monstersTrigger": false,
+  "pushedPlayerTriggers": true,
+  "upgradedSpellGreyedUntilNextTurn": false
+ },
+ "spells": {
+  "newSpellUsableSameTurn": true,
+  "penseVite": {"maxCasts":3,"turnSeconds":10},
+  "relachementGrowthStart": "nextTurnStartAfterObtain",
+  "relachementMaxStacks": 4,
+  "voltigeUpgradedMaxPerTurn": 2,
+  "ggUpgradedKeepsRecastBonus": false,
+  "jaillissementUpgradeBroken": false,
+  "maledictionCollateraleChains": true,
+  "maledictionCollateraleHitsCarrier": false,
+  "maledictionRegenerantePercent": 100,
+  "maledictionRegeneranteZone": "C2",
+  "maledictionMouvanteOnGlyphDamage": false,
+  "pulsationChaotiqueBounceRange": null,
+  "chamboulementBounceTarget": "nearest",
+  "poutchLifetimeTurns": null,
+  "protectionProlongeeSelfHeals": 1,
+  "bienfaiteurOverflowLost": true,
+  "ultimeEspoirRespawnCell": "deathCellOrNearest",
+  "delivranceWorks": true,
+  "coupDeSangCreatesErosion": false,
+  "impactCritHitsPoutch": false
+ },
+ "archetypes": {"hpMode":"flat30000","dompteurPower":0},
+ "rng": {"seed":1,"rollMode":"random","critMode":"random","rollDistribution":"uniform","rollPerTarget":false},
+ "engine": {
+  "subSpellsIgnoreCastConditions": true,
+  "pushLevelForArchetypes": 200,
+  "eventLog": true,
+  "maxSubSpellDepth": 16,
+  "removeBuffsOfDeadCaster": true,
+  "unshakableBlocksCasterAdvance": true,
+  "firstTurnDecrementSkip": "preFight",
+  "turnStartTriggersBeforeDecrement": false,
+  "dispelGlyphsTriggeringMarkOnly": true
+ },
+ "victory": {"canFinishFromTurn":10,"turnLimit":null},
+ "map": {"dynamicObstacles":false},
+ "_doc": {
+  "timeline.model": {
+   "type": "enum",
+   "values": ["alternate_spawn_order","alternate_initiative","monsters_after_mama","explicit"],
+   "alternatives": ["alternate_initiative (Troolls triés par Force)","monsters_after_mama","explicit (liste fournie)"],
+   "question": "Q1",
+   "status": "H",
+   "source": "règle DOFUS + vidéos (« tuer le Trooll qui joue juste après soi »)",
+   "why": "règle DOFUS d'alternance des équipes, l'équipe monstre en tête (Mama) ; Troolls par ordre d'apparition"
+  },
+  "timeline.newMonstersInsertion": {
+   "type": "enum",
+   "values": ["append","after_mama","by_initiative"],
+   "alternatives": ["after_mama","by_initiative"],
+   "question": "Q1",
+   "status": "H",
+   "why": "les nouveaux venus sont ajoutés à la fin de la sous-liste des monstres"
+  },
+  "timeline.playerOrder": {
+   "type": "enum[]",
+   "values": ["acrobate","dompteur","magicien"],
+   "alternatives": "toute permutation / composition de 1 à 4 archétypes",
+   "question": "Q40",
+   "status": "R",
+   "source": "correctif officiel du 14/01/2025 (ordre d'entrée) ; vidéos",
+   "why": "ordre d'entrée des joueurs (J1..J4) et composition de l'équipe ; A-D-D-M par défaut",
+   "minLength": 1,
+   "maxLength": 4
+  },
+  "timeline.deadPlayersKeepSlot": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q1",
+   "status": "H",
+   "why": "un joueur mort garde sa place dans l'alternance joueurs / monstres (il est sauté) ; un monstre mort libère la sienne (Q1)"
+  },
+  "ai.focus": {
+   "type": "enum",
+   "values": ["maxDamage","lowestHp","nearest"],
+   "alternatives": ["lowestHp","nearest"],
+   "question": "Q2",
+   "status": "H",
+   "why": "cible atteignable ce tour qui maximise les dégâts"
+  },
+  "ai.skipIfInSpikes": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q2",
+   "status": "R",
+   "source": "cardxc 12:30, 14:30 ; sspritenL ; Zephiron 11:00",
+   "why": "les Troolls passent leur tour dans les pics sans sortie utile (vidéos)"
+  },
+  "ai.skipIfNoTargetReachable": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q2",
+   "status": "R",
+   "why": "les Troolls passent leur tour quand les joueurs sont loin (vidéos)"
+  },
+  "ai.engageRadius": {
+   "type": "integer|null",
+   "alternatives": ["entier (cases)"],
+   "question": "Q2",
+   "status": "H",
+   "why": "null = PM + PO maximale du meilleur sort"
+  },
+  "ai.avoidSpikes": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q2",
+   "status": "H",
+   "why": "un monstre n'entre jamais volontairement dans les pics"
+  },
+  "ai.moveBeforeCast": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q2",
+   "status": "H",
+   "why": "la mêlée se déplace avant de lancer (profil par défaut)"
+  },
+  "ai.monstersCanTargetAllies": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q37",
+   "status": "H",
+   "why": "les masques a,A permettraient de viser un autre Trooll ; non observé"
+  },
+  "ai.mamaFocusSingleTarget": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q2",
+   "status": "R",
+   "source": "Huz 18:30 ; Matspyder4",
+   "why": "la Mama concentre ses sorts sur un joueur (−20 000 / −21 000 observés)"
+  },
+  "ai.profiles": {
+   "type": "object",
+   "question": "Q2",
+   "status": "H",
+   "source": "D:mon.aiModel",
+   "why": "ordres de priorité des sorts par profil (N20 §9, étude §5.8) ; `when` = règle de déclenchement ; preferredDistance et healThresholdPct (soin si l'allié le plus blessé est sous ce seuil) : valeurs indicatives",
+   "whenValues": [
+    "enemyReachable",
+    "targetAtDistance2",
+    "enemyInRing1to2",
+    "anyTarget",
+    "maxTargets",
+    "pushTowardSpikes",
+    "mostInjuredAlly",
+    "threatenedAlly",
+    "playersInZoneAtLeast",
+    "nearLowestHpPlayer"
+   ]
+  },
+  "spikes.entryDamage": {"type":"integer","status":"V","source":"DB sl80492","why":"dégâts d'entrée dans les pics (fait des données)"},
+  "spikes.monsterTurnStartDamageRaw": {
+   "type": "integer",
+   "status": "V",
+   "source": "DB sl81026",
+   "why": "dégâts bruts de début de tour dans les pics (×2 pour un monstre par le 1163 d'aura)"
+  },
+  "spikes.playerTurnStartDamage": {
+   "type": "integer",
+   "alternatives": [2000],
+   "question": "Q4",
+   "status": "H",
+   "source": "DB sl81026 contre DPLN",
+   "why": "données : 1 000 (DPLN : 2 000)"
+  },
+  "spikes.playersDoubledInside": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q3",
+   "status": "H",
+   "source": "DB sl80492 (lecture Atq/Def : H forte)",
+   "why": "le ×2 de l'aura ne vise que le camp Def selon les données"
+  },
+  "spikes.stackExitAndInside": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q7",
+   "status": "H",
+   "source": "client 2.73",
+   "why": "les 1163 se multiplient : ×4 pour un monstre ré-entré avant son tour"
+  },
+  "spikes.exitVulnerabilityTurns": {
+   "type": "integer",
+   "question": "Q8",
+   "status": "V",
+   "source": "DB sl81025",
+   "why": "×2 de sortie jusqu'au début du prochain tour du porteur"
+  },
+  "spikes.triggerWhenWalkingThrough": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q6",
+   "status": "H",
+   "why": "traverser des pics en marchant déclenche l'entrée puis la sortie"
+  },
+  "spikes.walkThroughInterruptsMovement": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q6",
+   "status": "H",
+   "why": "la traversée n'interrompt pas le déplacement"
+  },
+  "spikes.retriggerOnMoveInside": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q6",
+   "status": "H",
+   "source": "Huz 08:30 (« ça a croqué plusieurs fois »)",
+   "why": "passer d'une case de pics à une autre ne redéclenche rien"
+  },
+  "spikes.auraAppliesMidSpell": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q6",
+   "status": "Robs",
+   "source": "VOD −9 904 = 2 000 + 2 × 3 952",
+   "why": "l'aura s'applique dès l'arrivée, avant les effets suivants du sort"
+  },
+  "spawn.mode": {
+   "type": "enum",
+   "values": ["weighted_observed","structured_slots","most_frequent","uniform_slots"],
+   "alternatives": ["structured_slots","most_frequent (déterministe)","uniform_slots"],
+   "question": "Q5",
+   "status": "H",
+   "why": "chaque monstre tiré parmi les candidats de son type, poids = nombre d'observations"
+  },
+  "spawn.seed": {"type":"integer|null","alternatives":["entier"],"status":"H","why":"null = dérivée de rng.seed"},
+  "spawn.excludeOccupied": {"type":"boolean","alternatives":[false],"question":"Q5","status":"H","why":"une case occupée n'est pas tirée"},
+  "spawn.allowUnassigned": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q5",
+   "status": "H",
+   "why": "autoriser les candidats sans type attribué (scenario.waves[].spawn.unassigned)"
+  },
+  "boss.arrivalCell": {
+   "type": "integer",
+   "question": "Q9",
+   "status": "V",
+   "source": "DB sl80837",
+   "why": "case d'arrivée codée en dur (2960 sur [300])"
+  },
+  "boss.arrivalFallback": {
+   "type": "list",
+   "values": ["axisTowardWaitCell","nearestFree"],
+   "question": "Q9",
+   "status": "H",
+   "source": "VOD (Robs) + H",
+   "why": "repli si 300 est occupée : 287 (observé 3 fois), puis axe x = 17 vers 152, puis case libre la plus proche"
+  },
+  "boss.actsBeforeArrival": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q21",
+   "status": "H",
+   "why": "aucune action de la Mama avant T8 (le décompte client la rendrait active au T7 sur 152)"
+  },
+  "boss.rassemblementBlockedByUnshakable": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q10",
+   "status": "H",
+   "why": "1103 n'est pas une poussée forcée : Inébranlable la bloque"
+  },
+  "boss.rassemblementPullThenPush": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q10",
+   "status": "V",
+   "source": "DB sl80935",
+   "why": "ordre des effets de 80935 : attirer les Troolls puis repousser les joueurs"
+  },
+  "boss.giftCancelsRassemblement": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q10",
+   "status": "R",
+   "source": "cardxc 19:30, sspritenL",
+   "why": "bug rapporté (joueur poussé sur un cadeau) désactivé par défaut"
+  },
+  "boss.invulnerabilityLiftedBeforeEntryDamage": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q11",
+   "status": "H",
+   "why": "5902 est le premier effet de l'entrée : levée avant les 2 000"
+  },
+  "boss.invulnerabilityBackBeforeTurnStartSpikes": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q11",
+   "status": "H",
+   "why": "décompte des buffs avant les glyphes de début de tour"
+  },
+  "boss.catastroollBonusScope": {
+   "type": "enum",
+   "values": ["restOfTurn","nextCastOnly","none"],
+   "alternatives": ["nextCastOnly","none"],
+   "question": "Q24",
+   "status": "H",
+   "why": "effet 1171 de durée 0 : reste du tour de la Mama"
+  },
+  "boss.levelForPushDamage": {
+   "type": "integer",
+   "alternatives": [200],
+   "question": "Q25",
+   "status": "V",
+   "source": "DB mo7984",
+   "why": "niveau 1000 des données (fiche en jeu : 200) → 133 par case"
+  },
+  "boss.favourCap": {
+   "type": "integer|null",
+   "alternatives": [5],
+   "question": "Q35",
+   "status": "H",
+   "source": "DB sl80933 contre DPLN",
+   "why": "null = −5 % par objectif sans plafond (95 % au 6e) ; DPLN : 5"
+  },
+  "objectives.maxCount": {
+   "type": "integer",
+   "alternatives": [5],
+   "question": "Q12",
+   "status": "V",
+   "source": "DB sp30443",
+   "why": "6 objectifs au maximum (30443 niv.1–6)"
+  },
+  "objectives.offerCount": {
+   "type": "integer",
+   "alternatives": [3,4],
+   "question": "Q12",
+   "status": "R",
+   "source": "Khytrayer 02:47, cardxc 04:00",
+   "why": "2 objectifs proposés par vote (vidéos)"
+  },
+  "objectives.offerDraw": {
+   "type": "enum",
+   "values": ["uniform"],
+   "question": "Q12",
+   "status": "H",
+   "why": "tirage uniforme parmi les 4 objectifs du palier"
+  },
+  "objectives.tier6Offered": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q12",
+   "status": "H",
+   "why": "le palier 6 existe dans les données (Zephiron : rien après le palier 5)"
+  },
+  "objectives.votePolicy": {
+   "type": "enum",
+   "values": ["planner","fixed"],
+   "alternatives": ["fixed"],
+   "status": "H",
+   "why": "le vote est choisi par le planificateur (ou une liste fixe d'identifiants)"
+  },
+  "objectives.pushKillsCount": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q18",
+   "status": "H",
+   "source": "client contre sspritenL",
+   "why": "une mort par poussée est attribuée au lanceur (client : X pour toute mort)"
+  },
+  "objectives.glyphKillsCreditPlayer": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q18",
+   "status": "H",
+   "why": "une mort par les pics est attribuée à l'entité de scénario"
+  },
+  "objectives.solitudeBeforeArrival": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q34",
+   "status": "H",
+   "why": "la Mama sur 152 compte comme « vivante sans allié » avant T8"
+  },
+  "objectives.mamaCountsFromTurn": {
+   "type": "integer",
+   "alternatives": [8],
+   "question": "Q34",
+   "status": "H",
+   "why": "la Mama n'est plus « pré-combat » au T7 (décompte client)"
+  },
+  "objectives.v100MeansFull": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q34",
+   "status": "H",
+   "why": "masque v100 interprété comme « PV pleins »"
+  },
+  "bonuses.offerCount": {"type":"integer","question":"Q13","status":"R","source":"DPLN","why":"3 cartes proposées parmi 6"},
+  "bonuses.draw": {
+   "type": "enum",
+   "values": ["uniform_distinct"],
+   "question": "Q13",
+   "status": "H",
+   "why": "cartes distinctes tirées uniformément, indépendamment à chaque fenêtre"
+  },
+  "bonuses.firstTurn": {"type":"integer","question":"Q13","status":"Robs","source":"VOD","why":"première fenêtre d'Acclamation"},
+  "bonuses.lastTurn": {"type":"integer","question":"Q13","status":"Robs","source":"VOD","why":"dernière fenêtre d'Acclamation"},
+  "bonuses.doubleApplication": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q23",
+   "status": "H",
+   "source": "DB (effet de carte forClientOnly) + vidéos",
+   "why": "la carte n'applique son bonus qu'une fois (l'effet propre de la carte est forClientOnly)"
+  },
+  "bonuses.policy": {
+   "type": "enum",
+   "values": ["planner","PO_first","PA_first","DF_first"],
+   "alternatives": ["PO_first","PA_first","DF_first"],
+   "question": "Q13",
+   "status": "R",
+   "source": "vidéos (deux écoles)",
+   "why": "choix de l'Acclamation par le planificateur"
+  },
+  "gifts.spawnProbability": {
+   "type": "number",
+   "alternatives": ["0..1"],
+   "question": "Q14",
+   "status": "Robs",
+   "source": "VOD 63/88",
+   "why": "nouveau cadeau à 63 débuts de tour sur 88 (T2–T9)",
+   "min": 0,
+   "max": 1
+  },
+  "gifts.cells": {"type":"integer[]","question":"Q14","status":"Robs","source":"VOD (N40 §6)","why":"cases observées des cadeaux"},
+  "gifts.firstTurn": {"type":"integer","question":"Q14","status":"Robs","source":"VOD","why":"premier tour avec cadeau"},
+  "gifts.lastTurn": {"type":"integer","question":"Q14","status":"Robs","source":"VOD","why":"dernier tour avec cadeau"},
+  "gifts.cellDraw": {
+   "type": "enum",
+   "values": ["uniform_free","weighted_observed"],
+   "alternatives": ["weighted_observed"],
+   "question": "Q14",
+   "status": "H",
+   "why": "case tirée uniformément parmi les cases libres (sans entité ni cadeau)"
+  },
+  "gifts.cardCount": {"type":"integer","question":"Q14","status":"R","source":"DPLN","why":"2 cartes par cadeau"},
+  "gifts.cardMix": {"type":"object","question":"Q14","status":"H","why":"poids relatifs des tirages {2 uniques, 2 améliorations, 1 + 1}"},
+  "gifts.monstersTrigger": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q14",
+   "status": "V",
+   "source": "DB sp30566",
+   "why": "masque Atq,A : seuls les joueurs déclenchent le cadeau"
+  },
+  "gifts.pushedPlayerTriggers": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q14",
+   "status": "R",
+   "source": "sspritenL",
+   "why": "un joueur poussé sur un cadeau le déclenche"
+  },
+  "gifts.upgradedSpellGreyedUntilNextTurn": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q15",
+   "status": "R",
+   "source": "Koza 07:30, sspritenL",
+   "why": "bug rapporté (partiellement corrigé) désactivé par défaut"
+  },
+  "spells.newSpellUsableSameTurn": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q15",
+   "status": "R",
+   "source": "vidéos (Productivité au T1)",
+   "why": "un sort appris en cours de tour est utilisable aussitôt"
+  },
+  "spells.penseVite.maxCasts": {
+   "type": "integer",
+   "alternatives": ["2..6"],
+   "question": "Q16",
+   "status": "R",
+   "source": "Houmilito 2:55:30 ; Huz 19:14",
+   "why": "lancers réellement jouables pendant le tour de 10 s qui suit Pense Vite",
+   "min": 1
+  },
+  "spells.penseVite.turnSeconds": {
+   "type": "integer",
+   "alternatives": [15],
+   "question": "Q16",
+   "status": "V",
+   "source": "DB sl80843",
+   "why": "durée du tour qui suit Pense Vite"
+  },
+  "spells.relachementGrowthStart": {
+   "type": "enum",
+   "values": ["nextTurnStartAfterObtain","immediate"],
+   "alternatives": ["immediate"],
+   "question": "Q17",
+   "status": "H",
+   "why": "+25 aux 4 débuts de tour du porteur qui suivent l'obtention"
+  },
+  "spells.relachementMaxStacks": {
+   "type": "integer",
+   "question": "Q17",
+   "status": "V",
+   "source": "DB sl80852",
+   "why": "4 déclenchements (triggerDuration 4 de 30624 niv.1) : +100 au plus"
+  },
+  "spells.voltigeUpgradedMaxPerTurn": {
+   "type": "integer",
+   "alternatives": [3],
+   "question": "Q26",
+   "status": "V",
+   "source": "DB sl80775",
+   "why": "données : 2 lancers (DPLN : 3)"
+  },
+  "spells.ggUpgradedKeepsRecastBonus": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q27",
+   "status": "H",
+   "why": "l'effet 406 en tête de 30560 retire le +20 avant la frappe"
+  },
+  "spells.jaillissementUpgradeBroken": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q28",
+   "status": "H",
+   "why": "30475 apprend 80750 (inexistant) ; on suppose 80760"
+  },
+  "spells.maledictionCollateraleChains": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q29",
+   "status": "H",
+   "why": "les renvois de Malédiction Collatérale se propagent"
+  },
+  "spells.maledictionCollateraleHitsCarrier": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q29",
+   "status": "H",
+   "why": "le porteur n'est pas touché par son propre renvoi"
+  },
+  "spells.maledictionRegenerantePercent": {
+   "type": "integer",
+   "alternatives": [50],
+   "question": "Q29",
+   "status": "V",
+   "source": "DB sl80849",
+   "why": "données : 100 % (description, DPLN : 50 %)"
+  },
+  "spells.maledictionRegeneranteZone": {
+   "type": "enum",
+   "values": ["C2","all"],
+   "alternatives": ["all"],
+   "question": "Q29",
+   "status": "H",
+   "why": "données : alliés à 2 cases au plus (DPLN : tous)"
+  },
+  "spells.maledictionMouvanteOnGlyphDamage": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q29",
+   "status": "H",
+   "why": "les dégâts de glyphe (sans attaquant joueur) ne repoussent pas"
+  },
+  "spells.pulsationChaotiqueBounceRange": {"type":"integer|null","alternatives":[5],"question":"Q29","status":"H","why":"null = rebonds sans limite de portée"},
+  "spells.chamboulementBounceTarget": {
+   "type": "enum",
+   "values": ["nearest"],
+   "question": "Q29",
+   "status": "H",
+   "why": "rebond vers l'ennemi non marqué le plus proche"
+  },
+  "spells.poutchLifetimeTurns": {
+   "type": "integer|null",
+   "alternatives": [1],
+   "question": "Q30",
+   "status": "H",
+   "why": "null = durée de vie illimitée (30420 « Mort » jamais référencé)"
+  },
+  "spells.protectionProlongeeSelfHeals": {
+   "type": "integer",
+   "alternatives": [2],
+   "question": "Q31",
+   "status": "H",
+   "why": "lancée sur soi : 1 soin de début de tour (décompte avant déclenchement)"
+  },
+  "spells.bienfaiteurOverflowLost": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q31",
+   "status": "H",
+   "why": "les dégâts au-delà du seuil sont perdus"
+  },
+  "spells.ultimeEspoirRespawnCell": {
+   "type": "enum",
+   "values": ["deathCellOrNearest"],
+   "question": "Q31",
+   "status": "H",
+   "why": "case de mort si libre, sinon case libre la plus proche"
+  },
+  "spells.delivranceWorks": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q31",
+   "status": "H",
+   "source": "données contre Willseir",
+   "why": "Délivrance désenvoûte les effets dispellable = 1"
+  },
+  "spells.coupDeSangCreatesErosion": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q32",
+   "status": "H",
+   "why": "le malus de PV (1048) ne crée pas d'érosion"
+  },
+  "spells.impactCritHitsPoutch": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q32",
+   "status": "H",
+   "why": "masque A,J de l'Impact critique : le Poutch allié n'est pas touché"
+  },
+  "archetypes.hpMode": {
+   "type": "enum",
+   "values": ["flat30000","passiveApplies"],
+   "alternatives": ["passiveApplies (Acrobate 35 000, Magicien 25 000)"],
+   "question": "Q20",
+   "status": "Robs",
+   "source": "VOD + DPLN",
+   "why": "bonus de PV du passif 30639 non appliqués (VOD, capture DPLN)"
+  },
+  "archetypes.dompteurPower": {
+   "type": "integer",
+   "alternatives": [3000],
+   "question": "Q20",
+   "status": "Robs",
+   "source": "VOD (N1D §12)",
+   "why": "Puissance du Dompteur : 0 (4 relevés VOD exacts à ×61)"
+  },
+  "rng.seed": {"type":"integer","status":"engine","why":"graine du PRNG stocké dans l'état (déterminisme)"},
+  "rng.rollMode": {
+   "type": "enum",
+   "values": ["random","average","min","max"],
+   "alternatives": ["average","min","max"],
+   "status": "engine",
+   "why": "jets de dés : aléatoires, moyens (arrondi inférieur), minimaux ou maximaux (planificateur)"
+  },
+  "rng.critMode": {
+   "type": "enum",
+   "values": ["random","never","always"],
+   "alternatives": ["never","always"],
+   "status": "engine",
+   "why": "coups critiques : tirés, jamais ou toujours (planificateur)"
+  },
+  "rng.rollDistribution": {
+   "type": "enum",
+   "values": ["uniform","clientPreview"],
+   "alternatives": ["clientPreview"],
+   "question": "Q22",
+   "status": "H",
+   "why": "loi du jet aléatoire : uniforme (serveur supposé) ou aperçu client (bornes sous-pondérées)"
+  },
+  "rng.rollPerTarget": {
+   "type": "boolean",
+   "alternatives": [true],
+   "status": "H",
+   "why": "un seul jet par effet et par lancer, commun à toutes les cibles de la zone"
+  },
+  "engine.subSpellsIgnoreCastConditions": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q33",
+   "status": "H",
+   "why": "un sous-sort exécuté ignore PA, PO et LdV"
+  },
+  "engine.pushLevelForArchetypes": {
+   "type": "integer",
+   "alternatives": ["niveau réel du personnage"],
+   "question": "Q38",
+   "status": "V",
+   "source": "DB mo7980",
+   "why": "niveau du monstre 7980 pour la collision (283 par case)"
+  },
+  "engine.eventLog": {
+   "type": "boolean",
+   "alternatives": [false],
+   "status": "engine",
+   "why": "journal d'événements typé (désactivable pour la vitesse du planificateur)"
+  },
+  "engine.maxSubSpellDepth": {"type":"integer","status":"engine","why":"garde-fou contre les boucles de sous-sorts et de déclencheurs","min":1},
+  "engine.removeBuffsOfDeadCaster": {
+   "type": "boolean",
+   "alternatives": [false],
+   "status": "H",
+   "source": "CLI273 (mémoire du code, non relu)",
+   "why": "à la mort d'un combattant, les envoûtements qu'il a lancés sur les autres sont retirés (client : BuffManager.removeLinkedBuff à la mort)"
+  },
+  "engine.unshakableBlocksCasterAdvance": {
+   "type": "boolean",
+   "alternatives": [false],
+   "status": "H",
+   "why": "Inébranlable (effet d'état 0) bloque aussi l'avance du lanceur (1042), traitée comme une attirance du lanceur (canBePushed du déplacé)"
+  },
+  "engine.firstTurnDecrementSkip": {
+   "type": "enum",
+   "values": ["preFight","casterFirstTurn","none"],
+   "alternatives": ["casterFirstTurn","none"],
+   "status": "H",
+   "source": "N70 §7.2, ETUDE §6.3",
+   "why": "un envoûtement posé avant le premier tour global (passifs de début de combat, passe-tour de la Mama) n'est pas décompté au premier début de tour de son lanceur (client : spellBuffsToIgnore) ; délai 7 de la Mama → T8"
+  },
+  "engine.turnStartTriggersBeforeDecrement": {
+   "type": "boolean",
+   "alternatives": [true],
+   "status": "H",
+   "source": "N70 §7.2",
+   "why": "début de tour : décompte des buffs lancés par le combattant PUIS effets TB de ses buffs (ordre supposé ETUDE §9.10) ; true : TB d'abord (un TB de durée 1 posé sur soi se déclencherait)"
+  },
+  "engine.dispelGlyphsTriggeringMarkOnly": {
+   "type": "boolean",
+   "alternatives": [false],
+   "question": "Q14",
+   "status": "H",
+   "source": "DB sl80986 + « plusieurs cadeaux peuvent coexister »",
+   "why": "2018 exécuté par le sort d'une marque (cadeau ramassé) ne dissipe que cette marque, pas les autres cadeaux posés"
+  },
+  "victory.canFinishFromTurn": {
+   "type": "integer",
+   "alternatives": [11],
+   "question": "Q19",
+   "status": "R",
+   "source": "GD 53:00",
+   "why": "30577 lancé à l'apparition de V10"
+  },
+  "victory.turnLimit": {"type":"integer|null","alternatives":["entier"],"question":"Q19","status":"H","why":"aucune limite de tours connue"},
+  "map.dynamicObstacles": {
+   "type": "boolean",
+   "alternatives": [true],
+   "question": "Q39",
+   "status": "R",
+   "source": "GD 51:30 + VOD",
+   "why": "aucun obstacle dynamique observé (non implémentés selon les GD)"
+  }
+ }
+}
