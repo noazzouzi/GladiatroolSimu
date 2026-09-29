@@ -21,6 +21,7 @@
 import { resolveConfigRef } from '../data/index.js';
 import {
   activeThreshold,
+  bossArrivalCell,
   multiplierApplies,
   Stat,
   type Buff,
@@ -129,17 +130,8 @@ export function mamaInfo(state: FightState, sc: ScenarioState): MamaInfo {
   if (arrived) return { mama, arrived, arrivesNext: false, lineCell: mama.cell };
   const arrivalTurn = data.arrival.resultingGlobalTurn;
   const arrivesNext = state.turn >= arrivalTurn - 1;
-  let lineCell = -1;
-  if (arrivesNext) {
-    const target = data.arrival.targetCell;
-    lineCell = target;
-    const occ = state.fighterAt(target);
-    if (occ && occ.id !== mama.id) {
-      const fb = state.ctx.config.boss.arrivalFallback.find((x): x is number => typeof x === 'number');
-      if (fb !== undefined && !state.isOccupied(fb)) lineCell = fb;
-      else lineCell = -1;
-    }
-  }
+  // case d'arrivée réelle (300, puis replis ``boss.arrivalFallback`` si elle est occupée) : même règle que le moteur
+  const lineCell = arrivesNext ? bossArrivalCell(state) : -1;
   return { mama, arrived, arrivesNext, lineCell };
 }
 
@@ -315,6 +307,20 @@ function objectivePending(state: FightState, sc: ScenarioState, actorId: number)
       const a = state.fighters[actorId];
       return a && sc.markedCell >= 0 && a.cell === sc.markedCell && sc.turnOf === actorId ? 1 : 0;
     }
+    case 'allPlayersEndTurnOnStartCell': {
+      // « 1, 2, 3, Soleil ! » : validé à la fin du tour global si chaque joueur vivant a fini SON tour sur sa case
+      // de début de tour ; si un joueur qui a déjà joué ce tour global a échoué, il n'y a plus rien à gagner
+      const a = state.fighters[actorId];
+      const i = sc.playerIndex(actorId);
+      if (!a || i < 0 || sc.turnOf !== actorId) return 0;
+      const tl = state.timeline;
+      for (let j = 0; j < state.timelineIndex && j < tl.length; j++) {
+        const p = state.fighters[tl[j]!];
+        if (p && p.alive && sc.playerIds.includes(p.id) && !sc.soleilOk.includes(p.id)) return 0;
+      }
+      // un seul écart fait tout perdre à l'équipe : la valeur « en jeu » est l'objectif entier (≈ 2 × le facteur)
+      return sc.startCells[i]! >= 0 && a.cell === sc.startCells[i] ? 2 : 0;
+    }
     case 'noPlayerAtOrBelowHpPct': {
       for (const id of sc.playerIds) {
         const p = state.fighters[id]!;
@@ -400,6 +406,9 @@ export function evaluateState(fight: GladiatroolFight, weights: PlannerWeights =
 
   // ------------------------------------------------------------------ monstres
   const spikeTickRaw = cfg.spikes.monsterTurnStartDamageRaw;
+  const pushKillActive =
+    w.pushKillSetup > 0 && !!sc.active && objectiveById(state.ctx.data, sc.active).condition.kind === 'victimKilledByPushDamage';
+  let pushKillBonus = 0;
   const tlIndex = new Map<number, number>();
   for (let i = 0; i < state.timeline.length; i++) tlIndex.set(state.timeline[i]!, i);
   for (const m of fighters) {
@@ -412,16 +421,21 @@ export function evaluateState(fight: GladiatroolFight, weights: PlannerWeights =
       const futureMult = isMama || inSpikes ? w.futureMultInSpikes : w.futureMultOutside;
       const alive = w.monsterAlive[String(m.monsterId)] ?? w.monsterAliveDefault;
       const tick = inSpikes && !isMama ? spikeTickRaw * mult : 0;
+      if (pushKillActive && !isMama && m.canBePushed && m.hp <= w.pushKillHp) pushKillBonus = w.pushKillSetup;
       if (tick > 0 && m.hp <= tick) {
         monsterScore -= (1 - w.spikeDeathConfidence) * (alive + (w.monsterHp * m.hp) / futureMult);
         detail?.dyingInSpikes.push(m.id);
         continue;
       }
-      monsterScore -= alive + (w.monsterHp * Math.max(0, m.hp - tick)) / futureMult;
+      monsterScore -= alive + ((isMama ? w.mamaHpWeight : 1) * w.monsterHp * Math.max(0, m.hp - tick)) / futureMult;
       if (isMama && inSpikes && !m.invulnerable) {
         const left = playersStillToPlay(state, playerIds);
         mamaScore += w.mamaWindow * Math.min(1, left / 3);
         if (detail) detail.mamaWindowOpen = true;
+      } else if (isMama && inSpikes && m.invulnerable) {
+        // restée dans les pics : aucune nouvelle entrée possible (pas de nouvel EON5902) → invulnérable pour de bon
+        // tant qu'on ne l'en sort pas (ÉTUDE §6.6 « la faire sortir puis ré-entrer »)
+        mamaScore -= w.mamaStuck;
       }
     } else if (!mi.arrivesNext) continue;
 
@@ -435,8 +449,10 @@ export function evaluateState(fight: GladiatroolFight, weights: PlannerWeights =
     const n = j === undefined ? np : playersBefore(state, playerIds, cur, j);
     const decay = Math.max(w.threatDecayFloor, Math.pow(w.threatDecay, n));
     const reach = m.maxMp + monsterSpellReach(state.ctx, m.monsterId);
+    const trap = w.spikeTrapThreat[String(m.monsterId)] ?? 1;
     let best = -1;
     let bestKey = -Infinity;
+    let bestTrap = 1;
     let nearest = -1;
     let nearestD = Infinity;
     for (let i = 0; i < np; i++) {
@@ -448,14 +464,16 @@ export function evaluateState(fight: GladiatroolFight, weights: PlannerWeights =
         nearest = i;
       }
       if (d > reach) continue;
-      const key = pmult[i]! * pres[i]! * 1e6 - (p.hp + p.shield);
+      const t = trap !== 1 && playerInSpikes(state, p) ? trap : 1;
+      const key = pmult[i]! * pres[i]! * t * 1e6 - (p.hp + p.shield);
       if (key > bestKey) {
         bestKey = key;
         best = i;
+        bestTrap = t;
       }
     }
     if (best >= 0) {
-      expected[best] += base * pmult[best]! * pres[best]! * decay;
+      expected[best] += base * bestTrap * pmult[best]! * pres[best]! * decay;
       const push = w.monsterPush[String(m.monsterId)] ?? 0;
       const p = fighters[playerIds[best]!]!;
       if (push > 0 && !playerInSpikes(state, p) && spikeDistance(grid, p.cell) <= push) pushRisk[best] += w.pushRisk * decay;
@@ -520,7 +538,14 @@ export function evaluateState(fight: GladiatroolFight, weights: PlannerWeights =
     objectiveScore += w.objectiveProgress * objectiveProgress(state, sc);
     objectiveScore += w.objectiveCompleted * w.objectivePendingFactor * objectivePending(state, sc, actorId);
   }
-  objectiveScore += sc.giftsTaken * w.giftTaken;
+  objectiveScore += sc.giftsTaken * w.giftTaken + pushKillBonus;
+  // un cadeau posé PERSISTE jusqu'à ce qu'on le prenne (ÉTUDE §8.1) : il garde l'essentiel de sa valeur sur la
+  // carte ; le prendre maintenant ne rapporte que la différence (sinon il éclipserait des mises en pics)
+  const gifts = giftCells(state, sc).length;
+  if (gifts > 0) {
+    const content = state.turn <= w.giftUniqueUntilTurn ? w.giftUniqueEstimate : 0;
+    objectiveScore += gifts * w.giftOnMapFactor * (w.giftTaken + content);
+  }
 
   if (detail) {
     detail.mamaLineCell = mi.lineCell;

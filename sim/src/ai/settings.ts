@@ -32,6 +32,8 @@ export interface AiWeights {
   readonly unshakable: number;
   readonly position: number;
   readonly threatenedAllyDistance: number;
+  /** Joueur rendu Vulnérable ×2 (× spikePush) ; coût pour un monstre rendu Vulnérable. */
+  readonly vulnerable: number;
 }
 
 export interface AiSettings {
@@ -67,6 +69,7 @@ function weightsOf(cfg: SimConfig): AiWeights {
     unshakable: ai.unshakableValue,
     position: ai.positionWeight,
     threatenedAllyDistance: ai.threatenedAllyDistance,
+    vulnerable: ai.vulnerableValue,
   };
 }
 

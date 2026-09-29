@@ -141,7 +141,7 @@ interface Selection {
   additional: number[];
 }
 
-function selectOnBoard(b: Board, caster: Fighter, e: CompiledEffect, targetedCell: number, casterCellBefore: number, snap: Int16Array): Selection {
+function selectOnBoard(b: Board, caster: Fighter, e: CompiledEffect, targetedCell: number, casterCellBefore: number, snap: readonly number[]): Selection {
   const zone = e.zone;
   const whole = zone.shape === 'A' || zone.shape === 'a';
   const st = b.s.state;
@@ -275,7 +275,7 @@ function hitOnBoard(
   p: number,
   cell: number,
   casterCellBefore: number,
-  snap: Int16Array,
+  snap: readonly number[],
   additional: boolean,
 ): void {
   const rn = computeHitOnBoard(b, casterId, t, spell, e, cell, casterCellBefore, snap, additional);
@@ -302,7 +302,7 @@ function computeHitOnBoard(
   e: CompiledEffect,
   cell: number,
   casterCellBefore: number,
-  snap: Int16Array,
+  snap: readonly number[],
   additional: boolean,
 ): DamageResult {
   const cv = b.view(casterId);
@@ -348,7 +348,7 @@ function healOnBoard(
   p: number,
   cell: number,
   casterCellBefore: number,
-  snap: Int16Array,
+  snap: readonly number[],
   additional: boolean,
 ): void {
   const value = (eff: CompiledEffect): number => {
@@ -375,7 +375,7 @@ function forcedOnBoard(
   kind: 'push' | 'pull',
   cell: number,
   casterCellBefore: number,
-  snap: Int16Array,
+  snap: readonly number[],
 ): void {
   const moved = b.fighter(t);
   const forced =

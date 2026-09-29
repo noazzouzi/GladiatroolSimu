@@ -3,7 +3,7 @@
  * objectifs, cadeaux), bilan du tour, risques (menace estimée, pics, lignes de la Mama) et résultat de
  * l'anticipation (tours des monstres simulés). Tout est calculé par DIFFÉRENCE entre états simulés.
  */
-import { fmtNum } from '../engine/index.js';
+import { fmtNum, Stat } from '../engine/index.js';
 import type { GladiatroolFight } from '../scenario/index.js';
 import type { MacroAction } from './actions.js';
 import { evaluateWithDetail, monsterInSpikes, playerInSpikes } from './evaluate.js';
@@ -58,6 +58,37 @@ function spellName(fight: GladiatroolFight, spellLevelId: number): string {
   return fight.ctx.getSpell(spellLevelId).name;
 }
 
+const STAT_LABELS: Readonly<Record<number, string>> = {
+  [Stat.AP]: 'PA',
+  [Stat.MP]: 'PM',
+  [Stat.RANGE]: 'PO',
+  [Stat.CRIT]: '% critique',
+  [Stat.FINAL_DAMAGE]: '% dommages finaux',
+};
+
+/** Boosts (PA, PM, PO, DF, critique) et boucliers gagnés par les joueurs entre deux états. */
+function describeBoosts(before: GladiatroolFight, after: GladiatroolFight): string[] {
+  const out: string[] = [];
+  for (const a of after.state.fighters) {
+    if (!a.alive || a.team !== 'players') continue;
+    const b = before.state.fighters[a.id];
+    if (!b) continue;
+    const old = new Set(b.buffs.map((x) => x.uid));
+    const bits: string[] = [];
+    for (const buff of a.buffs) {
+      if (old.has(buff.uid) || buff.kind !== 'stat' || buff.value <= 0) continue;
+      const label = STAT_LABELS[buff.stat];
+      if (!label) continue;
+      const when = buff.delay > 0 ? ' au prochain tour' : '';
+      bits.push(`+${buff.value} ${label}${when}`);
+    }
+    const dsh = a.shield - (b.alive ? b.shield : 0);
+    if (dsh > 0) bits.push(`bouclier +${fmtNum(dsh)}`);
+    if (bits.length) out.push(`${a.name} ${bits.join(', ')}`);
+  }
+  return out;
+}
+
 /** Description d'une macro-action (lignes françaises). */
 export function describeMacro(before: GladiatroolFight, after: GladiatroolFight, macro: MacroAction, actorId: number, finalMove: boolean): string {
   const parts: string[] = [];
@@ -86,6 +117,7 @@ export function describeMacro(before: GladiatroolFight, after: GladiatroolFight,
       if (d.diedNow) bits.push('MORT');
       if (bits.length) effects.push(`${d.name} ${bits.join(', ')}`);
     }
+    effects.push(...describeBoosts(before, after));
     const target = macro.cell >= 0 ? ` sur ${macro.cell}` : '';
     parts.push(`${spellName(before, macro.spellLevelId)}${target}${effects.length ? ' : ' + effects.join(' ; ') : ' : sans effet visible'}`);
   }

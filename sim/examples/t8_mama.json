@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "description": "T8 : la Mama est arrivée (300 → repoussée par son Rassemblement) ; tour de l'Acrobate : la mettre dans les pics avant les Dompteurs (ÉTUDE §6.9, §10.5).",
+  "seed": 5,
+  "turn": 8,
+  "players": [
+    { "archetype": "acrobate", "cell": 271, "hp": 30000, "upgrades": [80507] },
+    { "archetype": "dompteur", "cell": 316, "hp": 30000, "uniques": [80839] },
+    { "archetype": "dompteur", "cell": 257, "hp": 30000, "uniques": [80839] },
+    { "archetype": "magicien", "cell": 330, "hp": 30000 }
+  ],
+  "monsters": [
+    { "type": "mama", "cell": 301, "hp": 150000 }
+  ],
+  "current": "J1",
+  "objectives": { "completed": ["empale", "productivite", "stop_projectiles", "distance_insecurite", "tout_va_bien"], "active": "meme_pas_mal" }
+}

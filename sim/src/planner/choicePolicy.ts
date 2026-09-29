@@ -76,7 +76,7 @@ export const GIFT_PREFERENCE: Readonly<Record<string, number>> = {
 };
 
 /** Ordre des caractéristiques d'Acclamation par politique (``bonuses.policy``) et archétype. */
-const ACCLAMATION_ORDER: Readonly<Record<string, Readonly<Record<string, readonly string[]>>>> = {
+export const ACCLAMATION_ORDER: Readonly<Record<string, Readonly<Record<string, readonly string[]>>>> = {
   planner: {
     acrobate: ['range', 'ap', 'mp', 'pushDamage', 'resPct', 'resPctMelee'],
     dompteur: ['ap', 'finalDamagePct', 'range', 'critDamage', 'critPct', 'mp'],

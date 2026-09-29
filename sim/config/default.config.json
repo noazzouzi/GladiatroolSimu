@@ -23,6 +23,7 @@
   "unshakableValue": 1500,
   "positionWeight": 100,
   "threatenedAllyDistance": 3,
+  "vulnerableValue": 2000,
   "profiles": {
    "troollibre": {
     "moveBeforeCast": true,
@@ -53,6 +54,7 @@
    "mama": {
     "moveBeforeCast": false,
     "preferredDistance": [1,8],
+    "skipIfInSpikes": false,
     "spells": [
      {"spellLevelId":80498,"when":"playersInZoneAtLeast","count":2},
      {"spellLevelId":80497,"when":"maxTargets"},
@@ -98,7 +100,29 @@
   "glyphKillsCreditPlayer": false,
   "solitudeBeforeArrival": true,
   "mamaCountsFromTurn": 7,
-  "v100MeansFull": true
+  "v100MeansFull": true,
+  "fixedVoteOrder": [
+   "productivite",
+   "meurtres_serie",
+   "sol_glissant",
+   "soleil",
+   "stop_projectiles",
+   "ebranlable",
+   "toi_par_ici",
+   "sauvez_le",
+   "distance_insecurite",
+   "pas_le_temps",
+   "faire_le_mur",
+   "prendre_sa_place",
+   "tout_va_bien",
+   "trous_troolls",
+   "pierre_trois_coups",
+   "attirance",
+   "au_coin",
+   "quintuple",
+   "meme_pas_mal",
+   "solitude"
+  ]
  },
  "bonuses": {"offerCount":3,"draw":"uniform_distinct","firstTurn":2,"lastTurn":9,"doubleApplication":false,"policy":"planner"},
  "gifts": {
@@ -322,12 +346,20 @@
    "why": "un allié est « menacé » (règle threatenedAlly, valeur d'Inébranlable) s'il est à au plus N cases (Manhattan) de la case de pics la plus proche",
    "min": 0
   },
+  "ai.vulnerableValue": {
+   "type": "number",
+   "alternatives": [0,5000],
+   "question": "Q2",
+   "status": "H",
+   "why": "valeur (PV équivalents) d'un joueur rendu Vulnérable ×2 (entrée dans les pics, sortie des pics) : comptée × spikePushWeight pour un ennemi, et en coût (poids 1) pour un monstre rendu Vulnérable par sa propre action",
+   "min": 0
+  },
   "ai.profiles": {
    "type": "object",
    "question": "Q2",
    "status": "H",
    "source": "D:mon.aiModel",
-   "why": "ordres de priorité des sorts par profil (N20 §9, étude §5.8) ; `when` = règle de déclenchement ; preferredDistance et healThresholdPct (soin si l'allié le plus blessé est sous ce seuil) : valeurs indicatives ; un profil peut surcharger focus, skipIfInSpikes, skipIfNoTargetReachable, engageRadius et avoidSpikes",
+   "why": "ordres de priorité des sorts par profil (N20 §9, étude §5.8) ; `when` = règle de déclenchement ; preferredDistance et healThresholdPct (soin si l'allié le plus blessé est sous ce seuil) : valeurs indicatives ; un profil peut surcharger focus, skipIfInSpikes, skipIfNoTargetReachable, engageRadius et avoidSpikes (mama : skipIfInSpikes faux, les tours passés observés ne concernent que les Troolls)",
    "whenValues": [
     "enemyReachable",
     "targetAtDistance2",
@@ -541,10 +573,38 @@
   },
   "objectives.votePolicy": {
    "type": "enum",
-   "values": ["planner","fixed"],
-   "alternatives": ["fixed"],
+   "values": ["planner","fixed","preference"],
+   "alternatives": ["fixed","preference"],
    "status": "H",
-   "why": "le vote est choisi par le planificateur (ou une liste fixe d'identifiants)"
+   "why": "politique de vote du runner : planner = préférence (ÉTUDE §7.3) × faisabilité estimée (composition, monstres, PV) ; fixed = premier objectif proposé dans objectives.fixedVoteOrder ; preference = préférence seule"
+  },
+  "objectives.fixedVoteOrder": {
+   "type": "enum[]",
+   "values": [
+    "empale",
+    "soleil",
+    "sol_glissant",
+    "meurtres_serie",
+    "productivite",
+    "ebranlable",
+    "stop_projectiles",
+    "toi_par_ici",
+    "sauvez_le",
+    "prendre_sa_place",
+    "faire_le_mur",
+    "pas_le_temps",
+    "distance_insecurite",
+    "attirance",
+    "trous_troolls",
+    "pierre_trois_coups",
+    "tout_va_bien",
+    "solitude",
+    "quintuple",
+    "au_coin",
+    "meme_pas_mal"
+   ],
+   "status": "H",
+   "why": "ordre de préférence des votes pour votePolicy = fixed (défaut : recommandations ÉTUDE §7.3, palier par palier)"
   },
   "objectives.pushKillsCount": {
    "type": "boolean",

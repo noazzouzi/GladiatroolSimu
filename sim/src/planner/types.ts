@@ -13,15 +13,16 @@ export type PlannedAction =
   | { type: 'move'; path: number[] }
   | { type: 'end' };
 
-/** ``fast`` : ≤ 150 ms par tour de joueur (Monte Carlo) ; ``deep`` : ≤ 3 s (interface). */
+/** ``fast`` : ≤ 300 ms par tour de joueur (Monte Carlo) ; ``deep`` : ≤ 3 s (interface). */
 export type PlannerMode = 'fast' | 'deep' | 'greedy';
 
 /**
  * Anticipation des meilleures feuilles : ``none`` (évaluation statique seule), ``nextPlayer`` (tours des monstres
  * jusqu'au prochain joueur), ``globalTurn`` (jusqu'à la fin du tour global, coéquipiers joués par une politique
- * gloutonne).
+ * gloutonne), ``fullRound`` (jusqu'au prochain tour du joueur : un passage de chaque combattant, y compris les
+ * monstres qui jouent après lui au tour global suivant — même horizon pour le dernier joueur que pour le premier).
  */
-export type LookaheadMode = 'none' | 'nextPlayer' | 'globalTurn';
+export type LookaheadMode = 'none' | 'nextPlayer' | 'globalTurn' | 'fullRound';
 
 export interface SearchBudget {
   /** Nœuds gardés à chaque profondeur (beam). */
@@ -37,6 +38,11 @@ export interface SearchBudget {
   /** Feuilles anticipées (les meilleures selon l'évaluation statique). */
   lookaheadLeaves: number;
   lookahead: LookaheadMode;
+  /**
+   * Feuilles anticipées EN PLUS quand la meilleure anticipation est dangereuse (un joueur y meurt ou y finit sous
+   * 35 % de ses PV) : la recherche regarde plus loin seulement dans les tours critiques. Défaut 0.
+   */
+  lookaheadExtraLeaves?: number;
   /** Plafond de temps (ms) ; null : aucun (résultat entièrement déterministe). */
   timeLimitMs: number | null;
   /** Nombre d'alternatives renvoyées. */
@@ -49,7 +55,7 @@ export interface PlanOptions {
   budget?: Partial<SearchBudget>;
   /** Surcharges des poids de l'évaluation. */
   weights?: Partial<PlannerWeights>;
-  /** IA des monstres pendant l'anticipation (défaut : ``simpleMonsterController`` du scénario). */
+  /** IA des monstres pendant l'anticipation (défaut : ``anticipationMonsterAi`` du module ``ai`` : jets moyens, sans critique). */
   monsterController?: MonsterController | MonsterTurnFn;
   /** Réponse aux choix qui apparaissent pendant une simulation (défaut : ``defaultChoicePolicy``). */
   choicePolicy?: ChoicePolicy;
@@ -62,6 +68,11 @@ export interface PlanOptions {
   explain?: boolean;
   /** Ignorer le plafond de temps (résultat indépendant de la machine). */
   deterministic?: boolean;
+  /**
+   * TRICHE, pour mesure seulement : anticiper avec les vrais flux aléatoires du combat (vagues, cadeaux, cartes,
+   * Acclamations futures). Défaut faux : les copies de planification reçoivent des graines neutralisées.
+   */
+  oracle?: boolean;
 }
 
 /** Choix supposé pendant la simulation (politique de choix). */
@@ -131,6 +142,19 @@ export interface SearchStats {
   truncated: boolean;
 }
 
+/**
+ * Point de contrôle d'un plan : état prévu (jets moyens) après l'action d'index ``action`` — combattants vivants sur
+ * la carte et leurs cases. ``executePlan`` (option ``checkpoints``) s'arrête dès que l'état réel s'en écarte (un
+ * coup critique tue une cible plus tôt, un jet faible la laisse en vie…) pour replanifier.
+ */
+export interface PlanCheckpoint {
+  action: number;
+  /** Ids des combattants vivants et placés (triés). */
+  alive: number[];
+  /** Case de chacun (même ordre que ``alive``). */
+  cells: number[];
+}
+
 export interface PlayerPlan extends PlanAlternative {
   fighterId: number;
   fighterName: string;
@@ -139,6 +163,8 @@ export interface PlayerPlan extends PlanAlternative {
   alternatives: PlanAlternative[];
   assumedChoices: AssumedChoice[];
   stats: SearchStats;
+  /** États prévus après chaque lancer (contrôle en boucle fermée pendant l'exécution). */
+  checkpoints: PlanCheckpoint[];
 }
 
 export interface TeamPlanStep {
@@ -167,4 +193,6 @@ export interface ExecuteResult {
   executed: number;
   reason?: string;
   choices: AssumedChoice[];
+  /** Arrêt parce que l'état réel s'écarte d'un point de contrôle du plan (option ``checkpoints``). */
+  deviated?: boolean;
 }

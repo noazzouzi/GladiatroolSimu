@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "description": "T7, tour du Magicien, 5 objectifs réalisés : la Mama arrive au début du T8 sur 300 ; il faut finir hors des lignes de 300 (ÉTUDE §10.5).",
+  "seed": 3,
+  "turn": 7,
+  "players": [
+    { "archetype": "acrobate", "cell": 257, "hp": 26000, "uniques": [80828] },
+    { "archetype": "dompteur", "cell": 316, "hp": 30000, "uniques": [80839], "bonuses": { "ap": 1, "finalDamagePct": 1 } },
+    { "archetype": "dompteur", "cell": 285, "hp": 24000, "bonuses": { "range": 1 } },
+    { "archetype": "magicien", "cell": 300, "hp": 30000, "uniques": [80850] }
+  ],
+  "monsters": [
+    { "type": "nitrooll", "cell": 204, "hp": 22000 },
+    { "type": "nitrooll", "cell": 396, "hp": 9000 }
+  ],
+  "current": "Magicien",
+  "objectives": { "completed": ["empale", "productivite", "stop_projectiles", "distance_insecurite", "tout_va_bien"], "active": "au_coin" }
+}

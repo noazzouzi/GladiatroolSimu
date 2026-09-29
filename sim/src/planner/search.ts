@@ -7,15 +7,19 @@
  *    et les ``beamWidth`` meilleurs sont développés.
  * 2. **Feuilles** : pour chaque nœud gardé (racine comprise) — « finir le tour ici » et « finir en se déplaçant vers
  *    m » (meilleures positions de fin de tour) — évaluées statiquement.
- * 3. **Anticipation** des meilleures feuilles : copie en ``rollMode`` moyen sans critique, fin du tour, tours des
- *    monstres par le contrôleur injecté jusqu'au prochain joueur (option : jusqu'à la fin du tour global, coéquipiers
- *    gloutons), puis évaluation statique de l'état atteint : c'est le score final.
+ * 3. **Anticipation** des meilleures feuilles : copie en ``rollMode`` moyen sans critique, fin du tour, puis un
+ *    passage de chaque combattant jusqu'au prochain tour du joueur (``fullRound``, défaut des modes fast et deep :
+ *    coéquipiers joués par le planificateur glouton, monstres par le contrôleur injecté ; le dernier joueur du tour
+ *    global voit ainsi les monstres qui jouent après lui au tour suivant). Options : ``globalTurn`` (arrêt au début du
+ *    tour global suivant, tour de la Mama compris), ``nextPlayer`` (arrêt au prochain joueur). Puis évaluation
+ *    statique de l'état atteint : c'est le score final.
  *
- * Modes : ``fast`` (≤ 150 ms par tour de joueur, simulations Monte Carlo), ``deep`` (≤ 3 s, interface), ``greedy``
+ * Modes : ``fast`` (≤ 300 ms par tour de joueur, simulations Monte Carlo), ``deep`` (≤ 3 s, interface), ``greedy``
  * (coéquipiers pendant l'anticipation). Le budget est d'abord un budget de nœuds (résultat déterministe) ; le plafond
  * de temps n'est qu'un garde-fou (``deterministic: true`` le supprime).
  */
-import { simpleMonsterController, type GladiatroolFight, type TurnController } from '../scenario/index.js';
+import type { GladiatroolFight, TurnController } from '../scenario/index.js';
+import { anticipationMonsterAi } from '../ai/index.js';
 import { generateCastActions, generateEndMoves, type MacroAction } from './actions.js';
 import { defaultChoicePolicy, resolveChoicesWith, type ChoicePolicy } from './choicePolicy.js';
 import { evaluateState } from './evaluate.js';
@@ -32,6 +36,7 @@ import {
 import type {
   AssumedChoice,
   ExecuteResult,
+  PlanCheckpoint,
   PlanAlternative,
   PlannedAction,
   PlannerMode,
@@ -51,8 +56,9 @@ export const BUDGETS: Readonly<Record<PlannerMode, Readonly<SearchBudget>>> = Ob
     maxDepth: 4,
     endPositions: 2,
     lookaheadLeaves: 4,
-    lookahead: 'nextPlayer',
-    timeLimitMs: 150,
+    lookaheadExtraLeaves: 4,
+    lookahead: 'fullRound',
+    timeLimitMs: 300,
     alternatives: 3,
   }),
   deep: Object.freeze({
@@ -61,8 +67,9 @@ export const BUDGETS: Readonly<Record<PlannerMode, Readonly<SearchBudget>>> = Ob
     perSpellQuota: 25,
     maxDepth: 6,
     endPositions: 5,
-    lookaheadLeaves: 16,
-    lookahead: 'nextPlayer',
+    lookaheadLeaves: 12,
+    lookaheadExtraLeaves: 6,
+    lookahead: 'fullRound',
     timeLimitMs: 3000,
     alternatives: 5,
   }),
@@ -73,6 +80,7 @@ export const BUDGETS: Readonly<Record<PlannerMode, Readonly<SearchBudget>>> = Ob
     maxDepth: 3,
     endPositions: 1,
     lookaheadLeaves: 0,
+    lookaheadExtraLeaves: 0,
     lookahead: 'none',
     timeLimitMs: 40,
     alternatives: 0,
@@ -89,6 +97,7 @@ export interface ResolvedOptions {
   rollMode: NonNullable<PlanOptions['rollMode']>;
   critMode: NonNullable<PlanOptions['critMode']>;
   explain: boolean;
+  oracle: boolean;
 }
 
 export function resolveOptions(opts: PlanOptions = {}): ResolvedOptions {
@@ -97,15 +106,16 @@ export function resolveOptions(opts: PlanOptions = {}): ResolvedOptions {
   if (opts.deterministic) budget.timeLimitMs = null;
   const weights = mergeWeights(opts.weights);
   const policy = opts.choicePolicy ?? defaultChoicePolicy;
-  const monsters = opts.monsterController ?? simpleMonsterController;
+  const monsters = opts.monsterController ?? anticipationMonsterAi;
   let teammate: TurnController | null = opts.teammateController ?? null;
-  if (!teammate && budget.lookahead === 'globalTurn') {
+  if (!teammate && (budget.lookahead === 'globalTurn' || budget.lookahead === 'fullRound')) {
     teammate = createPlannerController({
       mode: 'greedy',
       weights: opts.weights,
       monsterController: monsters,
       choicePolicy: policy,
       deterministic: opts.deterministic,
+      oracle: opts.oracle,
       explain: false,
     });
   }
@@ -118,6 +128,7 @@ export function resolveOptions(opts: PlanOptions = {}): ResolvedOptions {
     rollMode: opts.rollMode ?? 'average',
     critMode: opts.critMode ?? 'never',
     explain: opts.explain ?? true,
+    oracle: opts.oracle ?? false,
   };
 }
 
@@ -182,7 +193,7 @@ export function searchPlayerTurn(fight: GladiatroolFight, opts: PlanOptions | Re
     truncated: false,
   };
 
-  const root = planningClone(fight, R.rollMode, R.critMode);
+  const root = planningClone(fight, R.rollMode, R.critMode, R.oracle);
   const rootNode: Node = {
     fight: root,
     parent: null,
@@ -208,6 +219,10 @@ export function searchPlayerTurn(fight: GladiatroolFight, opts: PlanOptions | Re
       stats.nodes++;
       stats.candidates += cands.length;
       for (const macro of cands) {
+        if (limit !== null && now() > expandDeadline) {
+          stats.truncated = true;
+          break;
+        }
         const out = applyMacro(node.fight, macro, R.policy);
         stats.simulations++;
         if (!out.ok) continue;
@@ -257,7 +272,7 @@ export function searchPlayerTurn(fight: GladiatroolFight, opts: PlanOptions | Re
     }
   }
   for (const node of terminal) addLeaf(node, null, node.fight, [], node.score);
-  leaves.sort((a, b) => b.staticScore - a.staticScore);
+  leaves.sort((a, b) => b.staticScore - a.staticScore || leafCost(a) - leafCost(b));
   stats.leaves = leaves.length;
 
   // ------------------------------------------------------------------ anticipation
@@ -278,11 +293,54 @@ export function searchPlayerTurn(fight: GladiatroolFight, opts: PlanOptions | Re
       stats.lookaheads++;
       looked.push(leaf);
     }
-    looked.sort((a, b) => b.score - a.score);
+    looked.sort(compareLeaves);
+    // tour critique (la meilleure ligne anticipée perd un joueur ou en laisse un très bas) : feuilles supplémentaires
+    const extra = Math.min(leaves.length - looked.length, B.lookaheadExtraLeaves ?? 0);
+    if (extra > 0 && looked.length && lookaheadDanger(root, looked[0]!.look!)) {
+      for (let i = looked.length, end = looked.length + extra; i < end; i++) {
+        if (now() > deadline) {
+          stats.truncated = true;
+          break;
+        }
+        const leaf = leaves[i]!;
+        leaf.look = runLookahead(leaf.fight, actorId, R.lookahead);
+        leaf.score = evaluateState(leaf.look, w);
+        stats.lookaheads++;
+        looked.push(leaf);
+      }
+      looked.sort(compareLeaves);
+    }
     ranked = looked.concat(leaves.slice(looked.length));
   }
   stats.timeMs = now() - t0;
   return { root, actorId, ranked, stats, options: R };
+}
+
+/** Seuil (% des PV max) sous lequel un joueur est « en danger » à la fin de l'anticipation. */
+const DANGER_HP_PCT = 35;
+
+/** L'anticipation ``look`` perd-elle un joueur vivant à la racine, ou en laisse-t-elle un sous ``DANGER_HP_PCT`` % ? */
+export function lookaheadDanger(root: GladiatroolFight, look: GladiatroolFight): boolean {
+  for (const id of root.scenario.playerIds) {
+    const a = root.state.fighters[id];
+    const b = look.state.fighters[id];
+    if (!a || !b || !a.alive) continue;
+    if (!b.alive || b.hp * 100 < DANGER_HP_PCT * b.maxHp) return true;
+  }
+  return false;
+}
+
+/** Nombre d'actions d'une feuille (départage : à score égal, le plan le plus court). */
+function leafCost(l: Leaf): number {
+  return l.node.depth + (l.endMove ? 1 : 0);
+}
+
+/**
+ * Classement des feuilles anticipées : score final, puis (égalité, fréquente quand l'anticipation du tour global
+ * entier fait converger plusieurs lignes vers le même état) le score statique de la feuille, puis le plan le plus court.
+ */
+function compareLeaves(a: Leaf, b: Leaf): number {
+  return b.score - a.score || b.staticScore - a.staticScore || leafCost(a) - leafCost(b);
 }
 
 /** Chaîne de nœuds racine → feuille (racine exclue). */
@@ -303,6 +361,48 @@ export function leafActions(leaf: Leaf): PlannedAction[] {
   if (leaf.endMove && leaf.endMove.path.length) out.push({ type: 'move', path: leaf.endMove.path.slice() });
   if (leaf.node.alive) out.push({ type: 'end' });
   return out;
+}
+
+/** Signature « vivants et cases » d'un état (points de contrôle). */
+export function fightSignature(fight: GladiatroolFight): { alive: number[]; cells: number[] } {
+  const alive: number[] = [];
+  const cells: number[] = [];
+  for (const f of fight.state.fighters) {
+    if (!f.alive || f.cell < 0) continue;
+    alive.push(f.id);
+    cells.push(f.cell);
+  }
+  return { alive, cells };
+}
+
+/** L'état réel ``fight`` correspond-il au point de contrôle (mêmes vivants, mêmes cases) ? */
+export function matchesCheckpoint(fight: GladiatroolFight, cp: PlanCheckpoint): boolean {
+  const s = fightSignature(fight);
+  if (s.alive.length !== cp.alive.length) return false;
+  for (let i = 0; i < s.alive.length; i++) if (s.alive[i] !== cp.alive[i] || s.cells[i] !== cp.cells[i]) return false;
+  return true;
+}
+
+/** Points de contrôle d'une feuille : état prévu après chaque lancer (index dans ``leafActions``). */
+export function leafCheckpoints(leaf: Leaf): PlanCheckpoint[] {
+  const out: PlanCheckpoint[] = [];
+  let i = -1;
+  for (const n of chain(leaf)) {
+    const m = n.macro!;
+    if (m.path.length) i++;
+    if (m.spellLevelId !== null) {
+      i++;
+      out.push({ action: i, ...fightSignature(n.fight) });
+    }
+  }
+  return out;
+}
+
+/** Clé d'une feuille : suite des lancers (sort@case). */
+function castKey(leaf: Leaf): string {
+  let k = '';
+  for (const n of chain(leaf)) if (n.macro!.spellLevelId !== null) k += `${n.macro!.spellLevelId}@${n.macro!.cell},`;
+  return k;
 }
 
 /** Choix supposés le long d'une feuille. */
@@ -343,10 +443,15 @@ export function outcomeToPlan(outcome: SearchOutcome, bestIndex = 0): PlayerPlan
   const best = outcome.ranked[bestIndex]!;
   const main = leafToAlternative(outcome, best);
   const alternatives: PlanAlternative[] = [];
+  // alternatives DIFFÉRENTES : une seule par suite de lancers (les variantes de placement final sont omises)
+  const keys = new Set<string>([castKey(best)]);
   for (let i = 0; i < outcome.ranked.length && alternatives.length < R.budget.alternatives; i++) {
     if (i === bestIndex) continue;
     const l = outcome.ranked[i]!;
     if (l.look === null && best.look !== null) break;
+    const k = castKey(l);
+    if (keys.has(k)) continue;
+    keys.add(k);
     alternatives.push(leafToAlternative(outcome, l));
   }
   const actor = outcome.root.state.fighters[outcome.actorId]!;
@@ -359,6 +464,7 @@ export function outcomeToPlan(outcome: SearchOutcome, bestIndex = 0): PlayerPlan
     alternatives,
     assumedChoices: leafChoices(best),
     stats: { ...outcome.stats },
+    checkpoints: leafCheckpoints(best),
   };
 }
 
@@ -374,7 +480,7 @@ export function outcomeToPlan(outcome: SearchOutcome, bestIndex = 0): PlayerPlan
 export function executePlan(
   fight: GladiatroolFight,
   actions: readonly PlannedAction[],
-  o: { choicePolicy?: ChoicePolicy; endTurn?: boolean } = {},
+  o: { choicePolicy?: ChoicePolicy; endTurn?: boolean; checkpoints?: readonly PlanCheckpoint[] } = {},
 ): ExecuteResult {
   const policy = o.choicePolicy ?? defaultChoicePolicy;
   const choices: AssumedChoice[] = [];
@@ -390,10 +496,20 @@ export function executePlan(
       break;
     }
     if (!actorStillPlaying(fight, actorId)) return { ok: false, executed, reason: 'le tour du joueur est terminé', choices };
-    const r = a.type === 'move' ? fight.playerMove(a.path) : fight.playerCast(a.spellLevelId, a.cell);
+    // cartes de cadeau réelles ≠ cartes imaginées (le planificateur ne connaît pas le tirage) : écart, pas refus
+    if (o.checkpoints && a.type === 'cast' && !fight.getCurrentFighter()!.spells.some((s) => s.spellLevelId === a.spellLevelId)) {
+      return { ok: false, executed, reason: 'grimoire différent de la prévision (cartes de cadeau)', choices, deviated: true };
+    }
+    const r =a.type === 'move' ? fight.playerMove(a.path) : fight.playerCast(a.spellLevelId, a.cell);
     if (!r.ok) return { ok: false, executed, reason: r.reason ?? r.code ?? 'action refusée', choices };
     executed++;
     resolveChoicesWith(fight, policy, choices);
+    if (o.checkpoints && actorStillPlaying(fight, actorId)) {
+      const cp = o.checkpoints.find((c) => c.action === executed - 1);
+      if (cp && !matchesCheckpoint(fight, cp)) {
+        return { ok: false, executed, reason: 'écart avec la prévision (jets réels)', choices, deviated: true };
+      }
+    }
   }
   return { ok: true, executed, choices };
 }
@@ -401,22 +517,31 @@ export function executePlan(
 export interface PlannerControllerOptions extends PlanOptions {
   /** Replanifications au plus quand une action du plan est refusée (jets réels ≠ jets moyens). Défaut 2. */
   maxReplans?: number;
+  /** Replanifications au plus quand l'état réel s'écarte d'un point de contrôle du plan. Défaut 4 (0 : désactivé). */
+  maxDeviationReplans?: number;
 }
 
 /**
  * Contrôleur de joueur (``TurnController`` du scénario, pour ``playUntilEnd`` ou un runner) : planifie puis exécute
- * le tour (sans le terminer : l'appelant le termine) ; replanifie si une action est refusée.
+ * le tour (sans le terminer : l'appelant le termine) ; replanifie si une action est refusée ou si l'état réel s'écarte
+ * d'un point de contrôle du plan (boucle fermée).
  */
 export function createPlannerController(opts: PlannerControllerOptions = {}): TurnController {
   const maxReplans = opts.maxReplans ?? 2;
+  const maxDeviations = opts.maxDeviationReplans ?? 4;
   return {
     playTurn(fight, fighterId) {
-      for (let attempt = 0; attempt <= maxReplans; attempt++) {
+      let refused = 0;
+      let deviations = 0;
+      while (refused <= maxReplans && deviations <= maxDeviations) {
         resolveChoicesWith(fight, opts.choicePolicy ?? defaultChoicePolicy);
         if (!actorStillPlaying(fight, fighterId)) return;
         const plan = planPlayerTurn(fight, { ...opts, explain: opts.explain ?? false });
-        const r = executePlan(fight, plan.actions, { choicePolicy: opts.choicePolicy, endTurn: false });
+        const checkpoints = deviations < maxDeviations ? plan.checkpoints : undefined;
+        const r = executePlan(fight, plan.actions, { choicePolicy: opts.choicePolicy, endTurn: false, checkpoints });
         if (r.ok) return;
+        if (r.deviated) deviations++;
+        else refused++;
       }
     },
   };

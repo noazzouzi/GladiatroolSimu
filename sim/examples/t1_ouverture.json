@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "description": "Ouverture de référence T1 (ÉTUDE §10.4) : A-D-D-M sur les cases de départ, V1 = 2 Troollibres sur 242 et 358, tour de l'Acrobate.",
+  "seed": 42,
+  "turn": 1,
+  "players": [
+    { "archetype": "acrobate", "cell": 314 },
+    { "archetype": "dompteur", "cell": 287 },
+    { "archetype": "dompteur", "cell": 286 },
+    { "archetype": "magicien", "cell": 315 }
+  ],
+  "monsters": [
+    { "type": "troollibre", "cell": 242 },
+    { "type": "troollibre", "cell": 358 }
+  ],
+  "current": "J1",
+  "objectives": { "completed": [], "active": "empale" }
+}

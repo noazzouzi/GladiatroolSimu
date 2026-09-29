@@ -1548,7 +1548,7 @@ def build_config(monsters: dict) -> OrderedDict:
         ('nitrooll', OrderedDict([('moveBeforeCast', False), ('preferredDistance', [1, 6]), ('healThresholdPct', 80), ('spells', [
             rule(nit_magie, 'mostInjuredAlly'), rule(nit_tambour, 'threatenedAlly'), rule(nit_double, 'pushTowardSpikes'),
             rule(nit_coup, 'pushTowardSpikes')])])),
-        ('mama', OrderedDict([('moveBeforeCast', False), ('preferredDistance', [1, 8]), ('spells', [
+        ('mama', OrderedDict([('moveBeforeCast', False), ('preferredDistance', [1, 8]), ('skipIfInSpikes', False), ('spells', [
             rule(mama_cata, 'playersInZoneAtLeast', count=2), rule(mama_mitr, 'maxTargets'),
             rule(mama_upper, 'anyTarget', times=3), rule(mama_tp, 'nearLowestHpPlayer', times=2)])])),
     ])
@@ -1565,7 +1565,7 @@ def build_config(monsters: dict) -> OrderedDict:
             ('mamaFocusSingleTarget', True),
             ('sequenceMode', 'profile'), ('nonFocusWeight', 0.3), ('killBonus', 5000), ('spikePushWeight', 1.0),
             ('healWeight', 1.0), ('summonTargetWeight', 0.3), ('unshakableValue', 1500), ('positionWeight', 100),
-            ('threatenedAllyDistance', 3),
+            ('threatenedAllyDistance', 3), ('vulnerableValue', 2000),
             ('profiles', profiles),
         ])),
         ('spikes', OrderedDict([
@@ -1586,6 +1586,10 @@ def build_config(monsters: dict) -> OrderedDict:
             ('maxCount', 6), ('offerCount', 2), ('offerDraw', 'uniform'), ('tier6Offered', True), ('votePolicy', 'planner'),
             ('pushKillsCount', True), ('glyphKillsCreditPlayer', False), ('solitudeBeforeArrival', True),
             ('mamaCountsFromTurn', 7), ('v100MeansFull', True),
+            ('fixedVoteOrder', ['productivite', 'meurtres_serie', 'sol_glissant', 'soleil', 'stop_projectiles', 'ebranlable',
+                                'toi_par_ici', 'sauvez_le', 'distance_insecurite', 'pas_le_temps', 'faire_le_mur',
+                                'prendre_sa_place', 'tout_va_bien', 'trous_troolls', 'pierre_trois_coups', 'attirance',
+                                'au_coin', 'quintuple', 'meme_pas_mal', 'solitude']),
         ])),
         ('bonuses', OrderedDict([
             ('offerCount', 3), ('draw', 'uniform_distinct'), ('firstTurn', 2), ('lastTurn', 9), ('doubleApplication', False),
@@ -1674,9 +1678,13 @@ def build_config(monsters: dict) -> OrderedDict:
     D['ai.threatenedAllyDistance'] = doc('integer', 'un allié est « menacé » (règle threatenedAlly, valeur d\'Inébranlable) s\'il est à '
                                          'au plus N cases (Manhattan) de la case de pics la plus proche', 'Q2', alternatives=[2, 4],
                                          min=0)
+    D['ai.vulnerableValue'] = doc('number', 'valeur (PV équivalents) d\'un joueur rendu Vulnérable ×2 (entrée dans les pics, '
+                                  'sortie des pics) : comptée × spikePushWeight pour un ennemi, et en coût (poids 1) pour un monstre '
+                                  'rendu Vulnérable par sa propre action', 'Q2', alternatives=[0, 5000], min=0)
     D['ai.profiles'] = doc('object', 'ordres de priorité des sorts par profil (N20 §9, étude §5.8) ; `when` = règle de déclenchement ; '
                            'preferredDistance et healThresholdPct (soin si l\'allié le plus blessé est sous ce seuil) : valeurs indicatives ; '
-                           'un profil peut surcharger focus, skipIfInSpikes, skipIfNoTargetReachable, engageRadius et avoidSpikes',
+                           'un profil peut surcharger focus, skipIfInSpikes, skipIfNoTargetReachable, engageRadius et avoidSpikes '
+                           '(mama : skipIfInSpikes faux, les tours passés observés ne concernent que les Troolls)',
                            'Q2', source='D:mon.aiModel', whenValues=['enemyReachable', 'targetAtDistance2', 'enemyInRing1to2',
                                                                     'anyTarget', 'maxTargets', 'pushTowardSpikes', 'mostInjuredAlly',
                                                                     'threatenedAlly', 'playersInZoneAtLeast', 'nearLowestHpPlayer'])
@@ -1733,8 +1741,15 @@ def build_config(monsters: dict) -> OrderedDict:
     D['objectives.offerDraw'] = doc('enum', 'tirage uniforme parmi les 4 objectifs du palier', 'Q12', ['uniform'])
     D['objectives.tier6Offered'] = doc('boolean', 'le palier 6 existe dans les données (Zephiron : rien après le palier 5)', 'Q12',
                                        alternatives=[False])
-    D['objectives.votePolicy'] = doc('enum', 'le vote est choisi par le planificateur (ou une liste fixe d\'identifiants)', None,
-                                     ['planner', 'fixed'], ['fixed'])
+    D['objectives.votePolicy'] = doc('enum', 'politique de vote du runner : planner = préférence (ÉTUDE §7.3) × faisabilité estimée '
+                                     '(composition, monstres, PV) ; fixed = premier objectif proposé dans objectives.fixedVoteOrder ; '
+                                     'preference = préférence seule', None, ['planner', 'fixed', 'preference'], ['fixed', 'preference'])
+    D['objectives.fixedVoteOrder'] = doc('enum[]', 'ordre de préférence des votes pour votePolicy = fixed (défaut : recommandations '
+                                         'ÉTUDE §7.3, palier par palier)', None,
+                                         ['empale', 'soleil', 'sol_glissant', 'meurtres_serie', 'productivite', 'ebranlable',
+                                          'stop_projectiles', 'toi_par_ici', 'sauvez_le', 'prendre_sa_place', 'faire_le_mur',
+                                          'pas_le_temps', 'distance_insecurite', 'attirance', 'trous_troolls', 'pierre_trois_coups',
+                                          'tout_va_bien', 'solitude', 'quintuple', 'au_coin', 'meme_pas_mal'])
     D['objectives.pushKillsCount'] = doc('boolean', 'une mort par poussée est attribuée au lanceur (client : X pour toute mort)', 'Q18',
                                          alternatives=[False], source='client contre sspritenL')
     D['objectives.glyphKillsCreditPlayer'] = doc('boolean', 'une mort par les pics est attribuée à l\'entité de scénario', 'Q18',

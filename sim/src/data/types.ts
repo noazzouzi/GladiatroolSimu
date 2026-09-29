@@ -1017,6 +1017,8 @@ export interface SimConfig {
     positionWeight: number;
     /** Distance maximale (cases) aux pics d'un allié « menacé ». */
     threatenedAllyDistance: number;
+    /** Valeur d'un joueur rendu Vulnérable ×2 (PV équivalents, × spikePushWeight). */
+    vulnerableValue: number;
     profiles: Record<AiProfileName, AiProfileConfig>;
   };
   spikes: {
@@ -1055,12 +1057,14 @@ export interface SimConfig {
     offerCount: number;
     offerDraw: 'uniform';
     tier6Offered: boolean;
-    votePolicy: 'planner' | 'fixed';
+    votePolicy: 'planner' | 'fixed' | 'preference';
     pushKillsCount: boolean;
     glyphKillsCreditPlayer: boolean;
     solitudeBeforeArrival: boolean;
     mamaCountsFromTurn: number;
     v100MeansFull: boolean;
+    /** Ordre des votes pour ``votePolicy = fixed`` (identifiants d'objectifs). */
+    fixedVoteOrder: ObjectiveId[];
   };
   bonuses: {
     offerCount: number;

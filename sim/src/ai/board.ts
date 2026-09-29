@@ -65,6 +65,17 @@ export interface BoardStatic {
 }
 
 const NO_MULTS: readonly MultiplierLike[] = [];
+
+/** Tableau JS de ``n`` valeurs ``v`` (les tableaux JS se copient bien plus vite que les tableaux typés). */
+function zeros(n: number, v = 0): number[] {
+  const out = new Array<number>(n);
+  for (let i = 0; i < n; i++) out[i] = v;
+  return out;
+}
+
+function copy(dst: number[], src: readonly number[]): void {
+  for (let i = 0; i < src.length; i++) dst[i] = src[i]!;
+}
 const ZERO_CASTER = new StatsView({ level: 200, isPlayer: false, hp: 1, maxHp: 1 });
 
 /** Vue des caractéristiques d'un combattant du plateau (PV, érosion, bouclier et bonus du plateau). */
@@ -109,27 +120,27 @@ export class BoardView implements DamageStats {
 
 export class Board {
   readonly s: BoardStatic;
-  cell: Int16Array;
-  hp: Float64Array;
-  eroded: Float64Array;
-  shield: Float64Array;
-  alive: Uint8Array;
-  inSpikes: Uint8Array;
+  cell: number[];
+  hp: number[];
+  eroded: number[];
+  shield: number[];
+  alive: number[];
+  inSpikes: number[];
   /** Multiplicateur d'aura des pics (%, 100 = aucun). */
-  aura: Float64Array;
+  aura: number[];
   /** Multiplicateur de sortie des pics (%, 100 = aucun). */
-  exit: Float64Array;
-  unshakable: Uint8Array;
+  exit: number[];
+  unshakable: number[];
   /** Dommages finaux acquis pendant la simulation (Patroolleur, Catastrooll). */
-  df: Float64Array;
+  df: number[];
   /** Érosion acquise pendant la simulation (Aspiratrooll). */
-  ero: Float64Array;
+  ero: number[];
   /** Occupation : id + 1 par case. */
-  occ: Int16Array;
+  occ: number[];
   /** Dégâts subis par les pics (entrée, début de tour) pendant la simulation. */
-  spikeDmg: Float64Array;
+  spikeDmg: number[];
   /** Entrées dans les pics pendant la simulation. */
-  entered: Uint8Array;
+  entered: number[];
   /** Combattant qui joue (−1 : aucun), ses PA / PM, son nombre de tours commencés. */
   actor = -1;
   ap = 0;
@@ -149,20 +160,20 @@ export class Board {
   private constructor(s: BoardStatic, src: Board | null) {
     this.s = s;
     const n = s.n;
-    this.cell = src ? src.cell.slice() : new Int16Array(n);
-    this.hp = src ? src.hp.slice() : new Float64Array(n);
-    this.eroded = src ? src.eroded.slice() : new Float64Array(n);
-    this.shield = src ? src.shield.slice() : new Float64Array(n);
-    this.alive = src ? src.alive.slice() : new Uint8Array(n);
-    this.inSpikes = src ? src.inSpikes.slice() : new Uint8Array(n);
-    this.aura = src ? src.aura.slice() : new Float64Array(n);
-    this.exit = src ? src.exit.slice() : new Float64Array(n);
-    this.unshakable = src ? src.unshakable.slice() : new Uint8Array(n);
-    this.df = src ? src.df.slice() : new Float64Array(n);
-    this.ero = src ? src.ero.slice() : new Float64Array(n);
-    this.occ = src ? src.occ.slice() : new Int16Array(CELL_COUNT);
-    this.spikeDmg = src ? src.spikeDmg.slice() : new Float64Array(n);
-    this.entered = src ? src.entered.slice() : new Uint8Array(n);
+    this.cell = src ? src.cell.slice() : zeros(n);
+    this.hp = src ? src.hp.slice() : zeros(n);
+    this.eroded = src ? src.eroded.slice() : zeros(n);
+    this.shield = src ? src.shield.slice() : zeros(n);
+    this.alive = src ? src.alive.slice() : zeros(n);
+    this.inSpikes = src ? src.inSpikes.slice() : zeros(n);
+    this.aura = src ? src.aura.slice() : zeros(n, 100);
+    this.exit = src ? src.exit.slice() : zeros(n, 100);
+    this.unshakable = src ? src.unshakable.slice() : zeros(n);
+    this.df = src ? src.df.slice() : zeros(n);
+    this.ero = src ? src.ero.slice() : zeros(n);
+    this.occ = src ? src.occ.slice() : zeros(CELL_COUNT);
+    this.spikeDmg = src ? src.spikeDmg.slice() : zeros(n);
+    this.entered = src ? src.entered.slice() : zeros(n);
     if (src) this.copyActor(src);
     const occ = this.occ;
     this.isOccupied = (c: number) => c >= 0 && c < CELL_COUNT && occ[c] !== 0;
@@ -180,8 +191,8 @@ export class Board {
     const camp: Camp[] = [];
     const baseMults: MultiplierLike[][] = [];
     let scenarioId = -1;
-    const aura = new Float64Array(n).fill(100);
-    const exit = new Float64Array(n).fill(100);
+    const aura = zeros(n, 100);
+    const exit = zeros(n, 100);
     for (let i = 0; i < n; i++) {
       const f = fighters[i]!;
       team[i] = f.team === 'players' ? TEAM_PLAYERS : f.team === 'monsters' ? TEAM_MONSTERS : TEAM_SCENARIO;
@@ -225,9 +236,9 @@ export class Board {
       b.inSpikes[i] = on && grid.isSpike(f.cell) ? 1 : 0;
       b.unshakable[i] = f.alive && !f.canBePushed ? 1 : 0;
     }
-    b.aura.set(aura);
-    b.exit.set(exit);
-    b.occ.set(state.occupancy);
+    copy(b.aura, aura);
+    copy(b.exit, exit);
+    for (let c = 0; c < CELL_COUNT; c++) b.occ[c] = state.occupancy[c]!;
     return b;
   }
 
@@ -238,20 +249,20 @@ export class Board {
 
   /** Recopie ``o`` dans ce plateau (même origine), sans allocation des tableaux. */
   copyFrom(o: Board): this {
-    this.cell.set(o.cell);
-    this.hp.set(o.hp);
-    this.eroded.set(o.eroded);
-    this.shield.set(o.shield);
-    this.alive.set(o.alive);
-    this.inSpikes.set(o.inSpikes);
-    this.aura.set(o.aura);
-    this.exit.set(o.exit);
-    this.unshakable.set(o.unshakable);
-    this.df.set(o.df);
-    this.ero.set(o.ero);
-    this.occ.set(o.occ);
-    this.spikeDmg.set(o.spikeDmg);
-    this.entered.set(o.entered);
+    copy(this.cell, o.cell);
+    copy(this.hp, o.hp);
+    copy(this.eroded, o.eroded);
+    copy(this.shield, o.shield);
+    copy(this.alive, o.alive);
+    copy(this.inSpikes, o.inSpikes);
+    copy(this.aura, o.aura);
+    copy(this.exit, o.exit);
+    copy(this.unshakable, o.unshakable);
+    copy(this.df, o.df);
+    copy(this.ero, o.ero);
+    copy(this.occ, o.occ);
+    copy(this.spikeDmg, o.spikeDmg);
+    copy(this.entered, o.entered);
     this.copyActor(o);
     return this;
   }

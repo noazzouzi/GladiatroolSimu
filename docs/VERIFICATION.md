@@ -323,3 +323,106 @@ Le lot de 200 combats du test, contrôles compris, dure ≈ 6 s.
   de poussée.
 - **Cadeaux.** La probabilité est tirée avant la case ; l'hypothèse « case tirée parmi 7, abandon si occupée » (Q14)
   n'est pas implémentée.
+
+---
+
+# Revue planificateur / IA / résultats
+
+Revue adversariale de `sim/src/{ai,planner,runner,cli,analysis}` et de `docs/RESULTATS.md` (après la campagne
+d'expériences). Question centrale : le planificateur et l'IA n'agissent-ils que par des actions légales, sans
+information cachée ? Les chiffres publiés sont-ils reproductibles et correctement agrégés ?
+
+## 1. Défaut majeur trouvé et corrigé : le planificateur connaissait l'avenir aléatoire
+
+**Constat.** `planningClone` (planner/simulate.ts) copiait le combat avec `fight.clone()` puis fixait seulement
+`rollMode = average` et `critMode = never`. La copie gardait donc :
+- la **graine du scénario** (`scenario.seed`), dont dérivent tous les tirages du scénario (`derivedRng(seed, nature,
+  indice)` : cases d'apparition de la vague n, présence et case du cadeau du tour t, cartes du k-ième cadeau,
+  Acclamations proposées, objectifs proposés) ;
+- l'état du **PRNG de combat** (inutilisé en jets moyens sans critique, mais transmis tel quel).
+
+L'anticipation par défaut (`fullRound`, modes fast et deep) va jusqu'au prochain tour de l'acteur et **franchit le
+début du tour global suivant** : elle simulait donc la **vraie** vague suivante (vraies cases), le **vrai** cadeau
+et, quand une macro-action ramassait un cadeau, les **vraies cartes** (choisies par la politique avant que le joueur
+réel ne les voie). C'est de l'information cachée : un joueur ne peut pas savoir où apparaîtra la vague suivante ni
+ce que contient un cadeau. Le document ARCHITECTURE le disait d'ailleurs (« le tirage réel des cartes est celui de
+la graine du scénario »), sans que ce soit identifié comme une triche.
+
+**Correction** (minimale, `sim/src/planner/simulate.ts`) : `planningClone` remplace, dans la COPIE seulement, la
+graine du scénario par `mixSeed(graine, PLANNING_SEED_SALT, tour)` et le PRNG par un PRNG dérivé de même façon. Le
+planificateur imagine ainsi un avenir plausible (même loi de tirage), déterministe pour un tour donné (résultats
+reproductibles, workers identiques au fil courant), mais indépendant des vrais tirages. Le combat réel n'est jamais
+touché. Option `oracle: true` (`PlanOptions`, `PlannerSettings` du runner) pour rétablir les vrais flux et mesurer
+l'effet de la triche (expérience `oracle`).
+
+**Effet de bord traité** (`sim/src/planner/search.ts`, `executePlan`) : comme les cartes imaginées diffèrent des
+réelles, un plan qui ramasse un cadeau puis lance le sort imaginé (ex. « Hanedimane amélioré ») était refusé par le
+moteur (« n'est pas dans le grimoire ») et comptait comme un **refus** (2 au plus par tour, après quoi le joueur
+finit son tour). Sur 3 journaux, 4 refus de ce type. Désormais, en boucle fermée (`checkpoints`), un lancer d'un
+sort absent du grimoire réel est un **écart** (`deviated`) : le contrôleur replanifie avec les cartes réelles, sans
+consommer le quota de refus. Après correction : 0 refus sur les mêmes 3 journaux ; message du journal « Écart :
+grimoire différent de la prévision (cartes de cadeau) — nouvelle planification. »
+
+**Mesure de l'impact** (expérience `oracle`, scénario pessimiste, 80 graines appariées) :
+
+| | Corrigé | Tricheur | Seul le tricheur gagne / seul le corrigé | p |
+|---|---|---|---|---|
+| ADDM | 54 / 80 (67,5 %) | 68 / 80 (85,0 %) | 17 / 3 | 0,003 |
+| AADM | 52 / 80 (65,0 %) | 62 / 80 (77,5 %) | 18 / 8 | 0,076 |
+
+Hypothèses par défaut (`compos-ref`, 200 graines) : ADDM 199 → 196, AADM 200 → 198 victoires. Tous les chiffres de
+RESULTATS.md ont été recalculés. Conclusion qui change : avec des cadeaux rares, AADM bat maintenant ADDM
+significativement (152 contre 130 victoires sur 160, McNemar 27 / 5, p < 0,001 ; avant : 152 contre 145, p = 0,19) —
+la triche aidait surtout ADDM, dont le jeu repose sur les cartes des cadeaux. Scénario pessimiste : 58,8 % contre
+59,4 % (avant : 77,5 % contre 80,0 %).
+
+Tests : `sim/test/planner.hiddenInfo.test.ts` (copie neutralisée et original intact, déterminisme par tour, oracle
+= vrais flux ; les cases d'apparition imaginées diffèrent des vraies sur la majorité des vagues ; planifier ne
+modifie ni la graine, ni le PRNG, ni les combattants du combat réel).
+
+## 2. Autres points contrôlés
+
+| Point | Méthode | Verdict |
+|---|---|---|
+| Actions illégales / refusées ignorées en silence (combat réel) | Instrumentation de `move`, `cast`, `playerMove`, `playerCast` sur les combats journalisés (les copies de planification n'ont pas de journal) : ADDM 1003, 1118, AADM 1017, 1050 | 0 refus sur 1 009 actions réelles (joueurs et monstres). Les refus du planificateur ont lieu sur des copies (candidats illégaux écartés), c'est voulu |
+| Refus côté IA des monstres | Lecture de `ai/controller.ts` | Un refus déclenche une re-planification ; après 2 échecs le monstre finit son tour **sans trace dans le journal** (mineur, non modifié ; 0 cas observé) |
+| Lecture / écriture interdite de l'état | Lecture de `planner/*`, `ai/*` | Seules écritures : `rollMode`, `critMode` et (désormais) graines sur des **copies** ; l'IA planifie sur son propre plateau (`Board`) et joue par `fight.move` / `fight.cast`. Aucune lecture de `scenario.seed` ni des tirages en dehors de la copie. La composition des vagues futures (données publiques du scénario) est lue par les politiques : légitime |
+| Fuites d'état entre copies / entre combats | Caches de module (`WeakMap` par contexte ou état, tables géométriques pures) ; mêmes combats rejoués dans des processus neufs, dans un autre ordre | Aucune fuite : 16 / 16 combats (compos-ref et pessimiste, graines 1001-1008) identiques entre une exécution neuve et les résultats publiés avant correction |
+| Déterminisme, workers ≠ fil courant | `comparer --graines 1001-1020 --coeurs 4` (worker_threads) contre `campaign.ts` (processus enfants) ; journaux `simuler` (fil courant) contre la campagne | 40 / 40 combats identiques ; journaux ADDM 1003, 1042, AADM 1017 identiques (issue, tour, tour de mort de la Mama) |
+| Agrégation, IC | Lecture de `runner/stats.ts`, `analysis/campaigns.ts`, `analysis/report.ts` | Wilson et McNemar exact corrects ; IC des différences appariées : normal à 95 % (acceptable à n ≥ 40). « Tour de mort de la Mama » : moyenne **conditionnelle** aux combats où elle meurt (et, pour l'écart apparié, aux graines où elle meurt des deux côtés), indiqué dans les tableaux. `planMsP95` d'une variante = médiane des P95 par combat (nom trompeur, sans effet sur les conclusions) |
+| Robustesse de la campagne | Lecture de `cli/campaign.ts` | **Corrigé** : un processus enfant mort sans message laissait des trous que `summarizeCampaign` ignorait (échantillon incomplet résumé en silence) ; la campagne échoue désormais. Le cache n'a pas de version de code : documenté (repartir d'un cache vide après modification ; fait pour cette revue) |
+
+## 3. Décisions du planificateur (3 journaux complets, code corrigé)
+
+ADDM 1003 (victoire T10, Mama T8), ADDM 1042 (victoire T11, Mama T8), AADM 1017 (victoire T11, Mama T10) :
+- **T1** : ouverture de l'ÉTUDE §10.4 retrouvée (Videur 242 → 199 et 358 → 402, les deux Troollibres en pics), puis
+  les Dompteurs achèvent les Troollibres avant leur 2e tour ; le Magicien lance Regain Vigoureux sur l'équipe.
+- **Acclamations** : +1 PA / +10 % DF pour les Dompteurs, +1 PO / +1 PA pour l'Acrobate, soins pour le Magicien,
+  motivés par un gain chiffré par tour.
+- **Cadeaux** : Relâchement de Fureur pris en priorité par un Dompteur avant le T8 (« monte pendant 4 tours ») ;
+  Immortalités prises au T7-T8.
+- **T8 (Mama)** : l'Acrobate repousse la Mama dans les pics (256 → 198), les Dompteurs concentrent Grondement /
+  Impact / Relâchement sur elle, le Magicien soigne puis frappe : décisions conformes à l'ÉTUDE §10.5.
+- Points discutables relevés : un Videur qui sort un Troollibre déjà en pics d'une case vers une autre case de pics
+  (dégâts de collision, sans perte réelle) ; le planificateur accepte des risques explicites (« Acrobate exposé ») au
+  T8 pour ouvrir la fenêtre de burst — cohérent avec ses poids.
+
+## 4. Reproductibilité de RESULTATS.md
+
+- Avant correction : les 16 combats relancés (compos-ref et pessimiste, 1001-1008, processus neufs, sans cache)
+  redonnaient exactement les enregistrements publiés.
+- Après correction : toute la campagne a été relancée avec un cache vide (`campaign.ts tout --coeurs 4`, 4 000
+  combats distincts, 90 min sur 4 cœurs, 5,6 h de calcul) ; `sim/results/*.json` et `TABLEAUX.md` sont régénérés ;
+  la commande de vérification de RESULTATS.md §8 (`comparer --graines 1001-1020`) redonne les 40 combats.
+
+## 5. Fichiers modifiés par la revue
+
+- `sim/src/planner/simulate.ts` (`planningClone` : graines neutralisées, `PLANNING_SEED_SALT`), `planner/types.ts`
+  (`oracle`), `planner/search.ts` (`oracle` résolu et transmis ; écart « grimoire » dans `executePlan`),
+  `planner/team.ts` (transmet `oracle`).
+- `sim/src/runner/types.ts` (`PlannerSettings.oracle`), `runner/runFight.ts` (transmet `oracle` ; message d'écart du
+  journal).
+- `sim/src/analysis/campaigns.ts` (expérience `oracle`), `sim/src/cli/campaign.ts` (échec si combats manquants).
+- `sim/test/planner.hiddenInfo.test.ts` (nouveau).
+- `docs/ARCHITECTURE.md` (planificateur : information cachée ; campagnes : `oracle`, cache), `docs/RESULTATS.md`
+  (tous les chiffres), `sim/results/*` (régénérés).

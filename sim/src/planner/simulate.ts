@@ -4,7 +4,8 @@
  * ne modifie jamais un état autrement que par des actions légales.
  */
 import type { CritMode, RollMode } from '../data/index.js';
-import type { GladiatroolFight, MonsterController, MonsterTurnFn, TurnController } from '../scenario/index.js';
+import { Rng } from '../engine/index.js';
+import { mixSeed, type GladiatroolFight, type MonsterController, type MonsterTurnFn, type TurnController } from '../scenario/index.js';
 import type { MacroAction } from './actions.js';
 import { resolveChoicesWith, type ChoicePolicy } from './choicePolicy.js';
 import type { AssumedChoice, LookaheadMode } from './types.js';
@@ -15,11 +16,27 @@ export function now(): number {
   return p ? p.now() : Date.now();
 }
 
-/** Copie de travail : sans journal, jets et critiques de planification. */
-export function planningClone(fight: GladiatroolFight, rollMode: RollMode, critMode: CritMode): GladiatroolFight {
+/** Sel de dérivation des graines « imaginées » par le planificateur (voir ``planningClone``). */
+export const PLANNING_SEED_SALT = 0x51a7e5ed;
+
+/**
+ * Copie de travail : sans journal, jets et critiques de planification, et SANS CONNAISSANCE DE L'AVENIR ALÉATOIRE.
+ * Une copie brute garderait la graine du scénario et l'état du PRNG de combat : l'anticipation (``fullRound``, qui
+ * franchit le début du tour global suivant) verrait alors les VRAIES cases d'apparition de la vague suivante, le vrai
+ * tirage du cadeau, les vraies cartes et Acclamations (information cachée). Par défaut, la copie reçoit donc une
+ * graine de scénario et un PRNG dérivés (hachage salé, indépendant des tirages réels) : le planificateur imagine un
+ * avenir plausible, déterministe pour un tour donné, mais pas le vrai. ``oracle: true`` garde les vrais flux (mesure
+ * de l'effet de la tricherie uniquement ; voir docs/VERIFICATION.md, « Revue planificateur / IA / résultats »).
+ */
+export function planningClone(fight: GladiatroolFight, rollMode: RollMode, critMode: CritMode, oracle = false): GladiatroolFight {
   const c = fight.clone({ keepLog: false });
   c.state.rollMode = rollMode;
   c.state.critMode = critMode;
+  if (!oracle) {
+    const sc = c.scenario;
+    if (sc) sc.seed = mixSeed(sc.seed, PLANNING_SEED_SALT, fight.turn);
+    c.state.rng = new Rng(mixSeed(fight.state.rng.state, PLANNING_SEED_SALT, fight.turn));
+  }
   return c;
 }
 
@@ -67,7 +84,8 @@ export interface LookaheadConfig {
 /**
  * Anticipation depuis une feuille (tour du joueur en cours, avant sa fin) : fin du tour, puis tours des monstres
  * (contrôleur injecté) jusqu'au prochain joueur (``nextPlayer``) ou jusqu'au début du tour global suivant
- * (``globalTurn`` : coéquipiers joués par ``teammate``). Travaille sur une copie ; renvoie l'état atteint.
+ * (``globalTurn`` : coéquipiers joués par ``teammate``), ou jusqu'au prochain tour de l'acteur (``fullRound`` : un
+ * passage de chaque combattant, coéquipiers compris). Travaille sur une copie ; renvoie l'état atteint.
  */
 export function runLookahead(leaf: GladiatroolFight, actorId: number, cfg: LookaheadConfig): GladiatroolFight {
   const f = leaf.clone({ keepLog: false });
@@ -88,8 +106,11 @@ export function runLookahead(leaf: GladiatroolFight, actorId: number, cfg: Looka
         st = f.stepMonsterTurn(cfg.monsters);
         break;
       case 'playerTurn': {
-        if (cfg.mode !== 'globalTurn' || f.turn > startTurn || !cfg.teammate) return f;
+        if (!cfg.teammate || cfg.mode === 'nextPlayer' || cfg.mode === 'none') return f;
         const id = st.fighterId;
+        if (cfg.mode === 'globalTurn' && f.turn > startTurn) return f;
+        // fullRound : un tour complet de chaque combattant (jusqu'au prochain tour de l'acteur, au plus au tour suivant)
+        if (cfg.mode === 'fullRound' && (id === actorId || f.turn > startTurn + 1)) return f;
         cfg.teammate.playTurn(f, id);
         resolveChoicesWith(f, cfg.policy);
         st = f.getStatus();

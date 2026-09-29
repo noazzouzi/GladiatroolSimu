@@ -44,6 +44,12 @@ export interface PlannerWeights {
   monsterThreatDefault: number;
   /** Force de poussée maximale d'un monstre (risque d'être poussé dans les pics), par id. */
   monsterPush: Record<string, number>;
+  /**
+   * Facteur de menace d'un monstre contre un joueur resté DANS les pics, par id : le Troollibre l'attire hors des pics
+   * (sortie → Vulnérable ×2), le frappe puis le repousse dedans (entrée : 2 000 × 2) ; ≈ 20 000 à 24 000 PV observés
+   * contre ≈ 9 000 sur un joueur hors des pics. Absent : 1.
+   */
+  spikeTrapThreat: Record<string, number>;
   /** Facteur de menace d'un monstre dans les pics (il passe souvent son tour, ``ai.skipIfInSpikes``). */
   threatInSpikesFactor: number;
   /** Facteur de menace d'un monstre qui n'atteint aucun joueur ce tour (il se rapproche). */
@@ -88,8 +94,23 @@ export interface PlannerWeights {
   objectiveProgress: number;
   /** Condition d'un objectif de fin de tour / de tour global déjà remplie : fraction de ``objectiveCompleted``. */
   objectivePendingFactor: number;
+  /**
+   * « Attention, sol glissant » (un ennemi meurt de dommages de poussée) en cours : valeur d'un ennemi poussable
+   * encore vivant à ``pushKillHp`` PV ou moins (hors pics) — on le garde pour l'achever par une collision au lieu de
+   * le tuer par des dégâts (0 : désactivé).
+   */
+  pushKillSetup: number;
+  pushKillHp: number;
   /** Cadeau ramassé (une carte pour chaque joueur). */
   giftTaken: number;
+  /**
+   * Valeur d'un cadeau encore sur la carte, en fraction de sa valeur une fois pris (``giftTaken`` + contenu estimé) :
+   * il persiste jusqu'à ce qu'on le prenne (ÉTUDE §8.1), le prendre tout de suite ne vaut que la différence.
+   */
+  giftOnMapFactor: number;
+  /** Valeur estimée du contenu d'un cadeau (sorts uniques gardés, pour l'équipe) jusqu'au tour ``giftUniqueUntilTurn``. */
+  giftUniqueEstimate: number;
+  giftUniqueUntilTurn: number;
   /** Sort unique gardé dans le grimoire (défaut) ; voir ``uniqueHold`` par niveau de sort. */
   uniqueHoldDefault: UniqueHoldValue;
   uniqueHold: Record<string, UniqueHoldValue>;
@@ -108,6 +129,17 @@ export interface PlannerWeights {
   // ------------------------------------------------------------------ Mama
   /** Fenêtre de burst ouverte (Mama arrivée, dans les pics, non invulnérable), × joueurs qui jouent encore / 3. */
   mamaWindow: number;
+  /**
+   * Mama arrivée, dans les pics mais invulnérable (restée dedans après sa fenêtre) : elle ne peut plus être blessée
+   * tant qu'elle n'en sort pas puis n'y ré-entre (ÉTUDE §6.6). Pénalité levée dès qu'on l'en sort (attirance,
+   * échange…), ce qui guide la recherche vers la suite « la sortir puis l'y remettre ».
+   */
+  mamaStuck: number;
+  /**
+   * Poids d'un PV de la Mama arrivée, relatif aux autres monstres (1 : même valeur). Ses PV ne se retirent que pendant
+   * les fenêtres (dans les pics, vulnérable), rares : un PV retiré pendant la fenêtre vaut davantage qu'un PV de Trooll.
+   */
+  mamaHpWeight: number;
 }
 
 export const DEFAULT_WEIGHTS: Readonly<PlannerWeights> = Object.freeze({
@@ -121,6 +153,7 @@ export const DEFAULT_WEIGHTS: Readonly<PlannerWeights> = Object.freeze({
   monsterThreat: { '7981': 9000, '7982': 4000, '7983': 3000, '7984': 15000 },
   monsterThreatDefault: 3000,
   monsterPush: { '7981': 3, '7982': 2, '7983': 3, '7984': 6 },
+  spikeTrapThreat: { '7981': 2.5 },
   threatInSpikesFactor: 0.25,
   threatUnreachableFactor: 0.15,
   threatDecay: 0.8,
@@ -141,7 +174,12 @@ export const DEFAULT_WEIGHTS: Readonly<PlannerWeights> = Object.freeze({
   objectiveFavour: 1500,
   objectiveProgress: 2500,
   objectivePendingFactor: 0.6,
+  pushKillSetup: 3000,
+  pushKillHp: 1200,
   giftTaken: 5000,
+  giftOnMapFactor: 0,
+  giftUniqueEstimate: 16000,
+  giftUniqueUntilTurn: 7,
   uniqueHoldDefault: { untilTurn: 6, value: 3000 },
   uniqueHold: {
     // Relâchement de Fureur : pour la Mama au T8 (ÉTUDE §6.9)
@@ -166,6 +204,8 @@ export const DEFAULT_WEIGHTS: Readonly<PlannerWeights> = Object.freeze({
   buffValueCap: 9000,
 
   mamaWindow: 12000,
+  mamaStuck: 10000,
+  mamaHpWeight: 1,
 }) as Readonly<PlannerWeights>;
 
 /** Fusionne des poids partiels sur les poids par défaut (tables fusionnées clé par clé). */
@@ -175,13 +215,14 @@ export function mergeWeights(over: Partial<PlannerWeights> | undefined, base: Re
     monsterAlive: { ...base.monsterAlive },
     monsterThreat: { ...base.monsterThreat },
     monsterPush: { ...base.monsterPush },
+    spikeTrapThreat: { ...base.spikeTrapThreat },
     uniqueHold: { ...base.uniqueHold },
     uniqueHoldDefault: { ...base.uniqueHoldDefault },
   };
   if (!over) return w;
   for (const [k, v] of Object.entries(over) as [keyof PlannerWeights, unknown][]) {
     if (v === undefined) continue;
-    if (k === 'monsterAlive' || k === 'monsterThreat' || k === 'monsterPush' || k === 'uniqueHold') {
+    if (k === 'monsterAlive' || k === 'monsterThreat' || k === 'monsterPush' || k === 'spikeTrapThreat' || k === 'uniqueHold') {
       Object.assign(w[k] as object, v);
     } else {
       (w as unknown as Record<string, unknown>)[k] = v;

@@ -23,10 +23,13 @@
  */
 import {
   checkCaster,
+  pushLevel,
   Stat,
   type Fighter,
 } from '../engine/index.js';
+import { objectiveById } from '../scenario/index.js';
 import {
+  collisionDamages,
   computeForcedMove,
   dir8Exact,
   distance,
@@ -137,13 +140,16 @@ export function castPositions(fight: GladiatroolFight, caster: Fighter): { reach
   const reach = reachableCells(grid, caster.cell, caster.mp, state.occupiedPredicate(), { avoidSpikes: true });
   const safe: Pos[] = [];
   const spikes: Pos[] = [];
+  // un lanceur déjà dans les pics peut devoir en traverser d'autres pour sortir (chemin qui en touche le moins)
+  const startsInSpikes = grid.isSpike(caster.cell);
   for (const c of reach.cells) {
     if (c === caster.cell) {
       safe.push({ cell: c, cost: 0, spike: grid.isSpike(c) });
       continue;
     }
     const cost = reach.cost(c);
-    if (cost < 0 || cost > caster.mp || reach.crossesSpikes(c)) continue;
+    if (cost < 0 || cost > caster.mp) continue;
+    if (reach.crossesSpikes(c) && !(startsInSpikes && !grid.isSpike(c))) continue;
     if (reach.endsInSpikes(c)) spikes.push({ cell: c, cost, spike: true });
     else safe.push({ cell: c, cost, spike: false });
   }
@@ -317,6 +323,13 @@ export function generateCastActions(fight: GladiatroolFight, o: GenerateOptions)
           const t = state.fighterAt(c);
           consider(start, c);
           if (t && t.team === 'monsters' && !monsterInSpikes(state, t)) for (const m of spikes) consider(m, c);
+          // Mama restée invulnérable dans les pics : l'échange la sort (le lanceur prend sa place dans les pics)
+          if (t && t.id === sc.mamaId && t.invulnerable && monsterInSpikes(state, t)) {
+            for (const m of safe) {
+              const d = distance(m.cell, c);
+              if (d <= maxRange && d >= spec.minRange) consider(m, c);
+            }
+          }
           continue;
         }
         if (prof.anywhere && positionIndependent) {
@@ -388,7 +401,31 @@ function priorOf(
   let p = -30 * cand.m.cost;
   const dmg = (prof.avgDamageRoll * strMult + (prof.casterHpPct * caster.hp) / 100) * fdMult;
   const occAfter = (x: number): boolean => x === cand.m.cell || (x !== caster.cell && state.isOccupied(x));
+  const sc = fight.scenario;
+  const pushKillGoal =
+    (prof.pushes || prof.pulls) && !!sc.active && objectiveById(state.ctx.data, sc.active).condition.kind === 'victimKilledByPushDamage';
   for (const h of cand.hits) {
+    if (h.enemy && pushKillGoal && h.f.canBePushed && h.f.id !== sc.mamaId) {
+      // « Attention, sol glissant » : la collision prévue tue-t-elle la cible (ou un ennemi percuté) ?
+      const r = computeForcedMove(grid, occAfter, {
+        kind: prof.pushes ? 'push' : 'pull',
+        casterCell: cand.m.cell,
+        targetedCell: prof.pushFromCaster ? h.cell : cand.c,
+        targetCell: h.cell,
+        force: prof.pushes ? prof.pushForce : prof.pullForce,
+      });
+      if (r.collision) {
+        const victims = [h.f, ...r.collisionChain.map((c) => state.fighterAt(c))];
+        const dmg = collisionDamages(
+          r,
+          pushLevel(state, caster),
+          caster.stat(Stat.PUSH_DAMAGE),
+          victims.map((v) => (v ? v.stat(Stat.PUSH_RES) : 0)),
+          caster.pacifist,
+        );
+        if (victims.some((v, i) => !!v && v.team === 'monsters' && (dmg[i] ?? 0) * h.mult >= v.hp)) p += w.objectiveCompleted;
+      }
+    }
     if (h.enemy) {
       if (prof.damages && dmg > 0) {
         const real = dmg * h.mult;
@@ -396,6 +433,18 @@ function priorOf(
         p += Math.min(h.f.hp, real) / fm;
         if (real >= h.f.hp) p += w.monsterAlive[String(h.f.monsterId)] ?? w.monsterAliveDefault;
       }
+      if ((prof.pushes || prof.pulls) && h.f.canBePushed && h.inSpikes && h.f.invulnerable && h.f.id === fight.scenario.mamaId) {
+        // Mama restée (invulnérable) dans les pics : l'en sortir rouvre la possibilité d'une nouvelle entrée
+        const r = computeForcedMove(grid, occAfter, {
+          kind: prof.pushes ? 'push' : 'pull',
+          casterCell: cand.m.cell,
+          targetedCell: prof.pushFromCaster ? h.cell : cand.c,
+          targetCell: h.cell,
+          force: prof.pushes ? prof.pushForce : prof.pullForce,
+        });
+        if (r.moved && !grid.isSpike(r.cell)) p += w.mamaStuck;
+      }
+      if (prof.swaps && cand.c === h.cell && h.inSpikes && h.f.invulnerable && h.f.id === fight.scenario.mamaId) p += 0.5 * w.mamaStuck;
       if ((prof.pushes || prof.pulls) && h.f.canBePushed && !h.inSpikes) {
         const force = prof.pushes ? prof.pushForce : prof.pullForce;
         const r = computeForcedMove(grid, occAfter, {
