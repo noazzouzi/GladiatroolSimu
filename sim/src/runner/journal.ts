@@ -29,7 +29,8 @@ export class JournalNotes {
 /** États signalés dans le journal (le reste des envoûtements est omis). */
 const SHOWN_STATES = new Set([5994 /* Vulnérable */, 157 /* Inébranlable */]);
 
-function shown(ev: FightEvent, state: FightState): boolean {
+/** Événement retenu dans le journal lisible (le reste — envoûtements, déclencheurs… — est omis). */
+export function isJournalEvent(ev: FightEvent, state: FightState): boolean {
   switch (ev.type) {
     case 'globalTurn':
     case 'damage':
@@ -59,23 +60,35 @@ function shown(ev: FightEvent, state: FightState): boolean {
   }
 }
 
-/** Lignes du journal (événements filtrés + notes). */
-export function buildJournal(state: FightState, notes: JournalNotes): string[] {
+/**
+ * Lignes du journal (événements filtrés + notes). ``at`` (facultatif) reçoit, pour chaque ligne, l'index du journal
+ * du moteur auquel elle se rattache (événement, ou position de la note) : l'interface web aligne ainsi le journal
+ * sur les pas de la trace.
+ */
+export function buildJournal(state: FightState, notes: JournalNotes, at?: number[]): string[] {
   const out: string[] = [];
   const n = state.names;
   const events = state.log?.events ?? [];
   for (let i = 0; i <= events.length; i++) {
-    for (const line of notes.at(i)) out.push(line);
+    for (const line of notes.at(i)) {
+      out.push(line);
+      at?.push(i);
+    }
     const ev = events[i];
-    if (!ev || !shown(ev, state)) continue;
+    if (!ev || !isJournalEvent(ev, state)) continue;
     const text = formatEvent(ev, n);
     if (!text) continue;
     if (ev.type === 'globalTurn') {
       out.push('');
       out.push(`════════ Tour ${ev.turn} ════════`);
+      at?.push(i, i);
     } else if (ev.type === 'turnStart') {
       out.push(`▶ ${text}`);
-    } else out.push(`   ${text}`);
+      at?.push(i);
+    } else {
+      out.push(`   ${text}`);
+      at?.push(i);
+    }
   }
   return out;
 }

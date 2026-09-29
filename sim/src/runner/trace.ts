@@ -20,8 +20,13 @@ import type { FightTrace, TraceStep } from './types.js';
 /**
  * Installe l'enregistrement sur l'INSTANCE ``fight`` (les copies faites par le planificateur ne sont pas
  * concernées) : chaque ``cast`` / ``playerCast`` / ``move`` / ``resolveChoice`` réussi ajoute un pas à ``steps``.
+ * ``onRecord`` (facultatif, interface web) est appelé après chaque pas ajouté, l'action déjà appliquée.
  */
-export function installRecorder(fight: GladiatroolFight, steps: TraceStep[]): void {
+export function installRecorder(fight: GladiatroolFight, steps: TraceStep[], onRecord?: (step: TraceStep, index: number) => void): void {
+  const push = (step: TraceStep): void => {
+    steps.push(step);
+    onRecord?.(step, steps.length - 1);
+  };
   const cast = fight.cast.bind(fight);
   const playerCast = fight.playerCast.bind(fight);
   const move = fight.move.bind(fight);
@@ -29,19 +34,19 @@ export function installRecorder(fight: GladiatroolFight, steps: TraceStep[]): vo
   const self = fight as unknown as Record<string, unknown>;
   self.cast = (id: number, sl: number, cell: number): ActionResult => {
     const r = cast(id, sl, cell);
-    if (r.ok) steps.push({ k: 'cast', f: id, s: sl, c: cell, t: fight.turn });
+    if (r.ok) push({ k: 'cast', f: id, s: sl, c: cell, t: fight.turn });
     return r;
   };
   self.playerCast = (sl: number, cell: number): ActionResult => {
     const id = fight.getCurrentFighter()?.id ?? -1;
     const r = playerCast(sl, cell);
-    if (r.ok) steps.push({ k: 'cast', f: id, s: sl, c: cell, t: fight.turn });
+    if (r.ok) push({ k: 'cast', f: id, s: sl, c: cell, t: fight.turn });
     return r;
   };
   self.move = (id: number, target: readonly number[] | number, opts: { avoidSpikes?: boolean } = {}): ActionResult => {
     const r = move(id, target, opts);
     if (r.ok) {
-      steps.push(
+      push(
         typeof target === 'number'
           ? { k: 'move', f: id, p: target, ...(opts.avoidSpikes ? { a: true } : {}), t: fight.turn }
           : { k: 'move', f: id, p: [...target], t: fight.turn },
@@ -54,7 +59,7 @@ export function installRecorder(fight: GladiatroolFight, steps: TraceStep[]): vo
     const t = fight.turn;
     const r = resolve(uid, answer);
     if (r.ok && c) {
-      steps.push({ k: 'choice', l: c.choiceListId, f: c.fighterId, a: typeof answer === 'number' ? answer : { votes: [...answer.votes] }, t });
+      push({ k: 'choice', l: c.choiceListId, f: c.fighterId, a: typeof answer === 'number' ? answer : { votes: [...answer.votes] }, t });
     }
     return r;
   };

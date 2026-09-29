@@ -426,3 +426,78 @@ ADDM 1003 (victoire T10, Mama T8), ADDM 1042 (victoire T11, Mama T8), AADM 1017 
 - `sim/test/planner.hiddenInfo.test.ts` (nouveau).
 - `docs/ARCHITECTURE.md` (planificateur : information cachée ; campagnes : `oracle`, cache), `docs/RESULTATS.md`
   (tous les chiffres), `sim/results/*` (régénérés).
+
+---
+
+# Interface web
+
+Vérification de `web/` dans un vrai navigateur (Chromium 1194 piloté par Playwright 1.63), sur le fichier construit
+(`npm run web:build` → `web/dist/index.html`, ouvert en `file://`) et via `npm run web:preview`
+(`http://localhost:4173/`). Script : `web/e2e/verifier-interface.mjs` (manuel, hors `npm test` ; Playwright n'est
+pas une dépendance du dépôt) :
+
+```sh
+npm run web:build
+npm i --prefix /tmp/pw playwright
+PLAYWRIGHT_DIR=/tmp/pw CHROMIUM=/opt/pw-browsers/chromium node web/e2e/verifier-interface.mjs
+# options : --url http://localhost:4173/ (après npm run web:preview), --out <dossier>, --sans-captures, --sans-parcours
+```
+
+Il écrit les captures et `rapport.txt` dans `web/e2e/captures/` (ignoré par git) et sort en erreur au premier contrôle
+raté. Résultat final : **92 contrôles verts** en `file://`, parcours également verts en HTTP (vite preview).
+
+## 1. Captures et contrôles automatiques
+
+Cinq écrans × 1280 × 800 et 400 × 850 × thèmes clair et sombre (`colorScheme` émulé), captures faites en faisant
+défiler la fenêtre (une capture « pleine page » agrandit la fenêtre, change les `vh` et fausse le cadrage de la carte),
+toutes relues à l'œil.
+
+| Contrôle | Résultat |
+|---|---|
+| Erreurs / avertissements console, exceptions | aucun (20 combinaisons écran × taille × thème, parcours complets) |
+| Requêtes externes | seulement `fonts.googleapis.com` et `fonts.gstatic.com` |
+| Défilement horizontal de la page (`scrollWidth > clientWidth`) | aucun, y compris à 400 px avec un plan tracé |
+| Onglets visibles en entier | oui après correction (voir §3) |
+| Google Fonts bloqué | page fonctionnelle, piles de repli (Georgia / serif pour les titres, system-ui pour le texte) |
+| Carte à 400 px | zoom ×2 d'emblée, centrée sur l'arène (Acrobate visible dans le cadre), défile dans son cadre |
+| Mouvements réduits (`reducedMotion: reduce`) | parcours court vert, pas d'animation de rejeu |
+| Thème explicite (sélecteur « Thème : sombre ») | fond sombre appliqué, retour à « système » |
+| Contraste | numéros de case lisibles sur plancher et pics dans les deux thèmes (gros plan ×2) ; puces et journal lisibles |
+
+## 2. Parcours fonctionnels (1280 × 800 ; parcours court à 400 × 850 en sombre)
+
+| Parcours | Constat |
+|---|---|
+| Ouverture | exemple T1 : Troollibres sur 242 et 358, Acrobate 314, Dompteurs 287 / 286, Magicien 315 (cases de départ), Mama en attente sur 152 |
+| « Trouver le meilleur tour » (deep) | 0,9 à 1,4 s : Videur sur 256 (Troollibre 1 poussé 242 → 199, dans les pics), marche 314 → 329, Videur sur 358 (Troollibre 2 poussé 358 → 402, dans les pics) ; 17-18 tracés sur la carte (chemins, zones, poussées, arrivées dans les pics) ; 5 lignes d'alternatives ; plan d'équipe sans action refusée |
+| « Appliquer » | rejeu des actions puis du Troollibre 1 ; la carte passe au tour de Dompteur 1, Troollibres sur 199 / 402, même état dans l'onglet Carte |
+| Éditeur | rechargement de l'exemple T1, glisser-déposer du Troollibre 2 de 358 vers 330 (jeton et champ « Case » mis à jour), nouveau plan en 0,9-1,4 s |
+| Export / import | l'export contient la case 330 ; import par collage (case 331, tour 2), par fichier (case 332), texte invalide → message d'erreur |
+| Simulation ADDM graine 1001 (fast) | 3,9 à 4,9 s : victoire au T10, Mama tuée au T9, 6 objectifs, aucun mort |
+| Rejeu jusqu'au T8 | la Mama se téléporte 152 → 300 au début de son tour T8 (pas 221 / 312) |
+| « Planifier depuis ici » | onglet Meilleur tour, « Tour 8 — Joue : Acrobate », état exact (la Mama a joué son tour : case 315) ; plan en 1,9-2,4 s (Hanedimane, Videur, Aïronemane…, Nitrooll 5 tué, Mama en pics) |
+| Annulation | simulation deep annulée : « Calcul annulé. » + avertissement de perte de l'état exact ; le worker relancé reconstruit la carte |
+| Résultats | 196 / 200, 198 / 200, p = 0,69, 58,8 % / 59,4 %, tours finaux 10,81 / 11,09, objectifs 5,17 / 5,33, Mama T9,15 / T10,13 : identiques à docs/RESULTATS.md §2.1 (après correction de l'arrondi, §3) |
+
+## 3. Défauts trouvés et corrigés
+
+| # | Défaut | Correction |
+|---|---|---|
+| 1 | **Résultats** : moyennes arrondies différemment de docs/RESULTATS.md (tour final ADDM 10,82 au lieu de 10,81, objectifs 5,18 / 5,34 au lieu de 5,17 / 5,33) : `Intl.NumberFormat` arrondit la décimale affichée, les tableaux utilisent `toFixed`. | `fmtDec` (`web/src/model/format.ts`) arrondit par `toFixed` avant de formater ; test `web/test/format.test.ts`. |
+| 2 | **Annulation** : après « Planifier depuis ici », annuler un calcul n'affichait pas « Calcul annulé. » ; `onRestart` appelait `setNotice` dans la fonction de mise à jour de `setSource` (effet de bord pendant le rendu) et écrasait le message. | `App.tsx` : source courante lue par une référence, avertissement de perte posé directement, puis combiné au message d'annulation ou d'erreur. |
+| 3 | **Thème sombre** : en-tête bleu clair (`--accent` sombre = #7ea8e6) avec texte noir, contraire à l'identité « toile bleu nuit ». | Jetons dédiés `--tent`, `--tent-hover`, `--tent-ink` (bleu nuit #15294a en sombre) pour l'en-tête, les onglets et le logo. |
+| 4 | **400 px** : barre d'onglets tronquée (« Résul… », « Aide » hors champ, défilement horizontal caché). | Onglets sur deux lignes sous 560 px. |
+| 5 | **400 px** : PV « 30 000 / 30  000 » sur deux lignes, nom « Mama Troollette — en attent… » coupé. | Colonne PV 118 px sans retour à la ligne (bouclier sur sa propre ligne), noms autorisés à passer à la ligne. |
+| 6 | **Simulation** : listes tronquées (« ADDM — Acrobate, D », « rapide (fast, ≈ 2 à 6 s », hypothèses « Alternance, Trolls par ordre d'ap »). | Grilles `minmax(min(100 %, 170 px), 1fr)` (formulaire) et 290 px (hypothèses) : une colonne à 400 px, libellés entiers. |
+| 7 | **Résultats** : le 2ᵉ panneau d'une rangée (« Effectifs réduits ») était décalé de 14 px (marge `.panel + .panel`). | Marge annulée dans `.split` / `.split-even`. |
+
+Aucune modification de `sim/`.
+
+## 4. Points constatés, laissés en l'état
+
+- Le libellé d'une image de rejeu est celui du pas de trace : l'arrivée de la Mama sur 300 apparaît dans l'image
+  « Choix — Acclamation » (sa tranche de journal contient le début du tour de la Mama). Limite déjà signalée (une
+  image par pas de trace).
+- Les sections repliables de l'éditeur (« Importer / exporter »…) se referment quand on change d'onglet (écran
+  remonté).
+- Sans Google Fonts, les titres sont en serif de repli, de graisse normale : lisibles mais moins marqués.

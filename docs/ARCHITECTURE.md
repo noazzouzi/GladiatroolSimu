@@ -20,6 +20,7 @@ Arborescence : `sim/src/{data,geometry,engine,scenario,ai,planner,runner,analysi
 | `runner` | Combat complet piloté (`runFight` : résultat, journal, trace rejouable), situations JSON, expériences Monte Carlo (statistiques, multi-cœurs en Node), bench, carte ASCII | tous (sans API Node, sauf `nodeExperiment.ts` / `nodeWorker*`) |
 | `analysis` | Analyse a posteriori des combats (rejeu de trace : par tour, sorts, mises en pics, vagues), campagnes d'expériences du rapport `docs/RESULTATS.md`, tableaux Markdown | `runner`, `data` (sans API Node ; exécution dans `cli/campaign.ts`) |
 | `cli` | Interface en ligne de commande française (`carte`, `simuler`, `planifier`, `comparer`, `bench`) | `runner`, `planner`, Node |
+| `web` | Interface web (Vite + React, fichier HTML unique) : carte isométrique, éditeur de situation, meilleur tour, simulation rejouée pas à pas, résultats | `runner`, `planner`, `scenario`, `geometry` (Web Worker) |
 
 Principe : les **faits** (données du client, observations consolidées) ne contiennent jamais la valeur d'une
 hypothèse ; ils la **référencent** (`{ "$config": "chemin" }`) et la configuration porte la valeur par défaut et ses
@@ -53,7 +54,7 @@ Environ 160 assertions : chiffres de l'ÉTUDE (241 / 96 / 145 cases, profondeurs
 données brutes ↔ fichiers de recherche (ordre d'obtention, améliorations, Acclamations, uniques, stats des monstres,
 script de la Mama), valeurs de référence recalculées depuis les sorts (T1, T2, T3, T4, T8, T11, T12, T13, T16),
 fermeture des sous-sorts, existence de chaque état, monstre, niveau et paramètre `$config` référencé, typage de chaque
-paramètre de configuration. Taille : données ≈ 0,7 Mo, configuration ≈ 26 Ko ; un enregistrement par ligne pour les
+paramètre de configuration. Taille : données ≈ 0,7 Mo, configuration ≈ 33 Ko ; un enregistrement par ligne pour les
 sorts, les cases et les états (diffs lisibles).
 
 ### Contenu de `sim/data/gladiatrool.data.json`
@@ -2007,6 +2008,10 @@ significative sur 24 graines. Échecs : 6 arrêts au T21 (Mama seule, voir « Li
 
 ### Performances (Node 22, 4 cœurs, bench)
 
+Mesures faites à l'intégration du runner, **avant** la boucle d'amélioration du planificateur (docs/AMELIORATIONS.md),
+qui l'a rendu ≈ 2 à 3 fois plus coûteux : voir « Planificateur », Performances (≈ 6 s par combat fast, bench ≈ 76 s ;
+remesuré le 2026-09-29 sur une machine plus lente : 101 s, 7,7 / 8,6 s par combat ADDM / AADM).
+
 | Mesure | Valeur |
 |---|---|
 | combat fast (ADDM / AADM) | ≈ 2,0 / 3,0 s en moyenne (tours de joueur : médiane ≈ 34 ms, p95 ≈ 110 ms, max ≈ 1,9 s) |
@@ -2163,8 +2168,8 @@ objectifs, Mama, cadeaux, durée).
 
 ### Performances
 
-Environ 6 à 7 s de calcul par combat complet à 4 joueurs (planificateur fast), 1,5 s par combat en temps réel sur
-4 cœurs ; le rejeu et l'analyse d'un combat coûtent ~30 ms.
+Environ 5 à 6 s de calcul par combat complet à 4 joueurs (planificateur fast ; `compos-ref` : 5,1 s ADDM, 6,3 s
+AADM), soit ≈ 1,4 s par combat en temps réel sur 4 cœurs (4 000 combats en 90 minutes) ; le rejeu et l'analyse d'un combat coûtent ~30 ms.
 
 ### Tests (`sim/test/analysis.test.ts`)
 
@@ -2183,3 +2188,104 @@ cohérence des définitions de campagne (noms uniques, références existantes).
 
 - Nouveaux fichiers dans `sim/src/cli/` (`campaign.ts`, `report.ts`) ; `sim/src/cli/index.ts` n'est pas modifié.
 - Aucun fichier du moteur, du scénario, de l'IA, du planificateur ni du runner n'est modifié.
+
+---
+
+## Interface web (`web/`)
+
+### Rôle
+
+Outil de travail graphique en français au-dessus de `sim/src` : décrire une situation sur la carte, demander le
+meilleur tour (personnage courant et équipe), l'appliquer, simuler un combat complet et le rejouer pas à pas, lire
+la synthèse des expériences. **Aucune règle de jeu n'est dupliquée** : tout calcul passe par le runner
+(`buildSituation`, `runFight`, `replayTrace`), le planificateur (`planPlayerTurn`, `planTeamTurn`, `executePlan`,
+`advanceToNextPlayer`, `planningClone`, `spellProfile`) et le journal typé du moteur.
+
+Construction : `npm run web:build` → `web/dist/index.html`, **fichier unique** (vite-plugin-singlefile : JS, CSS,
+données du jeu, worker et synthèse des résultats inlinés ; ≈ 2,3 Mo, 0,41 Mo compressé). Seules ressources
+externes : polices Google Fonts (Alfa Slab One, IBM Plex Sans, IBM Plex Mono), avec piles de repli. Développement :
+`npm run web:dev`. Typecheck : `web/tsconfig.json` (inclus dans `npm run typecheck`) ; tests : `web/test/`.
+
+### Fichiers
+
+| Fichier | Contenu |
+|---|---|
+| `vite.config.ts` | Vite + React + singlefile ; worker au format **classique** (`iife`) ; module virtuel `virtual:resultats` (synthèse de `sim/results/*.json` au build) |
+| `src/App.tsx` | en-tête, onglets (clavier : flèches, Début / Fin), thème (système / clair / sombre), état global, tâches longues (progression, annulation) |
+| `src/worker/worker.ts`, `client.ts` | Web Worker (`?worker&inline`) et client typé à promesses ; annulation = worker terminé puis relancé ; **repli** dans le fil principal si le worker ne démarre pas |
+| `src/worker/host.ts` | `SimHost` : requêtes `init`, `load`, `plan`, `apply`, `simulate`, `point` ; garde le combat de base, le dernier plan, la dernière simulation |
+| `src/worker/visual.ts` | actions affichables tirées du journal du moteur (`parseActions` : lancer + zone, marche, poussées / attirances, dégâts, morts, entrées dans les pics) ; `planCard` (plan rejoué sur une copie de planification) |
+| `src/worker/replay.ts` | `ReplayBuilder` : une image par pas de trace (instantané, action, tranche du journal), catégories de lignes pour les filtres |
+| `src/model/types.ts` | types sérialisables (catalogue, vue, plans, rejeu, protocole) |
+| `src/model/iso.ts` | géométrie d'affichage isométrique (centre = `cellToPixel`, losanges, cadre, `pickCell` inverse exact) |
+| `src/model/situationEdit.ts` | édition pure et immuable d'une situation (déplacer / échanger, ajouter, retirer, ordre de jeu, composition, cadeaux, import / export) |
+| `src/model/fromFight.ts` | `situationFromFight` : état exact → situation éditable (avec pertes, comme le format) |
+| `src/model/view.ts`, `catalog.ts` | vue d'un combat (jetons, statut, ordre de jeu, objectif, Mama) ; catalogue (carte, grimoires, monstres, objectifs, hypothèses de `sim/config` avec leur `_doc`) |
+| `src/model/resultsExtract.ts` | synthèse compacte des expériences (statistiques, répartitions du tour de mort de la Mama et du tour de victoire, comparaisons) |
+| `src/components/` | `MapView` (carte SVG, jetons, tracés, survol, glisser-déposer, zoom), `Token`, `ReplayViewer`, graphiques SVG (`charts.tsx`), petits composants |
+| `src/screens/` | Carte & situation, Meilleur tour, Simulation, Résultats, Aide |
+| `e2e/verifier-interface.mjs` | vérification manuelle dans Chromium (Playwright hors dépôt) : captures 2 tailles × 2 thèmes, console, réseau, débordements, parcours complets (docs/VERIFICATION.md, « Interface web ») |
+
+### Protocole du worker
+
+| Requête | Effet | Réponse |
+|---|---|---|
+| `init` | — | catalogue |
+| `load { situation }` | `buildSituation` → combat de base | vue, avertissements, situation |
+| `plan { mode, team }` | `planPlayerTurn` (alternatives) puis `planTeamTurn` ; chaque plan est **rejoué** pour le tracer | `BestTurnResult` (étapes, passage prévu des monstres, explications, alternatives, plan d'équipe) |
+| `apply { source, index, rolls, wholeTeam }` | `executePlan` sur le combat de base (jets moyens ou de la graine), fin du tour, monstres (`monsterAi`) et choix (politique de configuration) jusqu'au joueur suivant | rejeu des actions, nouvelle vue, situation (état exact) |
+| `simulate { spec }` | `runFight` (journal indexé, trace, crochets) | bilan, rejeu (images, journal, catégories) |
+| `point { frame }` | `replayTrace(trace, { step })` jusqu'au premier tour de joueur à partir de l'image | vue et situation de l'état exact |
+
+Messages `progress` (phase en français, fraction ou indéterminé) pendant les calculs.
+
+**Tracé fidèle des plans** : la visualisation rejoue les actions du plan sur la **même suite de copies** que le
+planificateur (`planningClone` du combat, puis, pour le plan d'équipe, une nouvelle `planningClone` par joueur comme
+`searchPlayerTurn`) : graines imaginées, jets moyens et votes supposés identiques, donc aucune action refusée (test).
+
+### Carte
+
+Rendu SVG isométrique dans le repère du client (`cellToPixel` : cellule 86 × 43). Couche fixe mémorisée (plancher,
+épaisseur, **texture de pics métalliques** sur les 96 cases, cases de départ, de cadeau, centre 300, attente 152,
+caisses d'obstacle, numéros ou coordonnées basculables). Jetons : une forme par archétype (Acrobate rond, Dompteur
+carré, Magicien hexagone) et par monstre (Troollibre octogone, Artroolleur pentagone, Nitrooll losange, Mama
+couronne), initiales, rang J1…J4, barre de PV, marqueurs Vulnérable (×2), Inébranlable (cadenas), Invulnérable
+(bouclier), dans les pics (couronne de pointes). Tracés : chemins (flèches), zones de sort (`spellProfile`, zones
+globales omises), poussées / attirances prévues (tirets), arrivées dans les pics (anneau), collisions, numéros
+d'étape, positions finales en fantôme. Survol : id, coordonnées, nature de la case, occupant. Zoom (le cadre défile,
+jamais la page ; zoom ×2 d'emblée sous 640 px).
+
+### Modifications hors du module (signalées)
+
+- `runner/trace.ts` : `installRecorder(fight, steps, onRecord?)` — rappel facultatif après chaque pas enregistré.
+- `runner/runFight.ts`, `runner/types.ts` : `RunOptions.hooks` (`onStep` après chaque pas de trace, fin de tour
+  comprise, et `onPlayerTurn`, non sérialisables) et `RunOptions.journalIndex` → `FightRunResult.journalAt` (index
+  du journal du moteur de chaque ligne). Sans ces options, comportement et sorties inchangés.
+- `runner/journal.ts` : `buildJournal(state, notes, at?)` et filtre exporté `isJournalEvent`.
+
+### Contraintes de publication
+
+Page conçue pour un cadre sandboxé : aucun chargement réseau hors Google Fonts ; pas de `alert` / `confirm` /
+`prompt` ; export par zone de texte + bouton « Copier » (presse-papiers, repli par sélection) ; import par
+`<input type=file>` ou collage ; `localStorage` pour le thème et l'onglet seulement, dans des `try/catch`. Le worker
+est **classique** : un worker « module » créé depuis une URL `blob:` échoue dans une origine opaque (iframe
+sandboxée, `file://`), un worker classique fonctionne (vérifié sous Chromium).
+
+### Tests (`web/test/`)
+
+- `iso` (3) : centres = `cellToPixel`, `pickCell` inverse exact sur les 241 cases (bords des losanges compris),
+  cadre, ordre de dessin.
+- `situation` (7) : édition pure (échange, cadeaux, ordre de jeu, composition, import / export) ; aller-retour
+  combat → situation → combat (cases, PV, états, grimoires, objectifs, cadeaux) sur trois exemples ; Acclamations et
+  PA restants ; vue.
+- `results` (2) : synthèse des expériences ; surcharges d'hypothèses.
+- `host` (2) : chargement, plan d'équipe tracé sans refus, application ; simulation courte, alignement images /
+  journal, état exact d'un point du rejeu.
+
+### Limites
+
+- Le rejeu de simulation garde une image par pas de trace (≈ 300 à 2 000 images par combat) ; un tour de monstre
+  sans action n'a qu'une image de fin de tour.
+- Annuler un calcul relance le worker : l'état exact éventuel est perdu (la situation décrite est reconstruite).
+- Le repli dans le fil principal (worker indisponible) fige l'interface pendant les calculs et double la taille du
+  fichier (hôte embarqué deux fois).

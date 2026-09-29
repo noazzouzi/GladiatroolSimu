@@ -55,9 +55,10 @@ pour tout reproduire.
 6. **Sensibilité** : parmi 12 hypothèses testées, une seule change qualitativement le jeu.
    - Avec `timeline.model = monsters_after_mama` (tous les Troolls jouent d'affilée après la Mama), les deux
      compositions perdent tous leurs combats, entre T5 et T6.
-   - Les autres hypothèses laissent les deux compositions au-dessus de 87 % ; seules Q14 (cadeaux rares, p = 0,039
-     pour ADDM) et, sans significativité, Q2 « les monstres jouent dans les pics » (ADDM 87,5 %, AADM 95 %) les
-     entament. Dans toutes les hypothèses, AADM gagne au moins autant de graines qu'ADDM.
+   - Deux hypothèses entament les compositions sans renverser le jeu : Q14 (cadeaux rares : ADDM 80 %, 8 graines
+     perdues contre 1, p = 0,039 ; AADM 95 %) et, sans significativité, Q2 « les monstres jouent dans les pics »
+     (ADDM 87,5 %, AADM 95 %). Les 9 autres laissent les deux compositions à 92,5 % ou plus. Dans toutes les
+     hypothèses, AADM gagne au moins autant de graines qu'ADDM.
 
 **Conclusion prudente** :
 - Dans ce simulateur, ADDM et AADM sont **équivalentes en taux de victoire quand les cadeaux sont fréquents**, avec
@@ -286,7 +287,7 @@ Lecture :
 - **Q2 « les monstres jouent même dans les pics »** entame les deux compositions (ADDM 87,5 %, AADM 95 %), sans écart
   significatif sur 40 graines.
 - Toutes les autres hypothèses, y compris Q3 (joueurs ×2 dans les pics) et Q4 (2 000 au début du tour) prises
-  séparément, laissent les deux compositions à 92 % ou plus. Le **rythme contre la Mama** (ADDM plus rapide) est
+  séparément, laissent les deux compositions à 92,5 % ou plus. Le **rythme contre la Mama** (ADDM plus rapide) est
   stable sous toutes les hypothèses, et AADM gagne au moins autant de graines qu'ADDM dans chacune.
 
 ### 4.2 Cadeaux rares (Q14), confirmation sur 160 graines (1001-1160)

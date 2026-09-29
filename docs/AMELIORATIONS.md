@@ -7,6 +7,12 @@ variantes de poids (`planner.weights`). « Progression » = fraction moyenne des
 Règle suivie : seul le jeu des joueurs change (évaluation, génération d'actions) ; ni le moteur, ni les données, ni
 l'IA des monstres ne sont modifiés.
 
+> **Avertissement (revue postérieure).** Toutes les mesures de ce document ont été faites avec le planificateur
+> d'avant la revue adversariale, dont l'anticipation connaissait sans le vouloir les tirages futurs du scénario
+> (cases d'apparition de la vague suivante, cadeaux, cartes). Le défaut a été corrigé ensuite (docs/VERIFICATION.md,
+> « Revue planificateur / IA / résultats ») ; les taux de victoire ci-dessous sont donc un peu optimistes. Les chiffres
+> de référence sont ceux de [RESULTATS.md](RESULTATS.md), mesurés avec le planificateur corrigé.
+
 ## Tour 1
 
 ### Mesures

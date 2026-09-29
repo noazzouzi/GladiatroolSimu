@@ -186,9 +186,18 @@ export function runFight(setup: RunSetup, opts: RunOptions = {}): FightRunResult
     policyOptions: opts.policies ?? {},
     choices: [],
     notes: opts.journal ? new JournalNotes() : null,
-    steps: opts.trace ? [] : null,
+    steps: opts.trace || opts.hooks?.onStep ? [] : null,
   };
-  if (rc.steps) installRecorder(fight, rc.steps);
+  const onStep = opts.hooks?.onStep;
+  if (rc.steps) installRecorder(fight, rc.steps, onStep ? (step, index) => { if (step.k !== 'end') onStep(fight, step, index); } : undefined);
+  /** Fin de tour enregistrée : le crochet est appelé après la fin effective du tour (point de décision suivant). */
+  const endStep = (id: number, turn: number): (() => void) => {
+    if (!rc.steps) return () => {};
+    const step: TraceStep = { k: 'end', f: id, t: turn };
+    rc.steps.push(step);
+    const index = rc.steps.length - 1;
+    return () => onStep?.(fight, step, index);
+  };
   const plannerPolicy = createChoicePolicy(rc.policyOptions);
   const recPolicy = recordingPolicy(rc);
   const planOpts: PlanOptions = {
@@ -225,6 +234,7 @@ export function runFight(setup: RunSetup, opts: RunOptions = {}): FightRunResult
         break;
       case 'playerTurn': {
         const id = st.fighterId;
+        opts.hooks?.onPlayerTurn?.(fight, id);
         if (opts.players !== 'passive') {
           const tp = now();
           let refused = 0;
@@ -255,8 +265,9 @@ export function runFight(setup: RunSetup, opts: RunOptions = {}): FightRunResult
         }
         st = resolvePending(rc, recPolicy);
         if (st.kind === 'playerTurn' && st.fighterId === id) {
-          rc.steps?.push({ k: 'end', f: id, t: fight.turn });
+          const ended = endStep(id, fight.turn);
           st = fight.endTurn();
+          ended();
         }
         break;
       }
@@ -265,7 +276,7 @@ export function runFight(setup: RunSetup, opts: RunOptions = {}): FightRunResult
         const tm = now();
         st = fight.stepMonsterTurn(monsters);
         monsterMs += now() - tm;
-        if (st.kind !== 'choice') rc.steps?.push({ k: 'end', f: id, t: fight.turn });
+        if (st.kind !== 'choice') endStep(id, fight.turn)();
         break;
       }
       case 'idle':
@@ -323,9 +334,11 @@ export function runFight(setup: RunSetup, opts: RunOptions = {}): FightRunResult
   };
   if (rc.notes) {
     rc.notes.add(fight.state, ['', resultLine(result)]);
-    result.journal = buildJournal(fight.state, rc.notes);
+    const at: number[] | undefined = opts.journalIndex ? [] : undefined;
+    result.journal = buildJournal(fight.state, rc.notes, at);
+    if (at) result.journalAt = at;
   }
-  if (rc.steps) {
+  if (rc.steps && opts.trace) {
     result.trace = {
       version: 1,
       setup: { players, seed: setup.seed, ...(setup.scenarioSeed !== undefined ? { scenarioSeed: setup.scenarioSeed } : {}) },

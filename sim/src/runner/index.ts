@@ -29,5 +29,5 @@ export {
 } from './experiment.js';
 export { wilsonInterval, meanStat, mcnemarExactP, variantStats, pairedComparison } from './stats.js';
 export { renderMap, fighterLabels, type MapRenderOptions } from './asciiMap.js';
-export { buildJournal, JournalNotes } from './journal.js';
+export { buildJournal, isJournalEvent, JournalNotes } from './journal.js';
 export { BENCH_SPEC, BENCH_VERSION, benchSummary, formatBench, type BenchReport, type BenchLine } from './bench.js';

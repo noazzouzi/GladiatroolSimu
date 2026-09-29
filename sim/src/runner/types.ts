@@ -6,7 +6,7 @@ import type { ConfigOverrides } from '../data/index.js';
 import type { MonsterAiOptions } from '../ai/index.js';
 import type { Team } from '../engine/index.js';
 import type { PlannerMode, PlannerWeights, PolicyOptions, SearchBudget } from '../planner/index.js';
-import type { EndReason, PlayerSetup } from '../scenario/index.js';
+import type { EndReason, GladiatroolFight, PlayerSetup } from '../scenario/index.js';
 
 /** Contrôleur des monstres : IA du module ``ai`` (défaut), IA triviale du scénario, passifs. */
 export type MonsterControllerName = 'ai' | 'simple' | 'passive';
@@ -64,6 +64,23 @@ export interface RunOptions {
   journal?: boolean;
   /** Trace d'actions rejouable (``replayTrace``). */
   trace?: boolean;
+  /** Avec ``journal`` : renvoie aussi ``journalAt`` (index du journal du moteur de chaque ligne). */
+  journalIndex?: boolean;
+  /**
+   * Crochets d'observation du combat réel (interface web : progression, instantanés pas à pas). NON sérialisables :
+   * à ne pas passer à un worker d'expériences. Ils ne doivent pas agir sur le combat.
+   */
+  hooks?: RunHooks;
+}
+
+export interface RunHooks {
+  /**
+   * Après chaque pas de trace, l'action appliquée : lancer / déplacement réussi, réponse à un choix ; pour une fin de
+   * tour, après la fin effective (combat avancé au point de décision suivant). ``index`` : rang du pas dans la trace.
+   */
+  onStep?(fight: GladiatroolFight, step: TraceStep, index: number): void;
+  /** Début d'un tour de joueur (avant la planification). */
+  onPlayerTurn?(fight: GladiatroolFight, fighterId: number): void;
 }
 
 export interface ChoiceRecord {
@@ -125,6 +142,8 @@ export interface FightRunResult {
   choices: ChoiceRecord[];
   timing: TimingSummary;
   journal?: string[];
+  /** Index du journal du moteur de chaque ligne de ``journal`` (option ``journalIndex``). */
+  journalAt?: number[];
   trace?: FightTrace;
 }
 

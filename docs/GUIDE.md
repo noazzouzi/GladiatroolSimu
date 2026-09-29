@@ -28,7 +28,8 @@ npm run cli -- simuler --compo ADDM --graine 42 --trace trace.json
 npm run cli -- simuler --compo ADDM --graine 42 --json          # résultat complet en JSON
 ```
 
-Options : `--mode fast|deep|greedy` (planificateur des joueurs ; `fast` ≈ 1–5 s par combat, `deep` ≈ 5–30 s),
+Options : `--mode fast|deep|greedy` (planificateur des joueurs ; `fast` ≈ 5–8 s par combat, `deep` ≈ 20–30 s, `greedy` < 1 s mais
+nettement plus faible),
 `--monstres ai|simple|passive` (IA des monstres ; défaut `ai`), `--tours-max 20` (arrêt au-delà), `--config
 surcharges.json` (hypothèses de `sim/config/default.config.json` à modifier), `--bonus planner|PO_first|PA_first|DF_first`
 (Acclamations), `--vote planner|fixed|preference` (votes), `--cadeaux planner|preference`.
@@ -108,8 +109,43 @@ npm run cli -- bench --sortie bench.json     # rapport + combats détaillés dan
 
 Évaluation standard : ADDM et AADM, graines 1-24, mode `fast` (sans plafond de temps : résultat reproductible), 20
 tours au plus. Résumé : taux de victoire global et par composition (IC de Wilson), progression moyenne, tour moyen
-atteint, objectifs, Mama tuée, morts, secondes par combat, comparaison appariée ADDM − AADM. Durée ≈ 30–40 s sur 4
-cœurs.
+atteint, objectifs, Mama tuée, morts, secondes par combat, comparaison appariée ADDM − AADM. Durée ≈ 75–100 s sur 4
+cœurs (selon la machine).
+
+## Interface web
+
+```
+npm run web:dev      # serveur de développement (Vite), http://localhost:5173
+npm run web:build    # web/dist/index.html : fichier unique autonome (≈ 2,3 Mo), à ouvrir dans un navigateur
+```
+
+Vérification dans un navigateur (manuelle, Playwright installé hors du dépôt) :
+`npm i --prefix /tmp/pw playwright`, puis `PLAYWRIGHT_DIR=/tmp/pw CHROMIUM=/opt/pw-browsers/chromium node
+web/e2e/verifier-interface.mjs` (`CHROMIUM` facultatif : sinon le navigateur de Playwright) — voir
+[VERIFICATION.md](VERIFICATION.md), « Interface web ».
+
+Onglets :
+
+- **Carte & situation** (ouvert sur l'ouverture de référence T1 ADDM, V1 sur 242 / 358) : carte isométrique (pics,
+  cases de départ et de cadeau, 300, 152, numéros ou coordonnées), jetons avec PV et états. Glisser un jeton le
+  déplace (échange si la case est occupée) ; outils « + Troollibre / Artroolleur / Nitrooll », « Cadeau »,
+  « Supprimer ». L'éditeur règle le tour, la graine, le personnage courant, l'objectif, la composition et l'ordre de
+  jeu, les PV, états, sorts (grimoire, améliorations, uniques), Acclamations, PA / PM, les objectifs réalisés et les
+  cadeaux. Importer : exemples, collage JSON ou fichier ; exporter : zone de texte + « Copier ».
+- **Meilleur tour** : « Trouver le meilleur tour » (mode deep par défaut, progression, annulation) → plan du
+  personnage courant et du tour global de l'équipe, étapes numérotées tracées sur la carte (survol d'une étape =
+  mise en avant), passage prévu des monstres, explication, risques, alternatives comparables (clic = tracé).
+  « Appliquer » joue le plan (jets moyens ou aléatoires de la graine) puis les monstres jusqu'au joueur suivant, et
+  montre le rejeu de ces actions ; « Planifier le joueur suivant » enchaîne.
+- **Simulation** : composition (liste ou libre, placement `@…` accepté), graine, planificateur, tours au plus, IA des
+  monstres, hypothèses clés (Q3, Q4, Q1, Q14, Q5, politiques). Le combat est joué dans le worker ; bilan, choix
+  motivés, puis rejeu pas à pas (tours globaux, actions, lecture, curseur, journal filtrable et cherchable).
+  « Planifier depuis ici » reprend l'état exact (rejeu de la trace) dans l'onglet Meilleur tour.
+- **Résultats** : synthèse de docs/RESULTATS.md (taux de victoire avec IC de Wilson, ADDM contre AADM, tour de mort
+  de la Mama, sensibilité aux hypothèses, politiques), graphiques à l'échelle avec tableau des valeurs.
+- **Aide** : mécaniques clés, mode d'emploi, sources, limites.
+
+Détails techniques : docs/ARCHITECTURE.md, section « Interface web ».
 
 ## Utiliser le code
 

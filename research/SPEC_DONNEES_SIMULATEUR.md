@@ -31,9 +31,10 @@
    optionnel (`sim`) peut accélérer le planificateur, mais le moteur de référence interprète les effets.
 5. **Identifiants DOFUS partout** : ids de sorts, de niveaux de sort (spell-levels), d'états, de monstres, de cellules. Les
    noms français sont des libellés.
-6. **Génération reproductible.** Le fichier est produit par un script (proposé : `tools/build_sim_data.py`) à partir de
-   `research/raw/dofusdb/*.json` et `research/data/*.json`, avec assertions (comme les générateurs existants), et validé par
-   un JSON Schema (`sim/data/gladiatrool.schema.json`).
+6. **Génération reproductible.** Le fichier est produit par un script (réalisé : `tools/simdata/build_sim_data.py`, `npm run build:data`) à
+   partir de `research/raw/dofusdb/*.json` et `research/data/*.json`, avec assertions (comme les générateurs existants).
+   Le JSON Schema proposé (`gladiatrool.schema.json`) n'a pas été écrit : la validation est faite par les assertions du
+   générateur, par la validation de la configuration dans `sim/src/data/load.ts` et par les tests (`sim/test/data.test.ts`).
 
 ---
 
